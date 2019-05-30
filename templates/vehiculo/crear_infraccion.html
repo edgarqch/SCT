@@ -1,0 +1,182 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Crear Infraccion {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>REGISTRAR INFRACCION</h2>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <br />
+          <form method= "post" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+            {% csrf_token %}
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.vehiculo.label}}:</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <span class="fa fa-search form-control-feedback right" aria-hidden="true"></span>
+                <input type="text" id="id_vehiculo" placeholder="Seleccione al vehiculo" class="form-control col-md-7 col-xs-12">
+                  {{form.vehiculo}}
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{form.lugar.label}}:</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                {{form.lugar}}
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{form.tipo.label}}:</label>
+              <div class="col-md-6 col-sm-3 col-xs-12">
+                  {{form.tipo}}
+              </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{form.observacion.label}}:</label>
+                <div class="col-md-6 col-sm-3 col-xs-12">
+                    {{form.observacion}}
+                </div>
+            </div>
+            <div class="item form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="number">{{form.licencia.label}}:</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                {{form.licencia}}
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12">{{form.fecha.label}}:</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                {{form.fecha}}
+              </div>
+            </div>            
+            <div class="ln_solid"></div>
+            <div class="form-group">
+              <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                <a class="btn btn-primary" href="{% url 'vehiculo:listas_infractores' %}">CANCELAR</a>
+                <button type="submit" class="btn btn-success">REGISTRAR</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Buscar vehiculo -->
+  <div id="modal-buscar-vehiculo" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">x</span></button>
+            <h4 class="modal-title" id="myModalLabel">Buscar Operador</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-horizontal form-label-left">
+              <div class="form-group has-feedback">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">Placa del Vehículo</label>
+                <div class="col-md-9 col-sm-9 col-xs-12">
+                  <input type="text" class="form-control has-feedback-right" id="modal_search_vehiculo_placa" placeholder="Buscar por placa..." name="">
+                  <span class="fa fa-search form-control-feedback right" aria-hidden="true"></span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <hr>
+              <p>Resultados: </p>
+              <div class="modal-result">
+                <div class="list-group" id='modal_list_result'>
+                  <!-- Loaded from Ajax method -->
+                </div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-dark" id="modal_btn_load">Seleccionar</button>
+            <button type="button" class="btn btn-default" id="modal_btn_close" data-dismiss="modal">Cerrar</button>
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- /modals -->
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+  <script>
+    // script modal añadir foto
+    $(function() {
+      $('#id_vehiculo').on('click', function() {
+          buscar_vehiculo('');
+          $('#modal-buscar-vehiculo').modal('show');
+        });
+
+      $('#modal_search_vehiculo_placa').keyup(function(e){
+        consulta = $('#modal_search_vehiculo_placa').val();
+        buscar_vehiculo(consulta);
+      });
+
+      function buscar_vehiculo(consulta) {
+        $.ajax({
+          data: {'placa': consulta},
+          url: '/vehiculo/search_vehiculo_placa/',
+          type: 'get',
+          success: function(data) {
+            var sms = "";
+            $('#modal_list_result').html("");
+            for(var i = 0; i < data.length; i++) {
+              sms += data[i].id + '\n';
+              var html = "<a href='#' class='list-group-item'>";
+              html += "<h4 class='list-group-item-heading'>" + data[i].placa + "</h4>";
+              html += "<p style='display:none' >" + data[i].id + "</p>";
+              html += "</a>";
+              $('#modal_list_result').append(html);
+            }
+          },
+          error: function(message) {
+            console.log(message);
+          },
+        });
+      }
+
+      $('#modal_list_result').on('click', '.list-group-item', function(){
+        $('.list-group-item').each(function(i) {
+          $(this).removeClass('active');
+        });
+        $(this).addClass('active');
+      });
+
+      $('#modal_btn_load').on('click', function() {
+        var sms = $('#modal_list_result .active p').html();
+        var sms1 = $('#modal_list_result .active h4').html();
+        $('#id_vehiculo_ok').val(sms);
+        $('#id_vehiculo').val(sms1);
+        // window.location = "/boleta/create?numero=" + sms;
+        // cargar_contrato(sms);
+        $('#modal-buscar-vehiculo').modal('hide');
+      });
+
+      $('#modal_list_result').on('dblclick', '.list-group-item', function(){
+        var sms = $('#modal_list_result .active p').html();
+        var sms1 = $('#modal_list_result .active h4').html();
+        $('#id_vehiculo_ok').val(sms);
+        $('#id_vehiculo').val(sms1);
+        // window.location = "/boleta/create?numero=" + sms;
+        // cargar_contrato(sms);
+        $('#modal-buscar-vehiculo').modal('hide');
+      });
+
+
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Crear Informe {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h1>CREAR INFORME</h1>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <br />
+          <form method= "post" autocomplete="off" data-parsley-validate class="form-horizontal form-label-left">
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                    <h2 style="text-decoration : underline">DATOS PREVIOS</h2>
+                </div>
+                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                    <label class="control-label col-md-2 col-sm-6 col-xs-12">{{form.cite.label}}:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                    {{form.cite}}
+                    {% if form.cite.errors %}
+                    <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    {{form.cite.errors}}
+                    </div>
+                  {% endif %}
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                    <label class="control-label col-md-2 col-sm-6 col-xs-12">{{form.fecha.label}}:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                    {{form.fecha}}
+                    {{form.fecha.errors}}
+                    </div>
+                </div>
+                {% if analisis %}
+                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                    <label class="control-label col-md-2 col-sm-6 col-xs-12">{{form.ans_tecnico.label}}:</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                    {{form.ans_tecnico}}
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                    <label class="control-label col-md-2 col-sm-6 col-xs-12">{{form.concluciones.label}}:</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                    {{form.concluciones}}
+                    </div>
+                </div>
+                {% endif %}
+                <div class="ln_solid col-md-12 col-sm-12 col-xs-12"></div>
+                <div class="form-group col-md-8 col-sm-12 col-xs-12">
+                    <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
+                    <a class="btn btn-primary" href="/tecnico/listar">CANCELAR</a>
+                    <button type="submit" class="btn btn-success">REGISTRAR</button>
+                    </div>
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+{% endblock %}

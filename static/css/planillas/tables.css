@@ -1,0 +1,16 @@
+table th {
+    text-align: center;
+    
+}
+table th {
+    border: 2px solid white;
+}
+.tr_modulo {
+    background-color: #ABD0BC;
+    color:#3F5367;
+    font-weight: 100;
+}
+table {
+    height: 203px;
+    overflow-y: auto;
+}

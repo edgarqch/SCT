@@ -1,0 +1,91 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Update User {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>Actualizar Usuario</h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                  </ul>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <form method="post" class="form-horizontal form-label-left" novalidate>
+                {% csrf_token %}
+                <span class="section">Información Requerida</span>
+                <div class="item form-group">
+                  <label class="control-label col-md-4 col-sm-3 col-xs-12" for="username">{{ form.first_name.label }}<span class="required">*</span></label>
+                  <div class="col-md-8 col-sm-6 col-xs-12">
+                    {{ form.first_name }}
+                  </div>
+                </div>
+                <div class="item form-group">
+                  <label class="control-label col-md-4 col-sm-3 col-xs-12" for="username">{{ form.last_name.label }}<span class="required">*</span></label>
+                  <div class="col-md-8 col-sm-6 col-xs-12">
+                    {{ form.last_name }}
+                  </div>
+                </div>
+                <div class="item form-group">
+                  <label class="control-label col-md-4 col-sm-3 col-xs-12" for="username">{{ form.username.label }}<span class="required">*</span></label>
+                  <div class="col-md-8 col-sm-6 col-xs-12">
+                    {{ form.username }}
+                  </div>
+                </div>
+                <div class="item form-group">
+                  <label class="control-label col-md-4 col-sm-3 col-xs-12" for="username">{{ form.email.label }}<span class="required">*</span></label>
+                  <div class="col-md-8 col-sm-6 col-xs-12">
+                    {{ form.email }}
+                  </div>
+                </div>
+                <div class="item form-group">
+                  <label class="control-label col-md-4 col-sm-3 col-xs-12" for="username">{{ form.group.label }}<span class="required">*</span></label>
+                  <div class="col-md-8 col-sm-6 col-xs-12">
+                    {{ form.group }}
+                  </div>
+                </div>
+                <div class="item form-group" style="display:none">
+                  <label class="control-label col-md-4 col-sm-3 col-xs-12" for="username">{{ form.password.label }}<span class="required">*</span></label>
+                  <div class="col-md-8 col-sm-6 col-xs-12">
+                    {{ form.password }}
+                  </div>
+                </div>
+                <div class="ln_solid"></div>
+                <div class="form-group">
+                  <div class="col-md-6 col-md-offset-3">
+                    <!-- <button class="btn btn-primary">Cancelar</button> -->
+                    <a class="btn btn-primary" href="{% url 'usuario:listar' %}">Cancelar</a>
+                    <button type="submit" class="btn btn-success">REGISTRAR</button>
+                    <!-- <button type="submit" class="btn btn-success">Enviar</button> -->
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+{% endblock %}

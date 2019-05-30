@@ -1,0 +1,82 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Registro Vehículo Nuevo {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h1>REGISTRAR VEHICULO</h1>
+          <div class="clearfix"></div>
+        </div>
+          <form method= "post" data-parsley-validate class="form-horizontal form-label-left">
+            {% csrf_token %}
+            <div class="row">
+              <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                <h2 style="text-decoration : underline">Datos del vehiculo nuevo</h2>
+                <input id="id-oculto" type="hidden" name="opcion" value="{{ llave }}">
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">{{form.propietario.label}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.propietario}}
+                  {% if form.propietario.errors %}
+                    <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                      {{form.propietario.errors}}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">{{form.placa.label}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.placa}}
+                  {% if form.placa.errors %}
+                    <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                      {{form.placa.errors}}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">{{form.tipo_vehiculo.label}}</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.tipo_vehiculo}}
+                  {% if form.tipo_vehiculo.errors %}
+                    <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                      {{form.tipo_vehiculo.errors}}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="ln_solid col-md-12 col-sm-12 col-xs-12"></div>
+              <div class="form-group col-md-8 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
+                  <a class="btn btn-primary volver-detalle" href="#">Cancelar</a>
+                  <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+  <script>
+  var id_oculto = $('#id-oculto').val();
+  $(".volver-detalle").attr("href", "/tecnico/detalle/" + id_oculto + "/");
+  </script>
+{% endblock %}

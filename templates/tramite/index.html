@@ -1,0 +1,45 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Home {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link rel="stylesheet" href="/static/css/mystyle.css">
+  
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div>
+      <H1 style="text-align: center">SISTEMA DE CONTROL DE TRÁNSPORTE</H1>
+      {% for caducado in tarjetas_caducadas %}
+      <!-- <button style="display:none" class="btn btn-default source notificacion" onclick="new PNotify({ -->
+      <button style="display:none" class="btn btn-default source notificacion" onclick="new PNotify({
+        title: 'Tarjeta Expirada!!!',
+        text: 'La tarjeta del vehículo {{ caducado.placa|upper }} expiro!!!',
+        type: 'danger',
+        // hide: false,
+        styling: 'bootstrap3'
+        });"></button>
+      {% endfor %}
+    </div>
+    <div>
+      <img src="/static/images/logo.png" alt="Logotipo Unidad de registro y regulacion de transporte" class="logo">
+    </div>
+    <div>
+      <h2 style="text-align: center">UNIDAD DE REGISTRO Y REGULACIÓN DE TRANSPORTE</h2>
+    </div>
+    <br />
+
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super}}
+  <script>
+  $(function(){
+    $('.notificacion').click();
+  });
+  </script>
+
+{% endblock javascripts %}

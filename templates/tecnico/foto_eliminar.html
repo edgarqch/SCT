@@ -1,0 +1,50 @@
+{% extends "base/base_site.html" %}
+{% load staticfiles %}
+{% block title %} Eliminar Foto {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h1>ELIMINAR FOTO</h1>
+          <div class="clearfix"></div>
+        </div>
+          <form method= "post" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+              <div class="form-group col-md-12 col-sm-12 col-xs-12">
+              </div>
+              <h3>¿Desea eliminar esta fotografía?</h3>
+              <!-- <h3>¿Desea eliminar el registro de {{ object.placa }} ?</h3> -->
+              <div style="width: 60%; height: 60%;">
+                  <img style="width: 100%; height: 100%;" src="{% static object.foto.url %}" alt="Foto">
+                  <input id="id-oculto" type="hidden" name="opcion" value="{{ llave }}">
+                </div>
+              <div class="ln_solid col-md-12 col-sm-12 col-xs-12"></div>
+              <div class="form-group col-md-8 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
+                  <a class="btn btn-default volver-detalle" href="#">Cancelar</a>
+                  <button type="submit" class="btn btn-danger">Si, Eliminar</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+  <script>
+    var id_oculto = $('#id-oculto').val();
+    $(".volver-detalle").attr("href", "/tecnico/detalle/" + id_oculto + "/");
+  </script>
+{% endblock %}

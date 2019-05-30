@@ -1,0 +1,175 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Crear Vehiculo {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>REGISTRAR VEHÍCULO</h2>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <br/>
+          <form method= "post" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+            {% csrf_token %}
+            <div class="x_content">
+            <div class="row">
+              <div class="form-group">
+                <label class="col-md-3 col-sm-12 col-xs-12 form-group" for="first-name">{{form.nro_tramite.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-3 col-sm-12 col-xs-12 form-group">
+                  {{form.nro_tramite}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-3 col-sm-12 col-xs-12 form-group" for="last-name">{{form.usuario.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-3 col-sm-12 col-xs-12 form-group">
+                  {{form.usuario}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{form.fecha.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.fecha}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{form.hora.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-3 col-sm-3 col-xs-12">
+                    {{form.hora}}
+                </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{form.placa.label}}<span class="required">*</span>
+                  </label>
+                  <div class="col-md-3 col-sm-3 col-xs-12">
+                      {{form.placa}}
+                  </div>
+                </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.operario.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.operario}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.categoria_vehiculo.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.categoria_vehiculo}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.propietario.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.propietario}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.tipo_vehiculo.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.tipo_vehiculo}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.chasis.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.chasis}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.marca.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.marca}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.modelo.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.modelo}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.validez_tarjeta.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.validez_tarjeta}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.monto_deposito.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.monto_deposito}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.botic.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.botic}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.rutas.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.rutas}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.categoria_tarjeta.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.categoria_tarjeta}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.gestion.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.gestion}}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{form.capacidad.label}}<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  {{form.capacidad}}
+                </div>
+              </div>
+              <div class="ln_solid"></div>
+              <div class="form-group">
+                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                  <a class="btn btn-primary" href="{% url 'tramite:index' %}">CANCELAR</a>
+                  <button type="submit" class="btn btn-success">REGISTRAR</button>
+                </div>
+              </div>
+            </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+{% endblock %}

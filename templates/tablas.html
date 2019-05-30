@@ -1,0 +1,97 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    
+    table {
+        display: inline-block;
+        text-align:center;
+                    margin: 0 auto;
+                    table-layout: fixed;
+                    width: 200px;
+                    border-collapse: collapse;
+                }
+                th {
+                    border: 1px solid;
+                    word-wrap: break-word;
+
+                    padding: 0.3em;
+                }
+                td {
+                    border: 1px solid;
+                    word-wrap: break-word;
+
+                    text-align: center;
+                    padding: 0.3em;
+                }
+                </style> 
+    
+    
+    
+    <style>
+        table{
+            margin: 0 auto;
+    table-layout: fixed;
+    width: 500px;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid blue;
+    width: 50px;
+    height: 30px important;
+    word-wrap: break-word;
+}
+    </style>
+</head>
+<body>
+
+<table border="2">
+  <tr>
+    <th widht="" ></th>
+    <th>Clave</th>
+    <th>Tópico</th> 
+    <th>Descripcion</th>
+    <th>Objetivo</th>
+    <th>Justificación</th>
+    <th>Área de estudio</th>
+  </tr>
+  <tr>
+    <td ></td>
+    <td >001</td>
+    <td >Cultura General.</td> 
+    <td >¿Alguna vez has puesto a prueba tu conocimiento sobre el mundo, la historia, las ciencias, el lenguaje y el arte? Tal vez no seas un sabelotodo ni un investigador que pasa sus días en un laboratorio con los ojos pegados a un microscopio, pero hay ciertos datos que deberías conocer para tener una noción del paso del hombre por la Tierra y la complejidad de sus acciones.</td>
+    <td>Medir la profundidad de tu cultura general.</td>
+    <td>Medir el conocimiento general de la Organización.</td>
+    <td>Cultura General.dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</td>
+  </tr>
+    
+</table>
+</body>
+</html> -->
+<!DOCTYPE html> 
+    <html lang="en"> 
+    <head> 
+     <title>JavaScript PDF Viewer Demo</title> 
+     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> 
+     <script type="text/javascript"> 
+      function PreviewImage() { 
+       pdffile=document.getElementById("uploadPDF").files[0]; 
+       pdffile_url=URL.createObjectURL(pdffile); 
+       $('#viewer').attr('src',pdffile_url); 
+      } 
+     </script> 
+    </head> 
+    <body> 
+     <input id="uploadPDF" type="file" name="myPDF"/>&nbsp; 
+     <input type="button" value="Preview" onclick="PreviewImage();" /> 
+
+     <div style="clear:both"> 
+      <iframe id="viewer" frameborder="0" scrolling="no" width="400" height="600"></iframe> 
+     </div> 
+    </body> 
+</html>

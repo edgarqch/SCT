@@ -1,0 +1,74 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Crear Documento Legal {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>DOCUMENTOS LEGALES <small>del operador</small></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="table-responsive">
+                    <table class="dt-responsive table table-striped table-bordered display nowrap jambo_table">
+                    <thead>
+                        <tr> 
+                            <th>ACCIONES</th>
+                            <th>NOMBRE DE OPERADOR</th>
+                            <th>RAZON SOCIAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if object_list %}
+                        {% for operador in object_list %}
+                        <tr>
+                            <td>
+                                {% if operador.tiene_inf_legal %}
+                                <a target="_blank" data-toggle="tooltip" title="Imprimir Informe Legal" class="btn btn-default" href="{% url 'tecnico:generar_informe_legal' pk=operador.id %}"><i class="fa fa-print"></i></a>
+                                {% else %}
+                                <a class="btn btn-primary" href="{% url 'tecnico:documento_legal' pk=operador.id tip=1 %}"><small>Generar Informe Legal</small></a>
+                                {% endif %}
+                                {% if operador.tiene_res_administrativa %}
+                                    <a target="_blank" data-toggle="tooltip" title="Imprimir Resolució Administrativa" class="btn btn-primary" href="{% url 'tecnico:generar_resolucion_administrativa' pk=operador.id %}"><i class="fa fa-print"></i></a>
+                                {% else %}
+                                    <a class="btn btn-primary" href="{% url 'tecnico:documento_legal' pk=operador.id tip=2 %}"><small>Generar Resolución Administrativa</small></a>
+                                {% endif %}
+                            </td>
+                            <td>{{ operador.nombre }}</td>
+                            <td>{{ operador.razon_social }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <h1>No hay existen registros</h1>
+                        {% endif %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+{% endblock %}

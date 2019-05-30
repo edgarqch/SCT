@@ -1,0 +1,85 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Registro Nota Renovacion {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h1>REGISTRAR LA NOTA</h1>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <br />
+          <form method= "post" data-parsley-validate class="form-horizontal form-label-left">
+            {% csrf_token %}
+            <div class="row">
+              <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                <h2 style="text-decoration : underline">DATOS DE LA NOTA</h2>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.cite.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form.cite}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.fecha.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form.fecha}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.nombre_ente.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form.nombre_ente}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.representante_ente.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form.representante_ente}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.cargo_repr.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form.cargo_repr}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.ruta_solicitada.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form.ruta_solicitada}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.cantidad_tarjetas.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form.cantidad_tarjetas}}
+                </div>
+              </div>
+              <div class="ln_solid col-md-12 col-sm-12 col-xs-12"></div>
+              <div class="form-group col-md-8 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
+                  <a class="btn btn-primary" href="{% url 'tecnico:operador_renovavion_listar' %}">CANCELAR</a>
+                  <button type="submit" class="btn btn-success">REGISTRAR</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Detalle Vehiculo {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <a class="btn btn-primary" href="{% url 'vehiculo:listar_vehiculos' %}"> <i class="fa fa-backward"></i>Volver</a>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">  
+                <div class="x_title">
+                    <h2>Detalles del Vehículo:</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">Settings 1</a>
+                            </li>
+                            <li><a href="#">Settings 2</a>
+                            </li>
+                        </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">OPERADOR: </label><label class="control-label" for="">{{ operador|upper }}</label>
+                    </div>
+                    <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">IDENTIFICADOR: </label><label class="control-label" for="">{{ object.id|upper }}</label>
+                    </div>
+                    <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">PROPIETARIO: </label><label class="control-label" for="">{{ object.propietario|upper }}</label>
+                    </div>
+                    <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">PLACA: </label><label class="control-label" for="">{{ object.placa|upper }}</label>
+                    </div>
+                    <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">MARCA: </label><label class="control-label" for="">{{ object.marca|upper }}</label>
+                    </div>
+                    <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">MODELO: </label><label class="control-label" for="">{{ object.modelo|upper }}</label>
+                    </div>
+                    <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">CHASIS: </label><label class="control-label" for="">{{ object.chasis|upper }}</label>
+                    </div>
+                    <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">COLOR: </label><label class="control-label" for="">{{ object.color|upper }}</label>
+                    </div>
+                    <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">CAPACIDAD: </label><label class="control-label" for="">{{ object.capacidad|upper }}</label>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="actionBar"><h2 style="text-align:left">Información de la Tarjeta:</h2></div>
+                    {% if detalle %}
+                        <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">VALIDO POR: </label><label class="control-label" for="">{{ detalle.validez }} año</label>
+                        </div>
+                        <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">DEL: </label><label class="control-label" for="">{{ detalle.valida_del|upper }}</label>
+                        </div>
+                        <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">AL: </label><label class="control-label" for="">{{ detalle.valida_al|upper }}</label>
+                        </div>
+                    {% else %}
+                        <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
+                            <h2>El vehículo aún no cuenta con tarjeta</h2>
+                        </div>
+                    {% endif %}
+                    <div class="clearfix"></div>
+                    <div class="actionBar"><h2 style="text-align:left">Fotografias:</h2></div>
+                    {% if fotos %}
+                        <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
+                        <!-- <label class="control-label col-md-12 col-sm-6 col-xs-12" style="text-align:left">FOTOS:</label> -->
+                        {% for foto in fotos %}
+                            <div class="col-md-55">
+                                <div class="thumbnail">
+                                  <div class="image view view-first">
+                                    <img style="width: 100%; display: block;" src="/static/archivos/{{ foto.foto }}" alt="image" />
+                                    <div class="mask">
+                                      <p>{{ object.placa|upper }} </p>
+                                      <div class="tools tools-bottom">
+                                        <a href="#"><i class="fa fa-automobile"></i></a>
+                                        <a href="#"><i class="fa fa-camera-retro"></i></a>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="caption">
+                                    <p>{{ operador|upper }} </p>
+                                  </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+
+  <script>
+
+  </script>
+
+{% endblock %}

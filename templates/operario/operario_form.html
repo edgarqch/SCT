@@ -1,0 +1,136 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Crear Operador {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h1>REGISTRAR OPERADOR  {{ media }}</h1>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <br />
+          <form method= "post" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+              <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                <h2 style="text-decoration : underline">DATOS DEL OPERADOR</h2>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form2.razon_social.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form2.razon_social}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form2.numero_registro.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form2.numero_registro}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form2.nombre.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form2.nombre}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form2.modalidad.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form2.modalidad}}
+                  </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                  <label class="control-label col-md-4 col-sm-6 col-xs-12" for="first-name">{{form2.domicilio.label}}</label>
+                  <div class="col-md-8 col-sm-6 col-xs-12">
+                    {{form2.domicilio}}
+                  </div>
+                </div>
+                <div class="item form-group col-md-6 col-sm-12 col-xs-12">
+                  <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form2.nit.label}}</label>
+                  <div class="col-md-8 col-sm-6 col-xs-12">
+                    {{form2.nit}}
+                  </div>
+                </div> 
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form2.documento_legal.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form2.documento_legal}}
+                </div>
+              </div>            
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-3 col-sm-6 col-xs-12">{{form2.digital.label}}</label>
+                <div class="col-md-9 col-sm-6 col-xs-12">
+                  {{form2.digital}}
+                </div>
+              </div>            
+              <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                <label class="control-label col-md-2 col-sm-3 col-xs-12">{{form2.tipo.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form2.tipo}}
+                </div>
+              </div>            
+              <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                <label class="control-label col-md-2 col-sm-3 col-xs-12">{{form2.ruta.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form2.ruta}}
+                </div>
+              </div>
+              <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                <label class="control-label col-md-2 col-sm-3 col-xs-12">{{form2.observaciones.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form2.observaciones}}
+                </div>
+              </div>
+              <div class="form-group col-md-12 col-sm-12 col-xs-12">
+              <h2 style="text-decoration : underline">DATOS DEL RESPRESENTANTE LEGAL</h2>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.nombre_r.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form.nombre_r}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.ci.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form.ci}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.domicilio_r.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form.domicilio_r}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.estado_activo.label}}</label>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                  {{form.estado_activo}}
+                </div>
+              </div>
+              <div class="ln_solid col-md-12 col-sm-12 col-xs-12"></div>
+              <div class="form-group col-md-8 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
+                  <a class="btn btn-primary" href="{% url 'tramite:index' %}">CANCELAR</a>
+                  <button type="submit" class="btn btn-success">REGISTRAR</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Login {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <!-- Animate.css -->
+  <link href="/static/vendors/animate.css/animate.min.css" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block body_class %}login{% endblock body_class %}
+
+{% block body %}
+  <div>
+    <a class="hiddenanchor" id="signup"></a>
+    <a class="hiddenanchor" id="signin"></a>
+
+    <div class="login_wrapper">
+      <div class="animate form login_form">
+        <section class="login_content">
+          <form method="post">
+            {% csrf_token %}
+            <h1>Iniciar Sesión</h1>
+            <div>
+              <input name="username" type="text" class="form-control" placeholder="Nombre de usuario" required="" />
+            </div>
+            <div>
+              <input name="password" type="password" class="form-control" placeholder="Contraseña" required="" />
+            </div>
+            <div>
+              <a class="reset_pass" href="#">¿Olvido su contraseña?</a>
+              <input class="btn btn-primary" type="submit" value="Ingresar">
+            </div>
+            <div class="clearfix"></div>
+            <div class="separator">
+              <!-- <p class="change_link">¿Eres nuevo?
+                <a href="#signup" class="to_register"> Crea una Cuenta </a>
+              </p> -->
+              <div class="clearfix"></div>
+              <br />
+              <div>
+                <h1><i class="fa fa-bus"></i> Sistema Control de Trámites</h1>
+                <p>©2018 SCT - URRT. Todos los derechos reservados.</p>
+              </div>
+            </div>
+          </form>
+          <img src="/static/images/log3.gif" alt="Logo Gobernación" width="100" height="100">
+        </section>
+      </div>
+
+      <div id="register" class="animate form registration_form">
+        <section class="login_content">
+          <form>
+            <h1>Crear Cuenta</h1>
+            <div>
+              <input type="text" class="form-control" placeholder="Nombre de usuario" required="" />
+            </div>
+            <div>
+              <input type="email" class="form-control" placeholder="Correo" required="" />
+            </div>
+            <div>
+              <input type="password" class="form-control" placeholder="Contraseña" required="" />
+            </div>
+            <div>
+              <a class="btn btn-default submit" href="index.html">Ingresar</a>
+            </div>
+            <div class="clearfix"></div>
+            <div class="separator">
+              <p class="change_link">¿Eres un Miembro?
+                <a href="#signin" class="to_register"> Inicia Sesión </a>
+              </p>
+              <div class="clearfix"></div>
+              <br />
+              <div>
+                <h1><i class="fa fa-paw"></i> Sistema Control de Trámites</h1>
+                <p>©2018 SCT - URRT. Todos los derechos reservados.</p>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock body %}

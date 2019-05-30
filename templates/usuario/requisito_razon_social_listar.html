@@ -1,0 +1,126 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} List Razon Social {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+            <h1 style="text-align:center">Lista de Requisitos por Razon Social</h1>
+            <div class="x_content">
+                <div class="">
+                    <div class="">
+                        <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                          <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                            <li role="presentation" class="active">
+                              <a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">
+                                <label class="form-label">Requisitos</label>
+                                <span class="badge bg-blue">{{object_list.count}}</span>
+                              </a>
+                            </li>
+                          </ul>
+                          <div id="myTabContent" class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
+                              <p>
+                                <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                                  <div class="row">
+                                    <div class="col-sm-12">
+                                      <table class="table table-striped table-bordered prueba dt-responsive display nowrap jambo_table" cellpadding="0" width="100%">
+                                        <thead>
+                                          <tr class="headings" >
+                                            <th>ID</th>
+                                            <th>DESCRIPCION</th>
+                                            <th>ACCION</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if object_list %}
+                                              {% for requisito in object_list %}
+                                              <tr>
+                                                    <td>{{ requisito.id }}</td>
+                                                    <td>{{ requisito.descripcion }}</td>
+                                                    <td>
+                                                        <a class="btn btn-round btn-primary btn-xs" data-toggle="tooltip" title="Editar" href="{% url 'usuario:editar_requisito' pk=requisito.id %}"><i class="fa fa-pencil"></i></a>
+                                                        <a class="btn btn-round btn-danger btn-xs " data-toggle="tooltip" title="Eliminar" href="{% url 'usuario:eliminar_requisito' pk=requisito.id %}"><i class="fa fa-trash"></i></a>
+                                                    </td>
+                                              </tr>
+                                              {% endfor %}
+                                            {% else %}
+                                              <h1>No hay trámites nuevos</h1>
+                                            {% endif %}
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
+                                <p>
+                                  <a class="btn btn-app" href="{% url 'usuario:registrar_requisitoRS' %}"><i class="fa fa-edit"></i>Registrar Nuevo Requisito</a>
+                                </p>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block javascripts %}
+  {{ block.super }}
+    <script src="/static/js/project.js"></script>
+    <script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="/static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="/static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="/static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/static/js/responsive.bootstrap.js"></script>
+    <script src="/static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <!-- validator -->
+    <script src="/static/vendors/validator/validator.js"></script>
+    <script type="text/javascript">
+
+        $('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
+                //$.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        } );
+        $('.prueba').DataTable( {
+          "scrollY":        "300px",
+          "scrollCollapse": true,
+          "paging":         true,
+          "responsive":     true,
+          "ordering":       true,
+          "language": {
+              "sProcessing":     "Procesando...",
+              "sLengthMenu":     "Mostrar _MENU_ registros",
+              "sZeroRecords":    "No se encontraron resultados",
+              "sEmptyTable":     "Ningún dato disponible en esta tabla",
+              "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+              "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+              "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+              "sInfoPostFix":    "",
+              "sSearch":         "Buscar:",
+              "sUrl":            "",
+              "sInfoThousands":  ",",
+              "sLoadingRecords": "Cargando...",
+              "oPaginate": {
+                  "sFirst":    "Primero",
+                  "sLast":     "Último",
+                  "sNext":     "Siguiente",
+                  "sPrevious": "Anterior"
+              },
+              "oAria": {
+                  "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                  "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+              }
+          }
+        } );
+    </script>
+      <style type="text/css">
+      .prueba{
+        height: 150px;
+      }
+      </style>
+{% endblock %}

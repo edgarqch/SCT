@@ -1,0 +1,284 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Listar tramite {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+      <h1 style="text-align:center">Seguimiento de trámites</h1>
+        <div class="x_panel">
+            <div class="x_content">
+                <div class="">
+                    <div class="">
+                        <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                          <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                            <li role="presentation" class="active">
+                              <a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">
+                                <label class="form-label">Trámites Ingresados</label>
+                                <span class="badge bg-red">{{tramites_ing.count}}</span>
+                              </a>
+                            </li>
+                            <li role="presentation" class="">
+                              <a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">
+                                <label class="form-label">Trámites en Proceso</label>
+                                <span class='badge bg-green' >{{tramites_pro.count}}</span>
+                              </a>
+                            </li>
+                            <li role="presentation" class="">
+                              <a href="#tab_content3" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">
+                                <label class="form-label">Imprimir Tarjetas</label>
+                                <span class='badge bg-purple' >{{tramite_orden.count}}</span>
+                              </a>
+                            </li>
+                            <li role="presentation" class="">
+                              <a href="#tab_content4" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">
+                                <label class="form-label">Trámites Finalizados</label>
+                                <span class='badge bg-blue' >{{tramite_finalizado.count}}</span>
+                              </a>
+                            </li>
+                          </ul>
+                          <div id="myTabContent" class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
+                              <p>
+                                <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                                  <div class="row">
+                                    <div class="col-sm-12">
+                                      <table class="table table-striped table-bordered prueba dt-responsive display nowrap jambo_table" cellpadding="0" width="100%">
+                                        <thead>
+                                          <tr class="headings" >
+                                            <th>Acción</th>
+                                            <th>Nro.</th>
+                                            <th>Tipo de Trámite</th>
+                                            <th>Solicitante</th>
+                                            <th>Fecha de Ingreso</th>
+                                            <th>Hora de Ingreso</th>
+                                            <th>Estado</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if tramites_ing %}
+                                              {% for tramite in tramites_ing %}
+                                              <tr>
+                                                  <td>
+                                                      <a class="btn btn-primary" href="{% url 'tramite:asignar_vehiculos' pk=tramite.id %}">Asignar Vehículos</a>
+                                                  </td>
+                                                  <td>{{ tramite.id }}</td>
+                                                  <td>{{ tramite.tipo_tramite }}</td>
+                                                  <td>{{ tramite.solicitante }}</td>
+                                                  <td>{{ tramite.fecha_ingreso }}</td>
+                                                  <td>{{ tramite.hora_ingreso }}</td>
+                                                  <td>{{ tramite.estado }}</td>
+                                              </tr>
+                                              {% endfor %}
+                                            {% else %}
+                                              <h1>No hay trámites nuevos</h1>
+                                            {% endif %}
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
+                              </p>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+                              <p>
+                                <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                                  <div class="row">
+                                    <div class="col-sm-12">
+                                      <table id="myTable1" class="table table-striped table-bordered prueba">
+                                        <thead >
+                                          <tr class="headings" style='background-color: rgba(63,83,103,1); color:white;'>
+                                            <th>Acción</th>
+                                            <th>Nro.</th>
+                                            <th>Tipo de Trámite</th>
+                                            <th>Solicitante</th>
+                                            <th>Fecha de Ingreso</th>
+                                            <th>Hora de Ingreso</th>
+                                            <th>Estadoo</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% if tramites_pro %}
+                                            {% for tramite in tramites_pro %}
+                                              <tr>
+                                                  <td>
+                                                    <a target="_blank" class="btn btn-primary" href="{% url 'tramite:orden_deposito' pk=tramite.id %}">Orden de deposito</a>
+                                                  </td>
+                                                  <td>{{ tramite.id }}</td>
+                                                  <td>{{ tramite.tipo_tramite }}</td>
+                                                  <td>{{ tramite.solicitante }}</td>
+                                                  <td>{{ tramite.fecha_ingreso }}</td>
+                                                  <td>{{ tramite.hora_ingreso }}</td>
+                                                  <td>{{ tramite.estado }}</td>
+                                              </tr>
+                                              {% endfor %}
+                                            {% endif %}
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </p>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
+                              <p>
+                                <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                                  <div class="row">
+                                    <div class="col-sm-12">
+                                      <table id="myTable3" class="table table-striped table-bordered prueba">
+                                        <thead >
+                                          <tr class="headings" style='background-color: rgba(63,83,103,1); color:white;'>
+                                              <th>Tarjetas</th>
+                                              <th>Nro.</th>
+                                              <th>Tipo de Trámite</th>
+                                              <th>Solicitante</th>
+                                              <th>Fecha de Ingreso</th>
+                                              <th>Hora de Ingreso</th>
+                                              <th>Estado</th>
+                                              <th>Finalizar Trámite</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% if tramite_orden %}
+                                            {% for tramite in tramite_orden %}
+                                            <tr>
+                                              <td>
+                                                <a class="btn btn-primary" href="{% url 'tramite:tarjetas' pk=tramite.id %}">Tarjetas</a>
+                                              </td>
+                                              <td>{{ tramite.id }}</td>
+                                              <td>{{ tramite.tipo_tramite }}</td>
+                                              <td>{{ tramite.solicitante }}</td>
+                                              <td>{{ tramite.fecha_ingreso }}</td>
+                                              <td>{{ tramite.hora_ingreso }}</td>
+                                              <td>{{ tramite.estado }}</td>
+                                              <td>
+                                                {% if tramite.finalizar %}
+                                                <!-- <a class="btn btn-success" id="procesar" href="#">Proceder con el trámite</a> -->
+                                                  <a class="btn btn-warning finalizar" tramite="{{ tramite.id }}" href="#">¿Finalizar?</a>
+                                                {% else %}
+                                                  Aún no se imprimio todas las tarjetas
+                                                {% endif %}
+                                              </td>       
+                                            </tr>
+                                            {% endfor %}
+                                          {% endif %}
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
+                              </p>
+                            </div>
+                            <form action="" method="POST" id="fin-tramite">
+                                {% csrf_token %}
+                            </form>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_content4" aria-labelledby="profile-tab">
+                              <p>
+                                <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                                  <div class="row">
+                                    <div class="col-sm-12">
+                                      <table id="myTable2" class="table table-striped table-bordered prueba">
+                                        <thead >
+                                          <tr class="headings" style='background-color: rgba(63,83,103,1); color:white;'>
+                                            <th>Nro.</th>
+                                            <th>Tipo de Trámite</th>
+                                            <th>Solicitante</th>
+                                            <th>Fecha de Ingreso</th>
+                                            <th>Hora de Ingreso</th>
+                                            <th>Estado</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% if tramite_finalizado %}
+                                            {% for tramite in tramite_finalizado %}
+                                              <tr>
+                                                  <td>{{ tramite.id }}</td>
+                                                  <td>{{ tramite.tipo_tramite }}</td>
+                                                  <td>{{ tramite.solicitante }}</td>
+                                                  <td>{{ tramite.fecha_ingreso }}</td>
+                                                  <td>{{ tramite.hora_ingreso }}</td>
+                                                  <td>{{ tramite.estado }}</td>
+                                              </tr>
+                                              {% endfor %}
+                                            {% endif %}
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </p>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+  </div>
+
+</div>
+{% endblock content %}
+{% block javascripts %}
+  {{ block.super }}
+    <script src="/static/js/project.js"></script>
+    <script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="/static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="/static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="/static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/static/js/responsive.bootstrap.js"></script>
+    <script src="/static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <!-- validator -->
+    <script src="/static/vendors/validator/validator.js"></script>
+    <script type="text/javascript">
+
+        $('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
+                //$.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        } );
+        $('.prueba').DataTable( {
+          "scrollY":        "300px",
+          "scrollCollapse": true,
+          "paging":         true,
+          "responsive":     true,
+          "ordering":       true,
+          "language": {
+              "sProcessing":     "Procesando...",
+              "sLengthMenu":     "Mostrar _MENU_ registros",
+              "sZeroRecords":    "No se encontraron resultados",
+              "sEmptyTable":     "Ningún dato disponible en esta tabla",
+              "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+              "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+              "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+              "sInfoPostFix":    "",
+              "sSearch":         "Buscar:",
+              "sUrl":            "",
+              "sInfoThousands":  ",",
+              "sLoadingRecords": "Cargando...",
+              "oPaginate": {
+                  "sFirst":    "Primero",
+                  "sLast":     "Último",
+                  "sNext":     "Siguiente",
+                  "sPrevious": "Anterior"
+              },
+              "oAria": {
+                  "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                  "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+              }
+          }
+        } );
+        
+        $('.finalizar').on("click",function(){
+            var id_tramite = $(this).attr("tramite");
+            $("#fin-tramite").attr("action", "/tramite/finalizar/"+id_tramite+"/");
+            $("#fin-tramite").submit();
+        });
+
+    </script>
+      <style type="text/css">
+      .prueba{
+        height: 150px;
+      }
+      </style>
+{% endblock %}

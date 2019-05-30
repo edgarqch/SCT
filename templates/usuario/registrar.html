@@ -1,0 +1,93 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Create User {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>Registrar Usuario</h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                  </ul>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <form method="post" class="form-horizontal form-label-left" novalidate>
+                {% csrf_token %}
+                <span class="section">Información Requerida</span>
+                <div class="item form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="username">Nombre de Usuario<span class="required">*</span></label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="username" class="form-control col-md-7 col-xs-12" name="username" placeholder="Nombre de usuario" type="text">
+                  </div>
+                </div>
+                <div class="item form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Nombre(s)<span class="required">*</span></label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="first-name" class="form-control col-md-7 col-xs-12" name="first_name" placeholder="Nombre" type="text">
+                  </div>
+                </div>
+                <div class="item form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Apellidos<span class="required">*</span></label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="last-name" class="form-control col-md-7 col-xs-12" name="last_name" placeholder="Apellidos" type="text">
+                  </div>
+                </div>
+                <div class="item form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Correo<span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="email" id="email" name="email" class="form-control col-md-7 col-xs-12">
+                  </div>
+                </div>
+                <div class="item form-group">
+                  <label for="password" class="control-label col-md-3">Contraseña</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="password" type="password" name="password1" class="form-control col-md-7 col-xs-12">
+                  </div>
+                </div>
+                <!-- <div>{{ form.password.errors }}</div> -->
+                <div class="item form-group">
+                  <label for="password2" class="control-label col-md-3 col-sm-3 col-xs-12">Confirmar Contraseña</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="password2" type="password" name="password2" class="form-control col-md-7 col-xs-12">
+                  </div>
+                </div>
+                <div class="ln_solid"></div>
+                <div class="form-group">
+                  <div class="col-md-6 col-md-offset-3">
+                    <!-- <button class="btn btn-primary">Cancelar</button> -->
+                    <a class="btn btn-primary" href="{% url 'usuario:listar' %}">Cancelar</a>
+                    <button type="submit" class="btn btn-success">REGISTRAR</button>
+                    <!-- <button type="submit" class="btn btn-success">Enviar</button> -->
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+{% endblock %}

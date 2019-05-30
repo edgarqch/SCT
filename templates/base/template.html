@@ -1,0 +1,614 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SIGEPRO-GADP</title>
+
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="/static/css/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="/static/css/green.css" rel="stylesheet">
+
+    <!-- bootstrap-progressbar -->
+    <link href="/static/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="/static/css/jqvmap.min.css" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="/static/css/daterangepicker.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="/static/css/custom.min.css" rel="stylesheet">
+
+        <!-- jQuery -->
+    <script src="/static/js/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/static/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/static/js/planillas/sweetalert/sweetalert.min.js"></script>
+
+   <script>
+        // Boletas SCRIPTS
+        $(function() {
+            function load_notify_for_boletas() {
+                $.ajax({
+                    url: '/boleta/get_count_boletas_days_by_ajax/',
+                    type: 'get',
+                    success: function(data) {
+                        if(data.days_5 > 0) {
+                            var notify = ' <span class="badge bg-red">' + data.days_5 + '</span>';
+                            $('#link_to_seguimiento').children('a').append(notify);
+                            $('#icon_to_contrataciones').css('color', '#FF3535');
+                            $('#span_contrataciones').css('color', '#FF3535');
+                        }
+                        else if(data.days_10 > 0) {
+                            var notify = ' <span class="badge bg-orange">' + data.days_10 + '</span>';
+                            $('#link_to_seguimiento').children('a').append(notify);
+                            $('#icon_to_contrataciones').css('color', '#1ABB9C');
+                        }
+                        else if(data.days_15 > 0) {
+                            var notify = ' <span class="badge bg-green">' + data.days_15 + '</span>';
+                            $('#link_to_seguimiento').children('a').append(notify);
+                        }
+                    },
+                    error: function(message) {
+                        // alert("Error al cargar numero de boletas.");
+                    },
+                });
+            }
+            function load_messages_for_usuario() {
+                $.ajax({
+		            data: {'id_usuario': '{{ user.id }}' },
+                    url: '/mensajes/load_messages_for_usuario/',
+                    type: 'get',
+                    success: function(data) {
+						$('#menu3').html("");
+						var notify = "";
+						for(var i = 0; i < data.length; i++)
+						{
+                            notify += "	<li>";
+                            notify += "<a href='/proyectos/leermensaje/?id=";
+							notify += data[i].id;
+							notify += "'>";
+                            notify += '<span class="image"><img src="/static/images/mailimage.png" alt="Profile Image"></span>';
+                            notify += '<span>';
+                            notify += '  <span>Mensaje ';
+                            notify +=  data[i].id;
+                            notify += '</span>';
+                            notify += '  <span class="time">tareas pendientes</span>';
+                            notify += '</span>';
+                            notify += '<span class="message">';
+                            notify +=  data[i].mensaje;
+                            notify += '</span>';
+                            notify += '</a>';
+                            notify += '</li>';
+                            notify += '';
+						}
+						$('#menu3').append(notify);
+						$('#contadormensajes').html("");
+						if (data[0].id==0)
+						{
+						   $('#contadormensajes').removeClass("badge bg-green");
+						   $('#contadormensajes').addClass("badge bg-white");
+  						   $('#contadormensajes').append("");
+						   $('#menu3').html("");
+						}
+						else
+						{
+						   $('#contadormensajes').append(data.length);
+						}
+                    },
+                    error: function(message) {
+                        alert("Error al mensajes para usuario.");
+                    },
+                });
+            }
+		    function load_tareas_for_grupo() {
+                $.ajax({
+					data: {'id_grupo': '{{ request.user.groups.all.0.id}}'},
+                    url: '/mensajes/load_tareas_for_grupo/',
+                    type: 'get',
+                    success: function(data) {
+						$('#menu4').html("");
+						var notify = "";
+						for(var i = 0; i < data.length; i++)
+						{
+                            notify += "	<li>";
+                            notify += "<a href='";
+                            notify += data[i].url;
+                            notify += "'>";
+                            notify += '<span class="image"><img src="/static/images/tareas.jpg" alt="Profile Image"></span>';
+                            notify += '<span>';
+                            notify += '  <span>Tarea ';
+                            notify +=  data[i].id;
+                            notify += '</span>';
+                            notify += '  <span class="time">tareas pendientes ';
+                            notify += data[i].contador;
+                            notify += '</span>';
+                            notify += '</span>';
+                            notify += '<span class="message">';
+                            notify +=  data[i].tarea;
+                            notify += '</span>';
+                            notify += '</a>';
+                            notify += '</li>';
+                            notify += '';
+						}
+						$('#menu4').append(notify);
+						$('#contadormensajes2').html("");
+
+						if (data[0].id==0 && data.length==1 )
+						{
+  						   $('#contadormensajes2').removeClass("badge bg-red");
+						   $('#contadormensajes2').addClass("badge bg-white");
+  						   $('#contadormensajes2').append("");
+						   $('#menu4').html("");
+						}
+						else
+						    $('#contadormensajes2').append(data.length);
+                    },
+                    error: function(message) {
+                        alert("Error al cargar tareas para el grupo.");
+                    },
+                });
+            }
+
+            load_notify_for_boletas();
+            load_messages_for_usuario();
+            load_tareas_for_grupo();
+        });
+        // FIN Boletas SCRIPTS
+    </script>
+
+    {% block js %}
+
+    {% endblock %}
+    {% block extracss %}
+
+    {% endblock %}
+
+</head>
+
+<body class="nav-md">
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+                    <div class="navbar nav_title" style="border: 0;">
+                        <a href="." class="site_title"><i class="fa fa-paw"></i> <span>SIGEPRO-GADP</span></a>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <!-- menu profile quick info -->
+                    <div class="profile clearfix">
+                        <div class="profile_pic">
+                            {% if perfils.foto == '' %}
+                                <img src="data:image/png;base64,{{perfils.foto_bits}}" class="img-circle profile_img">
+                            {% else %}
+                            <img src="/archivos/{{perfils.foto}}" alt="..." class="img-circle profile_img">
+                            {% endif %}
+                        </div>
+                        <br>
+                        <div class="profile_info">
+                            <span>Bienvenido,</span>
+                            <h2>{{ user.first_name|upper }} {{ user.last_name|upper }}</h2>
+                        </div>
+                    </div>
+                    <!-- /menu profile quick info -->
+
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            {% for grupo in request.session.list_groups %}
+                            <p><h3>{{ grupo }}</h3></p>
+                            {% endfor %}
+                            <ul class="nav side-menu">
+                                <li><a href="/"><i class="fa fa-home"></i> Inicio <span class="fa fa-chevron"></span></a>
+                                </li>
+                                {% if request.session.permit_viewpoa or request.session.permit_addpoa %}
+                                <li><a><i class="fa fa-edit"></i> POIP (POA) <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        {% if request.session.permit_addpoa %}
+                                        <li><a href="/proyectos/listarproyectos/">Plan Operativo Anual (P.O.A.)</a></li>{% endif %}
+                                        {% if request.session.permit_addpoa %}
+                                        <li><a href="/proyectos/listarproyectosresp/">Asignar Fiscalizadores</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                 {% if request.session.permit_view_dbproyecto %}
+                                <li><a><i class="fa fa-desktop"></i> FISCAL <span class="fa fa-chevron-down"></span></a>
+                                    <ul id="group_fiscal" class="nav child_menu">
+                                        {% if request.session.permit_view_dbproyecto %}
+                                        <li> <a href="/proyectos/elaborarproyecto/">Elaboracion del Proyecto</a></li> {% endif %}
+                                        {% if request.session.permit_view_dbproyecto %}
+                                        <li><a href="/proyectos/licitacion">Licitación</a></li> {% endif %}
+                                        {% if request.session.permit_view_dbproyecto %}
+                                        <li><a href="/proyectos/listarproyectossup/">Asignar Supervisores</a></li>{% endif %}
+                                        {% if request.session.permit_view_dbproyecto %}
+                                        <li><a id="link_to_modificacion" href="/planilla/modificacion/">Contratos Modificatorios</a></li>{% endif %}
+                                        {% if request.session.permit_view_dbproyecto or request.session.view_etapa_contrato %}
+                                        <li><a href="/etapa/">Etapas de Proyectos</a></li>
+                                        {% endif %}
+                                        {% if request.session.permit_view_dbproyecto %}
+                                        <li><a href="/proyectos/maquetas/">Maquetas</a></li>{% endif %}
+                                        <li><a href="/planilla/aprobar/">Aprobar Planillas</a></li>
+                                        {% if request.session.permit_view_dbproyecto %}
+                                        <li><a href="/checklist/contratos_checklist_fiscal/">Verificar CheckList</a></li>{% endif %}
+                                        {% if request.session.permit_view_dbproyecto %}
+                                        <li><a href="/proyectos/seguimiento/">Seguimiento boletas</a></li>{% endif %}
+                                      </ul>
+                                </li>
+                                {% endif %}
+                                {% if request.session.permit_add_dbcontrato %}
+                                <li><a><i class="fa fa-gavel"></i> JURIDICA <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        {% if request.session.permit_add_dbcontrato %}
+                                        <li><a href="/contrataciones/listarcontratos/">Contratos</a></li>{% endif %}
+                                        {% if request.session.permit_add_dbcontrato %}
+                                        <li><a href="/contrataciones/listarconvenios/">Convenios</a></li>{% endif %}
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {% if True %}
+                                <li><a><i class="fa fa-search-plus"></i> SUPERVISOR <span class="fa fa-chevron-down"></span></a>
+                                    <ul id="group_supervisor" class="nav child_menu">
+                                        <li><a id="link_to_registro_de_planillas" href="{% url 'planillas:listar' %}">Registro de Planillas</a></li>
+                                        <li><a id="link_to_registro_de_planillas" href="/planilla/obras/">Obras</a></li>
+                                        <li><a id="link_to_registro_de_planillas" href="/planilla/informe_planillas/">Informe de Obras por Planilla</a></li>
+                                        <li><a href="/checklist/listar_contratos/">Crear CheckList</a></li>
+                                        <li><a href="/checklist/contratos_checklist_sup/">Verificar CheckList</a></li>
+                                {% if request.session.permit_view_ordenproceder %}
+                                        <li><a href="/proyectos/ordenproceder/">Orden Proceder(Inicio de Obra)</a></li>{% endif %}
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {% if request.session.view_contrataciones %}
+                                <li><a><i id="icon_to_contrataciones" class="fa fa-edit"></i> <span id="span_contrataciones">CONTRATACIONES</span><span class="fa fa-chevron-down"></span></a>
+                                    <ul id="group_contrataciones" class="nav child_menu">
+					                    <li><a href="{% url 'boleta:create' %}">Registro de Boletas</a></li>
+                                        <li id="link_to_seguimiento"><a href="{% url 'boleta:seguimiento' %}">Seguimiento de Boletas</a></li>
+                                        <li><a href="{% url 'boleta:states' %}">Estados de Boletas</a></li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {% if request.session.admin_liquidacion or request.session.view_liquidacion %}
+                                <li><a><i class="fa fa-table"></i> CONTABILIDAD<span class="fa fa-chevron-down"></span></a>
+                                    <ul id="group_contabilidad" class="nav child_menu">
+                                        {% if request.session.admin_liquidacion or request.session.view_liquidacion %}
+                                        <li><a href="/checklist/contratos_checklist_saf/">Verificar Checklists</a></li>
+                                        {% endif %}
+                                        {% if request.session.admin_liquidacion or request.session.view_liquidacion %}
+                                        <li><a href="/planilla/planillas_pago/">Planillas de Pago</a></li>
+                                        {% endif %}
+                                        {% if request.session.admin_liquidacion %}
+                                        <li><a href="/planilla/asignar_contrato/">Asignar Responsables</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {% if request.session.permit_view_tesoreria %}
+                                <li><a><i class="fa fa-table"></i> TESORERIA<span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li> <a href="/contrataciones/contr_proy/">Contrapartes</a> </li>
+                                        <li> <a href="/contrataciones/informacion_contrapartes/">Contrapartes por Proyectos</a> </li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {% if request.session.permit_view_ventanilla %}
+                                <li><a><i class="fa fa-table"></i> VENTANILLA<span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/checklist/listar_pagos/">Lista de Cheques Registrados</a></li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {% if request.session.permit_view_elementos %}
+				                    <li><a><i class="fa fa-clone"></i>ELEMENTOS DE ADICION AL PROY. <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                       <li><a href="/listabanco/">Bancos Admin</a></li>
+                                       <li><a href="/listaempresa/">Empresas Admin</a></li>
+					                   <li><a href="/etapa/etapa_admin/">Etapas Admin</a></li>
+                                       <li><a href="/listacomponente/">Componentes Admin</a></li>
+                                       <li><a href="/listamodulo/">Modulos Admin</a></li>
+                                       <li><a href="/listaactividad/">Actividades Admin</a></li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {# if request.session.permit_view_evaluacion #}
+                                <!--li><a><i class="fa fa-table"></i> EVALUACIÓN DE PROYECTOS<span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li> <a href="#"> Formulario SPO </a> </li>
+                                        <li> <a href="#">Formulario SGP</a> </li>
+                                    </ul>
+                                </li-->
+                                {# endif #}
+                                {% if request.session.permit_view_dbproyecto %}
+                                <li><a><i class="fa fa-file-pdf-o"></i>CONSULTAS GENERALES<span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/proyectos/ver_ejecucion_financiera/">Ejecucion Financiera</a></li>
+                                        <li><a href="#">Ejecución Fisica</a></li>
+                                        <li><a href="/mensajes/reportes_generales/">Reportes generales</a></li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {# if perfils.tipo_usuario.id == 1 #} <!--para el adminsitrador-->
+                                <!--li><a><i class="fa fa-user"></i> USUAURIOS <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/listar">Listar</a></li>
+                                        <li><a href="#">Registrar</a></li>
+                                        <li><a href="#">Modificar</a></li>
+                                        <li><a href="/tipousuario">Tipo Usuario</a></li>
+                                    </ul>
+                                </li-->
+                                {# endif #}
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /sidebar menu -->
+
+                    <!-- /menu footer buttons -->
+                    <div class="sidebar-footer hidden-small">
+                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Lock">
+                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="{% url 'auth_logout' %}">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <!-- /menu footer buttons -->
+                </div>
+            </div>
+
+            <!-- top navigation -->
+            <div class="top_nav">
+                <!--style="position:fixed; z-index:1000; top:0%; right:0%; width:83%; "-->
+                <div class="nav_menu">
+                    <nav>
+                        <div class="nav toggle" style="margin-right:30px;">
+                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        </div>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="">
+                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    {% if perfils.foto == '' %}
+                                    <img src="data:image/png;base64,{{perfils.foto_bits}}"> {{ user.username|upper }}
+                                    {% else %}
+                                    <img src="/archivos/{{perfils.foto}}" alt="..." > {{ user.first_name|upper }} {{ user.last_name|upper }}
+                                    {% endif %}
+
+                                    <span class=" fa fa-angle-down"></span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                    <li><a href="/accounts/completar">Perfil</a></li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="badge bg-red pull-right"><!--50%--></span>
+                                            <span>Ajustes usuario</span>
+                                        </a>
+                                    </li>
+                                    <li><a href="javascript:;">Ayuda</a></li>
+                                    <li><a href="{% url 'auth_logout' %}"><i class="fa fa-sign-out pull-right"></i> Salir</a></li>
+                                </ul>
+                            </li>
+ <li id="mensajes" role="presentation" class="dropdown">
+                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="true">
+                    <i class="fa fa-envelope-o"></i>
+                    <span id="contadormensajes" class="badge bg-green">6</span>
+                  </a>
+                  <ul id="menu3" class="dropdown-menu list-unstyled msg_list" role="menu">
+                    <li>
+                      <a>
+                        <span class="image"><img src="images/img.jpg" alt="Profile Image"></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <span class="image"><img src="images/img.jpg" alt="Profile Image"></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <span class="image"><img src="images/img.jpg" alt="Profile Image"></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <span class="image"><img src="images/img.jpg" alt="Profile Image"></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="text-center">
+                        <a>
+                          <strong>Mirar todos los mensajes</strong>
+                          <i class="fa fa-angle-right"></i>
+                        </a>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+                <li role="presentation" class="dropdown">
+                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-bullhorn"></i>
+                    <span class="badge bg-red" id="contadormensajes2">6</span>
+                  </a>
+                  <ul id="menu4" class="dropdown-menu list-unstyled msg_list" role="menu">
+                    <li>
+                      <a>
+                        <span class="image"><img src="images/img.jpg" alt="Profile Image"></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <span class="image"><img src="images/img.jpg" alt="Profile Image"></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <span class="image"><img src="images/img.jpg" alt="Profile Image"></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <span class="image"><img src="images/img.jpg" alt="Profile Image"></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="text-center">
+                        <a>
+                          <strong>Mirar todas las alertas..</strong>
+                          <i class="fa fa-angle-right"></i>
+                        </a>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <!-- /top navigation -->
+
+            <!-- page content -->
+            <style>
+                .right_col {
+                    background-image: url("../images/logo4.png");
+                    background-size: 100% 100%;
+                    background-color: red;
+                }
+            </style>
+            <div class="right_col" role="main">
+
+                {% block cuerpo %}
+
+                {% endblock %}
+
+            </div>
+            <!-- /page content -->
+
+            <!-- footer content -->
+            <footer>
+                <div class="pull-right">
+                    Gobierno Autónomo Departamental de Potosí<a href="#"> Click Aquí...!!!</a>
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+            <!-- /footer content -->
+        </div>
+    </div>
+
+    {% block extrajs %}
+
+    {% endblock %}
+
+</body>
+<!-- FastClick -->
+    <script src="/static/js/fastclick.js"></script>
+    <script src="/static/js/fastclick.js"></script>
+    <!--script src="/static/js/cloudflare.min.js"></script>
+    <script src="/static/js/rocket.js"></script-->
+    <!-- NProgress -->
+    <script src="/static/js/nprogress.js"></script>
+    <!-- Chart.js -->
+    <script src="/static/js/Chart.min.js"></script>
+    <!-- gauge.js -->
+    <script src="/static/js/gauge.min.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="/static/js/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="/static/js/icheck.min.js"></script>
+    <!-- Skycons -->
+    <script src="/static/js/skycons.js"></script>
+    <!-- Flot -->
+    <script src="/static/js/jquery.flot.js"></script>
+    <script src="/static/js/jquery.flot.pie.js"></script>
+    <script src="/static/js/jquery.flot.time.js"></script>
+    <script src="/static/js/jquery.flot.stack.js"></script>
+    <script src="/static/js/jquery.flot.resize.js"></script>
+    <!-- Flot plugins -->
+    <script src="/static/js/jquery.flot.orderBars.js"></script>
+    <script src="/static/js/curvedLines.js"></script>
+    <script src="/static/js/jquery.flot.spline.min.js"></script>
+    <!-- DateJS -->
+    <script src="/static/js/date.js"></script>
+    <!-- JQVMap -->
+    <script src="/static/js/jquery.vmap.js"></script>
+    <script src="/static/js/jquery.vmap.world.js"></script>
+    <script src="/static/js/jquery.vmap.sampledata.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="/static/js/moment.min.js"></script>
+    <script src="/static/js/daterangepicker.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="/static/js/custom.min.js"></script>
+</html>

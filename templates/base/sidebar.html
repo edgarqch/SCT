@@ -1,0 +1,100 @@
+<div class="left_col scroll-view">
+  <div class="navbar nav_title" style="border: 0;">
+    <a href="{% url 'tramite:index' %}" class="site_title"><i class="fa fa-bus"></i> <span>S.C.T.</span></a>
+  </div>
+
+  <div class="clearfix"></div>
+
+  <!-- menu profile quick info -->
+  <div class="profile clearfix">
+    <div class="profile_pic">
+      <img src="/static/images/user.jpg" alt="Avatar" class="img-circle profile_img">
+    </div>
+    {% if user.is_authenticated %}
+      <div class="profile_info">
+        <span>Bienvenido!!!</span>
+        <h2>{{ request.user|upper }}</h2>
+      </div>
+    {% else %}
+      <div class="profile_info">
+        <span>Bienvenido, nuevo usuario. Por favor Inicie Sesión</span> <a style="color:red" href="/">Aquí</a>
+      </div>
+    {% endif %}
+  </div>
+  <!-- /menu profile quick info -->
+
+  <br />
+
+  <!-- sidebar menu -->
+  <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+    <div class="menu_section">
+      <ul class="nav side-menu">
+        <li><a href="{% url 'tramite:index' %}"><i class="fa fa-home"></i>Inicio<span class="fa fa-chevron"></span></a></li>
+        {% if perms.tecnico.verificar %}
+        <li><a><i class="fa fa-edit"></i>VERIFICACION<span class="fa fa-chevron-down"></span></a>  
+          <ul class="nav child_menu">
+            <li><a href="{% url 'tecnico:operario_nuevo_listar' %}">Nuevo</a></li>
+            <li><a href="{% url 'tecnico:operador_renovavion_listar' %}">Renovación</a></li>
+            <!-- <li><a href="{# url 'tecnico:operario_nuevo_crear' #}">Registrar</a></li> -->
+            <!-- <li><a href="{# url 'tecnico:operario_nuevo_verificar' #}">Verificar</a></li> -->
+          </ul>
+        </li>
+        {% endif %} 
+        {% if perms.tecnico.administrar_doc_legal %}
+          <li><a><i class="fa fa-file-text-o"></i>DOCUMENTOS<span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="{% url 'tecnico:listar_op_documentos' %}">Registrar</a></li>
+            </ul>
+          </li>
+        {% endif %}
+        {% if perms.tecnico.administrar_operador %}
+          <li><a><i class="fa fa-bus"></i>OPERADORES<span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <!-- <li><a href="{# url 'operario:listar_operadores_nuevos' #}">Registar</a></li> -->
+              <li><a href="{% url 'operario:operador_listar' %}">Operadores</a></li>
+            </ul>
+          </li>
+        {% endif %}
+        {% if perms.tramite.administrar_tramite %}
+          <li><a><i class="fa fa-files-o"></i>TRÁMITES<span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="{% url 'tramite:registrar_tramite' %}">Nuevo Trámite</a></li>
+              <li><a href="{% url 'tramite:listar_tramite' %}">Ver Trámites</a></li>
+            </ul>
+          </li>
+        {% endif %}
+        <li><a><i class="fa fa-search"></i>CONSULTAS<span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="{% url 'vehiculo:listar_vehiculos' %}">Vehículos</a></li>
+            <!-- <li><a href="form_validation.html"></a></li> -->
+          </ul>
+        </li>
+        {% if perms.tecnico.emitir_infraccion %}
+        <li><a><i class="fa fa-exclamation-triangle"></i>INFRACCIONES<span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="{% url 'vehiculo:listas_infractores' %}">Infractores</a></li>
+          </ul>
+        </li>
+        {% endif %}
+        {% if perms.tecnico.administrador %}
+        <li><a><i class="fa fa-gears"></i>ADMINISTRADOR<span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="{% url 'usuario:listar' %}">Usuario</a></li>
+            <li><a href="{% url 'usuario:listar_requisitoRS' %}">Requisitos</a></li>
+            <li><a href="{% url 'usuario:listar_razon_social' %}">Razon Social</a></li>
+          </ul>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+  <!-- /sidebar menu -->
+
+  <!-- /menu footer buttons -->
+  <div class="sidebar-footer hidden-small">
+    <a data-toggle="tooltip" data-placement="top" title="Logout" href="{% url 'logout' %}">
+      <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+    </a>
+  </div>
+  <!-- /menu footer buttons -->
+</div>

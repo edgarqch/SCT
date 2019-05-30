@@ -1,0 +1,193 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Asignar Vehiculo {% endblock title %}
+
+{% block js %}
+
+
+{% endblock js %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="row">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h1>ASIGNAR VEHICULO</h1>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <br />
+          <form method= "post" data-parsley-validate class="form-horizontal form-label-left">
+            {% csrf_token %}
+            <div class="row">
+              <div class="form-group col-md-12 col-sm-12 col-xs-12">
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.vehiculo.label}}</label>
+                <div class="col-md-5 col-sm-6 col-xs-12">
+                  <input type="text" id="id_vehiculo" placeholder="Seleccione un vehículo" class="form-control col-md-7 col-xs-12">
+                  <input type="hidden" id="id_operador" value="{{ operador.id }}">
+                  {{form.vehiculo}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.monto.label}}</label>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                  {{form.monto}}
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.validez.label}}</label>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                  {{form.validez}}
+                </div><h5>Año</h5>
+              </div>
+              <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{form.gestion.label}}</label>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                  {{form.gestion}}
+                </div>
+              </div>
+              <div class="ln_solid col-md-12 col-sm-12 col-xs-12"></div>
+              <div class="form-group col-md-8 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
+                  <a class="btn btn-primary" href="{% url 'tramite:asignar_vehiculos' pk=tramite.id %}">CANCELAR</a>
+                  <button type="submit" class="btn btn-success">REGISTRAR</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <!-- Modal Buscar vehiculo -->
+    <div id="modal-buscar-vehiculo" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">x</span></button>
+                <h4 class="modal-title" id="myModalLabel">Buscar Vehiculo</h4>
+              </div>
+              <div class="modal-body">
+                <div class="form-horizontal form-label-left">
+                  <div class="form-group has-feedback">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Placa del vehiculo</label>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                      <input type="text" class="form-control has-feedback-right" id="modal_search_vehiculo_placa" placeholder="Introduzca la placa..." name="">
+                      <span class="fa fa-search form-control-feedback right" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                </div>
+    
+                <div>
+                  <hr>
+                  <p>Resultados: </p>
+                  <div class="modal-result">
+                    <div class="list-group" id='modal_list_result'>
+                      <!-- Loaded from Ajax method -->
+                    </div>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+    
+              <div class="modal-footer">
+                <button type="button" class="btn btn-dark" id="modal_btn_load">Seleccionar</button>
+                <button type="button" class="btn btn-default" id="modal_btn_close" data-dismiss="modal">Cerrar</button>
+              </div>
+          </div>
+        </div>
+      </div>
+
+
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+  <script src="/static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="/static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+  <script src="/static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+  <script src="/static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/js/responsive.bootstrap.js"></script>
+  <script src="/static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+  <script>
+    $(function() {
+      $('#id_vehiculo').on('click', function() {
+        operador = $('#id_operador').val();
+        buscar_vehiculo_by_placa('',operador);
+        // buscar_vehiculo_by_placa('');
+        $('#modal-buscar-vehiculo').modal('show');
+      });
+      
+      $('#modal_search_vehiculo_placa').keyup(function(e){
+        consulta = $('#modal_search_vehiculo_placa').val();
+        operador = $('#id_operador').val();
+        // alert("hola");
+        buscar_vehiculo_by_placa(consulta, operador);
+        // buscar_vehiculo_by_placa(consulta);
+      });
+      
+      function buscar_vehiculo_by_placa(consulta, operador) {
+        $.ajax({
+          data: {'name': consulta,
+                'operador': operador,
+                },
+          // data: {'name': consulta},
+          url: '/tramite/search_vehiculo_placa/',
+          type: 'get',
+          success: function(data) {
+            var sms = "";
+            $('#modal_list_result').html("");
+            for(var i = 0; i < data.length; i++) {
+              sms += data[i].id + '\n';
+              var html = "<a href='#' class='list-group-item'>";
+              html += "<h4 class='list-group-item-heading'>Placa: " + data[i].placa + "</h4>";
+              html += "<h5 class='list-group-item-heading'>Propietario: " + data[i].propietario + "</h5>";
+              html += "<p style='display:none' >" + data[i].id + "</p>";
+              html += "</a>";
+              $('#modal_list_result').append(html);
+            }
+          },
+          error: function(message) {
+            console.log(message);
+          },
+        });
+      }
+    
+      $('#modal_list_result').on('click', '.list-group-item', function(){
+        $('.list-group-item').each(function(i) {
+          $(this).removeClass('active');
+        });
+        $(this).addClass('active');
+      });
+    
+      $('#modal_btn_load').on('click', function() {
+        var sms = $('#modal_list_result .active p').html();
+        var sms1 = $('#modal_list_result .active h4').html();
+        $('#id_vehiculo_ok').val(sms);
+        $('#id_vehiculo').val(sms1);
+        $('#modal-buscar-vehiculo').modal('hide');
+      });
+    
+      $('#modal_list_result').on('dblclick', '.list-group-item', function(){
+        var sms = $('#modal_list_result .active p').html();
+        var sms1 = $('#modal_list_result .active h4').html();
+        $('#id_vehiculo_ok').val(sms);
+        $('#id_vehiculo').val(sms1);
+        $('#modal-buscar-vehiculo').modal('hide');
+      });
+    });
+</script>
+  
+  {% endblock %}

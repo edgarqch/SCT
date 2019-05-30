@@ -1,0 +1,334 @@
+{% block js %}
+<script type="text/javascript">
+    $('.prueba').DataTable( {
+      "scrollY":        "300px",
+      "scrollCollapse": true,
+      "paging":         true,
+      "responsive":     true,
+      "language": {
+          "sProcessing":     "Procesando...",
+          "sLengthMenu":     "Mostrar _MENU_ registros",
+          "sZeroRecords":    "No se encontraron resultados",
+          "sEmptyTable":     "Ningún dato disponible en esta tabla",
+          "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+          "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+          "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+          "sInfoPostFix":    "",
+          "sSearch":         "Buscar:",
+          "sUrl":            "",
+          "sInfoThousands":  ",",
+          "sLoadingRecords": "Cargando...",
+          "oPaginate": {
+              "sFirst":    "Primero",
+              "sLast":     "Último",
+              "sNext":     "Siguiente",
+              "sPrevious": "Anterior"
+          },
+          "oAria": {
+              "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+              "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+          }
+      }
+    } );
+</script>
+<style type="text/css">
+  .prueba{
+    height: 150px;
+  }
+</style>
+{% endblock js %}
+
+
+<div class="x_content">
+        <div class="">
+          <div class="">
+            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+              <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                <li role="presentation" class="active">
+                  <a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">
+                    <label class="form-label">Operadores Nuevos</label>
+                    <span class="badge bg-red">{{adjudicados.count}}</span>
+                  </a>
+                </li>
+                <li role="presentation" class="">
+                  <a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">
+                    <label class="form-label">Verificar</label>
+                    <span class='badge bg-black' >{{s_generar.count}}</span>
+                  </a>
+                </li>
+                <li role="presentation" class="">
+                  <a href="#tab_content3" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">
+                    <label class="form-label">Informes</label>
+                    <span class='badge bg-blue' >{{doc.count}}</span>
+                  </a>
+                </li>
+                <li role="presentation" class="">
+                  <a href="#tab_content4" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">
+                    <label class="form-label">Verificacion Finalizada</label>
+                    <span class='badge bg-green' >{{ df }}</span>
+                  </a>
+                </li>
+              </ul>
+              <div id="myTabContent" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
+                  <p>
+                    <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <table class="table table-striped table-bordered prueba dt-responsive jambo_table" cellpadding="0" width="100%">
+                            <thead>
+                              <tr class="headings" >
+                                <th  style="width: 3%;">Nro.</th>
+                                <th  style="width: 30%;">Nombre de Proyecto</th>
+                                <th  style="width: 10%;">SISIN</th>
+                                <th  style="width: 10%;">Tipo de Licitación</th>
+                                <th  style="width: 30%;">Secretaria</th>
+                                <th  style="width: 17%;">Acción</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                  <td>{{forloop.counter}}lkhfawoih</td>
+                                  <td>{{c.sisin.nombre}}</td>
+                                  <td>{{c.sisin.sisin}}</td>
+                                  <td>{{c.componente_proyecto.nro_comp.nombre}}</td>
+                                  <td>{{c.sisin.secretaria}}</td>
+                                  <td>
+                                    <a href="/contrataciones/registrocontrato/{{c.id}}" class='btn-success'>CREAR CONTRATO</a>
+                                  </td>
+                                </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </p>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+                  <p>
+                    <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <table id="myTable2" class="table table-striped table-bordered prueba">
+                            <thead >
+                              <tr class="headings" style='background-color: rgba(63,83,103,1); color:white;'>
+                                <th >Nro.</th>
+                                <th >Nro. Cto.</th>
+                                <th width='25%'>Nombre Contrato</th>
+                                <th >Empresa </th>
+                                <th>Secretaria</th>
+                                <th>CUCE</th>
+                                <th width='10%' >Fecha Inicio</th>
+                                <th width='10%' >Monto</th>
+                                <th >Funciones</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for i in s_generar %}
+                                <input type="hidden" name="codcto" value="{{i.id}}" id='codcto'>
+                                  <tr role="row" class="odd" >
+                                    <td> {{forloop.counter}} </td>
+                                    <td>
+                                      {% if i.nro_cto != None %}
+                                        {{i.nro_cto}}
+                                      {% else %}
+                                        {{ 'S/NºCTO' }}
+                                      {% endif %}
+                                    </td>
+                                    <td>{{ i.nombre }}</td>
+                                    <td> 
+                                      {# if i.empresa.razon_social != Null #}
+                                        {{i.empresa.razon_social}}
+                                      {# else #}
+                                      {# endif #}
+                                    </td>
+                                    <td title="{{i.secretaria}}">{{i.secretaria.sigla}} </td>
+                                    <td >{{i.cuce}} </td>
+                                    <td> {{i.fecha_registro | date:'d-m-Y'}} </td>
+                                    <td >{{i.monto_adjudicado}} </td>
+                                    <td>
+                                      <ul class="nav navbar-right panel_toolbox">
+                                        <li class="dropdown">
+                                          <a href="#" class="btn btn-info dropdown-toggle btn-xs" data-toggle="dropdown" style="background-color: #1ABB9C; color: white;" role="button" aria-expanded="false"><i class="caret"> </i>Acciones</a>
+                                          <ul class="dropdown-menu" role="menu">
+                                          <li><a href="/contrataciones/generar_contrato/{{i.id}}"><i class='fa fa-pencil-square-o'></i> Generar </a>
+                                          </li>
+                                          <li><a href="/contrataciones/eliminar/{{i.id}}" ><i class='fa fa-trash' ></i> Eliminar </a>
+                                          </li>
+                                          </ul>
+                                        </li>
+                                      </ul>
+                                    </td>
+                                  </tr>   
+                                {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </p>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
+                    <p>
+                      <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <table id="myTable3" class="table table-striped table-bordered prueba">
+                              <thead >
+                                <tr class="headings" style='background-color: rgba(63,83,103,1); color:white;'>
+                                  <th >Nro.</th>
+                                  <th >Nro. Cto.</th>
+                                  <th width='25%'>Nombre Contrato</th>
+                                  <th  >Empresa </th>
+                                  <th>Secretaria</th>
+                                  <th>CUCE</th>
+                                  <th width='10%' >Fecha Inicio</th>
+                                  <th align='right' >Monto</th>
+                                  <th >Funciones</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for i in doc %}
+                                  <input type="hidden" name="codcto" value="{{i.cod_cto.id}}" id='codcto'>
+                                  <tr role="row" class="odd" >
+                                    <td> {{forloop.counter}} </td>
+                                    <td>
+                                      {% if i.cod_cto.nro_cto != None %}
+                                        {{i.cod_cto.nro_cto}}
+                                      {% else %}
+                                        {{ 'S/NºCTO' }}
+                                      {% endif %}
+                                    </td>
+                                    <td>{{ i.cod_cto.nombre }}</td>
+                                    <td> 
+                                      {# if i.cod_cto.empresa.razon_social != Null #}
+                                        {{i.cod_cto.empresa.razon_social}}
+                                      {# else #}
+                                        <!--button class="glyphicon glyphicon-eye-close" title="Sin Información" > Sin Info</button-->
+                                      {# endif #}
+                                    </td>
+                                    <td title="{{i.cod_cto.secretaria}}">{{i.cod_cto.secretaria.sigla}} </td>
+                                    <td >{{i.cod_cto.cuce}} </td>
+                                    <td> {{i.cod_cto.fecha_registro | date:'d-m-Y'}} </td>
+                                    <td align='right'> {{i.cod_cto.monto_adjudicado|floatformat:2}} </td>
+                                    <td>
+                                      <ul class="nav navbar-right panel_toolbox">
+                                        <li class="dropdown">
+                                          <a href="#" class="btn btn-info dropdown-toggle btn-xs" data-toggle="dropdown" style="background-color: #1ABB9C; color: white;" role="button" aria-expanded="false"><i class="caret"> </i>Acciones</a>
+                                          <ul class="dropdown-menu" role="menu">
+                                            <li>
+                                              <a href="/contrataciones/reg_documento/{{i.cod_cto.id}}"><i class='fa fa-file-pdf-o'></i> Subir PDF</a>
+                                            </li>
+                                            <li>
+                                              <a href="#"><a href="/contrataciones/mod_cto_generado/{{i.cod_cto.id}}"><i class="glyphicon glyphicon-edit" target="_blank" ></i>Modificar</a></a>
+                                            </li>
+                                            <li>
+                                                <a href="/contrataciones/desc_cto_generado/{{i.cod_cto.id}}"><i class='fa fa-download' target="_blank"></i> Descargar Contrato Generado </a>
+                                            </li>
+                                          </ul>
+                                        </li>
+                                      </ul>
+                                    </td>
+                                  </tr>
+                                {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </p>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="tab_content4" aria-labelledby="profile-tab">
+                    <p>
+                      <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <table id="myTable4" class="table table-striped table-bordered prueba">
+                              <thead >
+                                <tr class="headings" style='background-color: rgba(63,83,103,1); color:white;'>
+                                  <th >Nro.</th>
+                                  <th >Nro. Cto.</th>
+                                  <th width='25%'>Nombre Contrato</th>
+                                  <th  >Empresa </th>
+                                  <th>Secretaria</th>
+                                  <th>CUCE</th>
+                                  <th width='10%' >Fecha Inicio</th>
+                                  <th width='10%' >Monto</th>
+                                  <th width="5%" >Doc.</th>
+                                  <th >Funciones</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for i in doc_firmado %}
+                                  <input type="hidden" name="codcto" value="{{i.id}}" id='codcto'>
+                                  <tr role="row" class="odd" >
+                                    <td align="center"> {{forloop.counter}} </td>
+                                    <td align="center">
+                                      {% if i.nro_cto != None %}
+                                        {{i.nro_cto}}
+                                      {% else %}
+                                        {{ 'S/Nº CTO' }}
+                                      {% endif %}
+                                    </td>
+                                    <td>{{ i.nombre }}</td>
+                                    <td> 
+                                      {# if i.empresa != Null #}
+                                        {{i.empresa}}
+                                      {# else #}
+                                        <!--button class="glyphicon glyphicon-eye-close" title="Sin Información" > Sin Info</button-->
+                                      {# endif #}
+                                    </td>
+                                    <td align="center" title="{{i.cod_cto.secretaria}}">{{i.secretaria}} </td>
+                                    <td align="justify">{{i.cuce}} </td>
+                                    <td align="center"> {{i.fecha_registro | date:'d-m-Y'}} </td>
+                                    <td align='right'> {{i.monto_adjudicado }} </td>
+                                    <td align="center">
+                                      {% if i.archivo == None %}
+                                        <a href="#" class="sin_documento"><span class='fa fa-file-o fa-lg' style="color: red; width:16; height:16;"></span></a>
+                                      {% else %}
+                                        <a href="{{ STATIC_URL}}/archivos/{{i.archivo}}" target="_blank"><span class='fa fa-cloud-download fa-lg' style="color: green; width:16; height:16;"></span></a>
+                                      {% endif %}
+                                    </td>
+                                    <td>
+                                      <ul class="nav navbar-right panel_toolbox">
+                                        <li class="dropdown">
+                                          <a href="#" class="btn btn-info dropdown-toggle btn-xs" data-toggle="dropdown" style="background-color: #1ABB9C; color: white;" role="button" aria-expanded="false"><i class="caret"> </i>Acciones</a>
+                                          <ul class="dropdown-menu" role="menu">
+                                            <li><a href="/contrataciones/actualizar_documento/{{i.id_doc}}/"><i class='fa fa-cloud-upload'></i> Subir Modificado PDF <i class='fa fa-check'></i></a>
+                                            </li>
+                                              <!--li><a href="{{ STATIC_URL}}/archivos/{{i.archivo}}" target="_blank"-->
+                                                <!--data:application/octet-stream;base64,{{i.documento}}" download='{{i.nombre}}.pdf'><i class='fa fa-file-pdf-o' ></i> Descargar Contrato Firmado <i class='fa fa-download'></i></a>
+                                              </li-->
+                                              
+                                            <li><a href="/contrataciones/eliminar/{{i.id_cto}}/" ><i class='fa fa-trash' ></i> Eliminar </a></li>
+                                          </ul>
+                                        </li>
+                                      </ul>
+                                    </td>
+                                  </tr>
+                                {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </p>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      <script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+      <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+      <script src="/static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+      <script src="/static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+      <script src="/static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+      <script src="/static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+      <script src="/static/js/responsive.bootstrap.js"></script>
+      <script src="/static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>

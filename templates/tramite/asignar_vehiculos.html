@@ -1,0 +1,183 @@
+{% extends "base/base_site.html" %}
+{% load staticfiles %}
+{% block title %} Asignar Vehiculos {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <a class="btn btn-primary" href="{% url 'tramite:listar_tramite' %}"> <i class="fa fa-backward"></i>Volver</a>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">  
+                <div class="x_title">
+                    <h2>DETALLE DEL TRÁMITE Nro {{ object.id }}</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a></li>
+                                <li><a href="#">Settings 2</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="form-group form-horizontal col-md-4 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-5 col-sm-6 col-xs-12">NUMERO DE TRÁMITE</label>
+                        <div class="col-md-7 col-sm-4 col-xs-12">
+                            <input type="text" disabled="disabled" placeholder="{{ object.id }}">
+                        </div>
+                    </div>
+                    <div class="form-group form-horizontal col-md-8 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-2 col-sm-6 col-xs-12">TIPO DE TRÁMITE</label>
+                        <div class="col-md-10 col-sm-6 col-xs-12">
+                            <input class="col-md-10" type="text" disabled="disabled" placeholder="{{ object.tipo_tramite }}">
+                        </div>
+                    </div>
+                    <div class="form-group form-horizontal col-md-4 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-5 col-sm-6 col-xs-12">SOLICITANTE</label>
+                        <div class="col-md-7 col-sm-4 col-xs-12">
+                            <input type="text" disabled="disabled" placeholder="{{ object.solicitante }}">
+                        </div>
+                    </div>
+                    <div class="form-group form-horizontal col-md-8 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-2 col-sm-6 col-xs-12">FECHA INGRASADO</label>
+                        <div class="col-md-10 col-sm-6 col-xs-12">
+                            <input class="col-md-10" type="text" disabled="disabled" placeholder="{{ object.fecha_ingreso }}">
+                        </div>
+                    </div>
+                    <div class="form-group form-horizontal col-md-4 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-5 col-sm-6 col-xs-12">ESTADO</label>
+                        <div class="col-md-7 col-sm-4 col-xs-12">
+                            <input type="text" disabled="disabled" placeholder="{{ object.estado }}">
+                        </div>
+                    </div>
+                    <div class="form-group form-horizontal col-md-8 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-2 col-sm-6 col-xs-12">NUMERO DE FOJAS</label>
+                        <div class="col-md-10 col-sm-6 col-xs-12">
+                            <input class="col-md-10" type="text" disabled="disabled" placeholder="{{ object.num_fojas }}">
+                        </div>
+                    </div>
+                    <div class="form-group form-horizontal col-md-8 col-sm-12 col-xs-12">
+                        <label class="control-label col-md-3 col-sm-6 col-xs-12">ASIGNAR VEHICULOS</label>
+                        <div class="fa-hover">
+                            <a class="btn btn-primary" data-toggle="tooltip" title="Registrar Vehiculo" href="{% url 'tramite:asignar_vehiculo' pk=object.id %}"><i class="fa fa-plus-square"></i></a>
+                        </div>
+                        <br>
+                        <div class="scrollable" style="height: 200px; overflow: scroll">    
+                            <table id="datatable" style="margin-top:1em" class="table table-striped table-bordered col-md-5 col-sm-6 col-xs-12">
+                                <thead>
+                                    <tr> 
+                                        <th>Placa</th>
+                                        <th>Propietario</th>
+                                        <th>Tipo</th>
+                                        <th>Marca</th>
+                                        <th>Modelo</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if vehiculos %}
+                                        {% for vehiculo in vehiculos %}
+                                        <tr>
+                                            <td>{{ vehiculo.placa }}</td>
+                                            <td>{{ vehiculo.propietario }}</td>
+                                            <td>{{ vehiculo.tipo_vehiculo }}</td>
+                                            <td>{{ vehiculo.marca }}</td>
+                                            <td>{{ vehiculo.modelo }}</td>
+                                            <td>
+                                                <a class="btn btn-danger btn-xs " data-toggle="tooltip" title="Eliminar Asignación" href="{# url 'operario:eliminar_ruta' pk=ruta.id fk=object.id #}"><i class="fa fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="6">
+                                            <h4 style="color: red">EL TRÁMITE AÚN NO TIENE VEHÍCULOS ASIGNADOS</h4>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <a class="btn btn-success" id="procesar" href="#">Proceder con el trámite</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form action="{% url 'tramite:tramite_proceso' pk=object.id %}" method="POST" id="proceso">
+        {% csrf_token %}
+    </form>
+    <!-- Modal Registrar Ruta -->
+    <div id="modal-ruta" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form id="form-ruta-operador" action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Asignar Vehículo</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="item form-group col-md-6 col-sm-12 col-xs-12">    
+                                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{formulario.vehiculo.label}}</label>
+                                <div class="col-md-8 col-sm-6 col-xs-12">
+                                    {{vehiculos}}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                                <label class="control-label col-md-3 col-sm-6 col-xs-12">{{formulario.validez.label}}</label>
+                                <div class="col-md-9 col-sm-6 col-xs-12">
+                                    {{formulario.validez}}
+                                </div>
+                            </div>
+                            <div class="item form-group col-md-6 col-sm-12 col-xs-12">    
+                                <label class="control-label col-md-4 col-sm-6 col-xs-12">{{formulario.monto.label}}</label>
+                                <div class="col-md-8 col-sm-6 col-xs-12">
+                                    {{formulario.monto}}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                                <label class="control-label col-md-3 col-sm-6 col-xs-12">{{formulario.gestion.label}}</label>
+                                <div class="col-md-9 col-sm-6 col-xs-12">
+                                    {{formulario.gestion}}
+                                </div> 
+                            </div>
+                            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar Ventana</button>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="modal-footer"></div>
+                </div>
+            </div>
+        </div>
+        <!-- /modals -->
+</div>
+
+{% endblock content %}
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+  <script>
+
+        // script modal registrar ruta
+        $("#btn-add-ruta").on("click", function(){
+            var id_operador = $(this).attr("operador");
+            $("#form-ruta-operador").attr("action", "/operador/ruta/registrar/"+id_operador+"/");
+            $("#modal-ruta").modal("show");
+        });
+        $('#procesar').on("click",function(){
+            $("#proceso").submit();
+        });
+
+    </script>
+{% endblock %}

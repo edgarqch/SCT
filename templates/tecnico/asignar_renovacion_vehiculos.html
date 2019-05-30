@@ -1,0 +1,383 @@
+{% extends "base/base_site.html" %}
+{% load staticfiles %}
+{% block title %} Renovar Vehículo {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <a class="btn btn-primary" href="{% url 'tecnico:operador_renovavion_listar' %}"> <i class="fa fa-backward"></i>Volver</a>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">  
+                <div class="x_title">
+                    <h2>Detalles del Operardor</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a></li>
+                                <li><a href="#">Settings 2</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
+                        <label style="text-align:left" class="control-label col-md-12 col-sm-6 col-xs-12">NOMBRE: {{ object.nombre|upper }}</label>
+                            <!-- <input class="col-md-12" type="text" disabled="disabled" name="" id="" readonly='readonly' placeholder="{{ object.nombre }}"> -->
+                    </div>
+                    <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
+                        <label style="text-align:left" class="control-label col-md-12 col-sm-6 col-xs-12">RAZON SOCIAL: {{ object.razon_social|upper }}</label>
+                            <!-- <input type="text" name="" id="" disabled="disabled" placeholder="{{ object.razon_social }}"> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Vehículos</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a></li>
+                                <li><a href="#">Settings 2</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="table-responsive">
+                    <table  class="table table-striped table-bordered  dt-responsive display nowrap jambo_table" cellpadding="0" width="100%" >
+                        <thead>
+                            <tr>
+                                <th>Propietario</th>
+                                <th>Placa</th>
+                                <th>Tipo</th>
+                                <th>Marca</th>
+                                <th>Renovar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if vehiculos %}
+                            {% for vehiculo in vehiculos %}
+                            <tr>
+                                <td>{{ vehiculo.propietario }}</td>
+                                <td>{{ vehiculo.placa }}</td>
+                                <td>{{ vehiculo.tipo_vehiculo }}</td>
+                                <td>{{ vehiculo.marca }}</td>
+                                {% if vehiculo.renovando %}
+                                    <td> <small style="color:red">Renovando...</small></td>
+                                {% else %}
+                                    {% if prueba %}
+                                        <td><a class="btn btn-success renovar" href="#" vehiculo="{{ vehiculo.id }}">Seleccionar</a></td>
+                                        <!-- <a class="btn btn-primary" href="{% url 'tecnico:crear_vehiculo_nuevo' pk=object.id %}">Nuevo Vehículo</a> -->
+                                    {% else %}
+                                        <label style="background:red; color: white"> Vehículos Completos </label>
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <td colspan="5">
+                                El operador no tiene registro de vehículos
+                            </td>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="x_panel">  
+                <div class="x_title">
+                    <h2>Vehículos renovación 
+                    {% if prueba %}
+                        <a class="btn btn-primary" href="{% url 'tecnico:crear_vehiculo_nuevo' pk=object.id %}">Nuevo Vehículo</a>
+                    {% else %}
+                        <label style="background:red; color: white"> Vehículos Completos </label>
+                    {% endif %}
+                    </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a></li>
+                                <li><a href="#">Settings 2</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="table-responsive">
+                    <table class="table table-striped table-bordered dt-responsive display nowrap jambo_table" cellpadding="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Propietario</th>
+                                <th>Placa</th>
+                                <th>Tipo</th>
+                                <th>Fotografias</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if vehiculos_renovando %}
+                            {% for vehiculo in vehiculos_renovando %}
+                            <tr>
+                                <td>{{ vehiculo.propietario }}</td>
+                                <td>{{ vehiculo.placa }}</td>
+                                <td>{{ vehiculo.tipo_vehiculo }}</td>
+                                
+                                {% if not vehiculo.es_nuevo %}
+                                    <td>
+                                        <ul class="list-inline">
+                                            {% for foto in vehiculo.fotos.all %}
+                                                <li>
+                                                    {% if foto.foto and foto.foto.url %}
+                                                        <img src="{% static foto.foto.url %}" alt="Foto de vehiculo" class="avatar" foto-id="{{ foto.id }}" operador="{{ object.id }}">
+                                                    {% else %}
+                                                        <img src="/static/images/logo.jpg" alt="Imagen" class="avatar">
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <ul class="list-inline">
+                                            {% for foto in vehiculo.fotos.all %}
+                                                <li>
+                                                    {% if foto.foto and foto.foto.url %}
+                                                        <img data-toggle="tooltip" title="Ver" src="{% static foto.foto.url %}" alt="Foto de vehiculo" class="avatar foto_vehiculo" foto-id="{{ foto.id }}" operador="{{ object.id }}">
+                                                    {% else %}
+                                                        <img data-toggle="tooltip" title="Ver" src="/static/images/logo.jpg" alt="Imagen" class="avatar foto_vehiculo">
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                        <!-- Button modal -->
+                                        <button type="button" class="btn btn-round btn-primary btn-foto-vehiculo" vehiculo="{{ vehiculo.id }}">Fotos</button>
+                                    </td>
+                                {% endif %}
+
+                                {% if not vehiculo.es_nuevo %}
+                                    <td><a class="btn btn-danger quitar" href="#" vehiculo="{{ vehiculo.id }}">Quitar</a></td>
+                                {% else %}
+                                    <td>
+                                        <a class="btn btn-round btn-primary btn-xs" data-toggle="tooltip" title="Editar" href="{% url 'tecnico:vehiculo_n_editar' pk=vehiculo.id fk=object.id %}"><i class="fa fa-pencil"></i></a>
+                                        <a class="btn btn-round btn-danger btn-xs " data-toggle="tooltip" title="Eliminar" href="{% url 'tecnico:vehiculo_n_eliminar' pk=vehiculo.id fk=object.id %}"><i class="fa fa-trash"></i></a>
+                                    </td>
+                                {% endif %}
+
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <td colspan="6" style="color:red">
+                                <p> &#x2B05;&#xFE0F; Seleccione a los vehiculos que decea renovar tarjetas</p>
+                            </td>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Upload Image -->
+    <div id="modal-foto" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="form-foto-vehiculo" action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Subir Imagen</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="item form-group col-md-6 col-sm-12 col-xs-12">    
+                            <label class="control-label col-md-4 col-sm-6 col-xs-12">{{formulario.vehiculo.label}}</label>
+                            <div class="col-md-8 col-sm-6 col-xs-12">
+                                {{formulario.vehiculo}}
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                            <label class="control-label col-md-3 col-sm-6 col-xs-12">{{formulario.foto.label}}</label>
+                            <div class="col-md-9 col-sm-6 col-xs-12">
+                                {{formulario.foto}}
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label col-md-3 col-sm-6 col-xs-12">Visualizacion Previa</label>
+                            <div class="col-md-9 col-sm-6 col-xs-12">
+                                <output id="list" ></output>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar Ventana</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </div>
+                </form>
+            <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <!-- /modals -->
+
+    <!-- Modal Image Delete -->
+    <div id="modal-foto-delete" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Ver Imagen</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <img style="width:100%; height:100%;" src="" alt="Imagen" id="ver-imagen">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar Ventana</button>
+                    <a class="btn btn-danger eliminar-foto" href="{# url 'tecnico:vehiculo_nuevo_eliminar' pk=vehiculo.id fk=object.id #}">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /modals -->
+
+    <form action="" method="POST" id="renovarVehiculos">
+        {% csrf_token %}
+    </form>
+    
+    <form action="" method="POST" id="quitarVehiculos">
+        {% csrf_token %}
+    </form>
+
+</div>
+
+{% endblock content %}
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+    <script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="/static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="/static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="/static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/static/js/responsive.bootstrap.js"></script>
+    <script src="/static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+  <script type="text/javascript">
+    $(function() {
+        // script para añadir un vehiculo a renovación de tarjeta
+        $('.renovar').on("click",function(){
+            var id_vehiculo = $(this).attr("vehiculo");
+            $("#renovarVehiculos").attr("action", "/tecnico/renovar/vehiculo/"+id_vehiculo+"/");
+            $("#renovarVehiculos").submit();
+        });
+        $('.quitar').on("click",function(){
+            var id_vehiculo = $(this).attr("vehiculo");
+            $("#quitarVehiculos").attr("action", "/tecnico/quitar/vehiculo/"+id_vehiculo+"/");
+            $("#quitarVehiculos").submit();
+        });
+
+        // script modal añadir foto
+        $(".btn-foto-vehiculo").on("click", function(){
+            var id_vehiculo = $(this).attr("vehiculo");
+            $("#id_vehiculo").val(id_vehiculo);
+            $("#form-foto-vehiculo").attr("action", "/tecnico/foto_vehi/"+id_vehiculo+"/");
+            $("#modal-foto").modal("show");
+        });
+    })
+
+
+    $(".foto_vehiculo").on("click", function(){
+        var recurso = $(this).attr("src");
+        var id_foto = $(this).attr("foto-id");
+        var id_operador = $(this).attr("operador");
+        $('#ver-imagen').attr("src", recurso);
+        $(".eliminar-foto").attr("href", "/tecnico/foto_delete/"+id_foto+"/"+id_operador+"/");
+        $("#modal-foto-delete").modal("show");
+    });
+
+    // Visualizacion Previa de Imagenes al momento de añadir la foto
+    function archivo(evt) {
+    var files = evt.target.files; // FileList object
+    // Obtenemos la imagen del campo "file".
+        for (var i = 0, f; f = files[i]; i++) {
+            //Solo admitimos imágenes.
+            if (!f.type.match('image.*')) {
+                continue;
+            }
+            var reader = new FileReader();
+            reader.onload = (function(theFile) {
+                return function(e) {
+                    // Insertamos la imagen
+                    document.getElementById("list").innerHTML = ['<img style="width:100%; height:100%;" src="', e.target.result,'" title="', escape(theFile.name), '"/>'].join('');
+                };
+            })(f);
+            reader.readAsDataURL(f);
+        }
+    }
+    document.getElementById('files').addEventListener('change', archivo, false);
+    // End Visualizacion Previa de Imagenes
+
+
+    $('.prueba').DataTable( {
+        "scrollY":        "300px",
+        "scrollCollapse": true,
+        "paging":         true,
+        "responsive":     true,
+        "ordering":       true,
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+        }
+    });
+
+    </script>
+    <style type="text/css">
+        .prueba{
+            height: 150px;
+        }
+    </style>
+{% endblock %}

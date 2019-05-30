@@ -1,0 +1,73 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Buscar Tramite {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>BUSCAR UN TRÁMITE</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <br />
+                    <div id="content-div">
+                        <a id="buscar-tramite" class="btn btn-primary">Buscar</a>
+                        <div><input id="num-tramite" type="text" class="form-control"></div>
+                        {% csrf_token %}
+                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                            <th>Acciones</th>
+                            <th>Num Trámite</th>
+                            <th>Tipo</th>
+                            <th>Solicitante</th>
+                            <th>Estado</th>
+                            <th>Observaciones</th>
+                            <th>Nro Fojas</th>
+                        </thead>
+                        <tbody id="subjects">
+
+                        </tbody>
+                    </table>
+                    <div id="empty">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
+{% block javascripts %}
+  {{ block.super }}
+  
+  <script type="text/javascript">
+    $(document).ready(function (){
+
+        $('#content-div').on('click', '#buscar-tramite', function(){
+            var numtramite = $('#num-tramite').val();
+            $.get('{% url "tramite:list_tramite_subjects" %}', { numtramite: numtramite }, function(data){
+                var html1 = "";
+                var html2 = "";
+                if (data){
+                        html1 += "<tr><td>"+ "<a href='/vehiculo/vehiculo_form/"+ data[0].pk +"' class='btn btn-primary' >Seleccionar</a>" + "</td><td>" + data[0].pk+ "</td><td>" + data[0].fields.tipo_tramite + "</td><td>" + data[0].fields.solicitante + "</td><td>" + data[0].fields.estado + "</td><td>" + data[0].fields.obserbaciones + "</td><td>" + data[0].fields.num_fojas + "</td><tr>";
+                        $('#subjects').html(html1);
+                        $('#empty').html(html2="");
+                }
+                else{
+                    html2 += "<H1> El tramite Nro  "+ numtramite +", no esta disponible </H1>";
+                    $('#subjects').html(html1="");
+                    $('#empty').html(html2);
+                }
+            });
+        });
+    });
+
+  </script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+{% endblock %}

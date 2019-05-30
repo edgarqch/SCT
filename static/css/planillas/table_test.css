@@ -1,0 +1,5 @@
+.table-container {
+    /* background-color: #000000; */
+    max-height: 200px;
+    overflow-y: auto;
+}

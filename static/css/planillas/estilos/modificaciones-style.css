@@ -1,0 +1,72 @@
+.boxes {
+    list-style: none;
+    /* background-color: #badbad; */
+}
+
+.boxes {
+    width:100%;
+    padding-left: 0px;
+    /* margin-top:27px; */
+}
+.boxes li {
+    border:1px solid #b0b2b6;
+    background:#fff;
+    padding:1px;
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    behavior:url(js/PIE.htc);
+    position:relative;
+    margin-bottom:2px;
+}
+.boxes li a {
+    display:block;
+    background:url(../images/box1.jpg) top repeat-x #d9dadc;
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    behavior:url(js/PIE.htc);
+    position:relative;
+    overflow:hidden;
+    width:100%;
+    text-decoration:none;
+    padding:7px 0 0 0;
+    text-transform:uppercase;
+    height:77px;
+}
+.boxes li a:hover {
+    background:#fff
+}
+.boxes li a .text1 {
+    font-size:40px;
+    line-height:50px;
+    padding-left:39px;
+    display:block;
+    letter-spacing:-1px;
+}
+.boxes li a .text2 {
+    font-size:20px;
+    color:#3a3a3a;
+    line-height:30px;
+    display:block;
+    margin-top:-13px;
+    padding-left:40px;
+}
+.boxes .nav1 a {
+    color:#164d9b
+}
+.boxes .nav2 a {
+    color:#2d9b16
+}
+.boxes .nav3 a {
+    color:#9e1916
+}
+.boxes .nav4 a {
+    color:#6b450f
+}
+.boxes .nav5 a {
+    color:#3f0f6b
+}
+.boxes .nav6 a {
+    color:#0f696b
+}
