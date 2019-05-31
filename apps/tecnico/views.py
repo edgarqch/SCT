@@ -2302,7 +2302,7 @@ class informeTecnico_renovacion(View):
     def informe_tecnico(self, floables, spacer, styles, operador):
         styles.add(ParagraphStyle(name = "informe_tecnico",  alignment=TA_CENTER, fontSize=13, fontName="Times-Bold"))
         informe = Informe.objects.get(operador=operador.id, tipo='INFORME_TECNICO', vigente=True)
-        text = 'INFORME TECNICO'
+        text = 'INFORME TÉCNICO'
         para = Paragraph(text, styles["informe_tecnico"])
         floables.append(para)
         text = 'URRT Nº {}/{}'.format(informe.cite, informe.fecha.year)
@@ -2315,6 +2315,7 @@ class informeTecnico_renovacion(View):
         styles.add(ParagraphStyle(name = "dirigido_r",  alignment=TA_LEFT, bulletIndent=20, fontSize=10, fontName="Times-Roman"))
         styles.add(ParagraphStyle(name = "dirigido_f",  alignment=TA_LEFT, bulletIndent=20, fontSize=10, fontName="Times-Roman"))
         styles.add(ParagraphStyle(name = "dirigido_bold",  alignment=TA_LEFT, fontSize=10, fontName="Times-Bold"))
+        styles.add(ParagraphStyle(name = "dirigido_bold1",  alignment=TA_LEFT, fontSize=8, fontName="Times-Bold"))
         floables.append(spacer)
         text = '<bullet>A:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</bullet>Dr. Wilson Condori López'
         print(text)
@@ -2337,8 +2338,8 @@ class informeTecnico_renovacion(View):
             text = '<bullet>Ref.:&nbsp;&nbsp;&nbsp;&nbsp;</bullet><strong>SOLICITUD DE TARJETAS DE OPERACION A FAVOR DE LA</strong>'
         para = Paragraph(text, styles["dirigido_r"] )
         floables.append(para)
-        text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>{}'.format(operador.nombre.upper())
-        para = Paragraph(text, styles["dirigido_bold"] )
+        text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>{}'.format(operador.nombre.upper())
+        para = Paragraph(text, styles["dirigido_bold1"] )
         floables.append(para)
         floables.append(spacer)
         informe = Informe.objects.get(operador=operador.id, tipo='INFORME_TECNICO', vigente=True)
@@ -2463,7 +2464,7 @@ class informeTecnico_renovacion(View):
         styles.add(ParagraphStyle(name = "analisis_center",  alignment=TA_CENTER, fontSize=10, fontName="Times-Roman"))
         styles.add(ParagraphStyle(name = "analisis_bullet",  alignment=TA_JUSTIFY, fontSize=10, fontName="Times-Roman", bulletText="*"))
         floables.append(spacer)
-        text = 'II ANÁLISIS TECNICO.'
+        text = 'II ANÁLISIS TÉCNICO.'
         para = Paragraph(text, styles["analisis_bold"] )
         floables.append(para)
         floables.append(spacer)
@@ -2537,6 +2538,7 @@ class informeTecnico_renovacion(View):
                 text = '3.- La {} solicitó renovación de Tarjetas de Operación para el siguiente parque automotor:'.format(operador.nombre)
             para = Paragraph(text, styles["analisis"])
             floables.append(para)
+            floables.append(spacer)
             text = 'PARQUE AUTOMOTOR RENOVACION'
             para = Paragraph(text, styles["analisis_center_bold"] )
             floables.append(para)
@@ -2554,6 +2556,30 @@ class informeTecnico_renovacion(View):
                 num += 1
             tabla = Table(data = data, style = [('GRID',(0,0),(-1,-1),0.5,colors.grey),], colWidths=[22,150,60,210] )
             floables.append(tabla)
+            floables.append(spacer)
+
+            if Vehiculo_Nuevo.objects.filter(operador=operador.id, es_nuevo=True).exists():
+                vehiculos = Vehiculo_Nuevo.objects.filter(operador=operador.id, es_nuevo=True)
+                text = 'Tambien se solicitó tarjetas para los sigientes vehículos nuevos.'
+                para = Paragraph(text, styles["analisis"] )
+                floables.append(para)
+                floables.append(spacer)
+                text = 'PARQUE AUTOMOTOR NUEVOS'
+                para = Paragraph(text, styles["analisis_center_bold"] )
+                floables.append(para)
+                
+                encabezado_tabla=['No.', 'Nombre y apellido', 'Placa']
+                data = [encabezado_tabla]
+                num = 1
+                for vehiculo in vehiculos:
+                    fila = []
+                    fila.append(Paragraph(str(num), styles["analisis"]))
+                    fila.append(Paragraph(vehiculo.propietario, styles["analisis"]))
+                    fila.append(Paragraph(vehiculo.placa, styles["analisis"]))
+                    data.append(fila)
+                    num += 1
+                tabla = Table(data = data, style = [('GRID',(0,0),(-1,-1),0.5,colors.grey),], colWidths=[22,150,60,210] )
+                floables.append(tabla)
 
         floables.append(spacer)
         informe = Informe.objects.get(operador=operador.id, vigente=True)
