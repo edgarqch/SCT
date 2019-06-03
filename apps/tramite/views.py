@@ -166,7 +166,7 @@ class AsignarVehiculos(DetailView):
             lista_asignados.append(vehi_asignado.vehiculo.id)
         
         vehiculos = Vehiculo_Nuevo.objects.filter(id__in = lista_asignados)
-        print('fffffffffffff'+str(vehiculos))
+        print('fffffffffffff-'+str(vehiculos))
         context['vehiculos'] = vehiculos
         
         context['form_tramite'] = TramiteForm()
@@ -214,22 +214,25 @@ class TramiteProceso(UpdateView):
         return HttpResponseRedirect(reverse_lazy('tramite:listar_tramite'))
 
 def search_vehiculo_placa(request):
-    if request.is_ajax():
-        # operadores = Operador_Nuevo.objects.filter( nombre__icontains = request.GET['name']).values('id', 'razon_social', 'nombre')
-        # operador_n = Operador_Nuevo.objects.filter(Q(vigente=True, es_nuevo= False, en_tramite= True))
-        
-        # registrados = []
-        # id_vehis = []
-        # vehiculos = Vehiculo_Nuevo.objects.filter(operador=request.GET['operador'])
-        # for v in vehiculos:
-        #     id_vehis.append[v.id]
+    if request.is_ajax():     
+        #Algoritmo para sacar a todos los vehiculos del operador
+        id_vehis = []
+        vehis = Vehiculo_Nuevo.objects.filter(operador=request.GET['operador'])
+        for v in vehis:
+            id_vehis.append(v.id)
+        # print('aaaaaaaaaaaaaa '+str(id_vehis))
 
-        # registdos = Asignar_Vehiculo.objects.filter(vehiculo__in=id_vehis)
-        # for r in registdos:
-        #     registrados.append[r.id]
-        # print('aaaaaaaaaaaaaa '+registrados)
-        # vehiculos = Vehiculo_Nuevo.objects.filter(operador=request.GET['operador'] , placa__icontains = request.GET['name']).exclude(id__in=registrados).values('id', 'propietario', 'placa')[:10]
-        vehiculos = Vehiculo_Nuevo.objects.filter(operador=request.GET['operador'] , placa__icontains = request.GET['name']).values('id', 'propietario', 'placa')[:10]
+        #Algoritmo para sacar el vehiculo que ya esta registrado y que no este caducado
+        registrados = []
+        regist2 = Asignar_Vehiculo.objects.filter(vehiculo__in=id_vehis, caducado=False)
+        # print('aaaaaaaaaaaaaa m '+str(regist2[0].id))
+        for ve in regist2:
+            registrados.append(ve.vehiculo_id)
+        # print('aaaaaaaaaaaaaa d '+str(registrados)) 
+
+        # vehiculosRenovacion = Vehiculo_Nuevo.objects.filter(Q(operador = self.object, renovando=True) | Q(operador = self.object, renovando=False, es_nuevo=True))
+        # vehiculos = Vehiculo_Nuevo.objects.filter(operador=request.GET['operador'] , placa__icontains = request.GET['name']).values('id', 'propietario', 'placa')[:10]
+        vehiculos = Vehiculo_Nuevo.objects.filter(operador=request.GET['operador'] , placa__icontains = request.GET['name']).exclude(id__in=registrados).values('id', 'propietario', 'placa')[:10]
         if len(vehiculos) == 0:
             return HttpResponse(
                 json.dumps(
