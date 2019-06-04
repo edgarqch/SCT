@@ -1,0 +1,45 @@
+.modal-result {
+    max-height: calc(50vh - 112px);
+    overflow-y: auto;
+    /*background-color: #badbad;*/
+}
+
+.boletas-table {
+    /*max-height: calc(15vh - 200px);*/
+    max-height: 128px;
+    overflow-y: auto;
+}
+
+.no_link {
+    pointer-events: none;
+    cursor: default;
+}
+
+
+div.fixedHeaderTable {
+        position: relative;
+}
+div.fixedHeaderTable table {
+        width:100%;
+}
+div.fixedHeaderTable tbody {
+    height: 100px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+div.fixedHeaderTable table th {
+        background-color:#CCCCCC;font-weight:bold
+}
+div.fixedHeaderTable table td {
+        background-color:#EEEEEE
+}
+div.fixedHeaderTable thead td, div.fixedHeaderTable thead th {
+        position:relative;
+}
+
+.color-test-1 {
+        background-color:#badbad;
+}
+.color-test-2 {
+        background-color:#32d3a4;
+}

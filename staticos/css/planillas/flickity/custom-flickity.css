@@ -1,0 +1,21 @@
+.carousel-cell {
+    height: 64px; /* height of carousel */
+    margin-right: 10px;
+}
+.carousel-cell img {
+    height: 96px;
+}
+.carousel-cell.is-selected {
+    background: #ED2;
+}
+/* position dots up a bit */
+.flickity-page-dots {
+    bottom: -22px;
+}
+/* dots are lines */
+.flickity-page-dots .dot {
+    height: 4px;
+    width: 40px;
+    margin: 0;
+    border-radius: 0;
+}

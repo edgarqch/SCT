@@ -1,0 +1,7 @@
+.logo {
+    display: block;
+    margin: auto;
+    width: 45%;
+    background-color: rgba(255,255,255,0); 
+    border: 1px solid rgba(255,255,255,0);
+}

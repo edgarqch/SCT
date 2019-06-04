@@ -1,0 +1,62 @@
+.custom_margin {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+/*** Images ***/
+#thumbs { 
+  padding-top: 10px;
+  overflow-x: auto;
+}
+#largeImage {
+  width: 100%;
+}
+.img-main-carousel {
+    width: 100%;
+}
+#thumbs img, #largeImage, #largeImage-cancha {
+  border: 1px solid gray;
+  padding: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+.selected_image {
+    width: 100%;
+    border: 1px solid gray;
+    padding: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+#thumbs img {
+  float: left;
+  margin-right: 6px;
+}
+#description {
+  /*background: black;*/
+  background: #2A3F54;
+  color: white;
+  position: absolute;
+  bottom: 0;
+  padding: 10px 20px;
+  width: 98%;
+  margin: 5px;
+}
+.descripcion-main_carousel {
+    background: black;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    padding: 10px 20px;
+    width: 98%;
+    margin: 5px;
+}
+#panel { 
+    position: relative; 
+}
+.container-thumbs {
+  background-color: #badbad;
+  overflow-x: auto;
+}
+#img_selected {
+    height: 400px;
+    overflow-y:scroll;
+}
