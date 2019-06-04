@@ -15,7 +15,11 @@ import json
 import time
 from datetime import datetime ,date, timedelta
 # imports views generics 
-from django.views.generic import TemplateView, ListView, CreateView, DetailView, UpdateView, View
+from django.views.generic import TemplateView, ListView, CreateView, DetailView, UpdateView, DeleteView, View
+
+# imports recorators
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 
 # Imports forms from app tranite
 from apps.tramite.form import TramiteForm, AsignacionForm
@@ -85,7 +89,7 @@ from datetime import datetime, date, timedelta
     
 # def index(request):
 #     return render(request, 'tramite/index.html')
- 
+@method_decorator(permission_required('tramite.administrar_tramite'), name='dispatch') 
 class CrearTramite(CreateView):
     model = Tramite
     template_name = 'tramite/tramite_form.html'
@@ -127,6 +131,8 @@ def search_operador_nombre(request):
     else:
         return HttpResponse("Solo Ajax")
 
+# @method_decorator(permission_required('tramite.administrar_tramite', login_url='tramite'), name='dispatch')
+@method_decorator(permission_required('tramite.administrar_tramite'), name='dispatch')
 class ListarTramite(ListView):
     model = Tramite
     template_name = 'tramite/listar_tramites.html'
@@ -154,6 +160,7 @@ class ListarTramite(ListView):
 
         return context
 
+@method_decorator(permission_required('tramite.administrar_tramite'), name='dispatch')
 class AsignarVehiculos(DetailView):
     model = Tramite
     template_name = 'tramite/asignar_vehiculos.html'
@@ -161,18 +168,14 @@ class AsignarVehiculos(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(AsignarVehiculos, self).get_context_data(*args, **kwargs)
         vehi_asignados = Asignar_Vehiculo.objects.filter(tramite=self.kwargs['pk'])
-        lista_asignados = []
-        for vehi_asignado in vehi_asignados:
-            lista_asignados.append(vehi_asignado.vehiculo.id)
-        
-        vehiculos = Vehiculo_Nuevo.objects.filter(id__in = lista_asignados)
-        print('fffffffffffff-'+str(vehiculos))
-        context['vehiculos'] = vehiculos
+
+        context['vehiculos_asignados'] = vehi_asignados
         
         context['form_tramite'] = TramiteForm()
 
         return context
 
+@method_decorator(permission_required('tramite.administrar_tramite'), name='dispatch')
 class AsignarVehiculo(CreateView):
     model = Asignar_Vehiculo
     template_name = 'tramite/asignar_vehiculo.html'
@@ -202,6 +205,20 @@ class AsignarVehiculo(CreateView):
         return HttpResponseRedirect(reverse_lazy('tramite:asignar_vehiculos', kwargs = {
             'pk': tramite.id
         }))
+
+@method_decorator(permission_required('tramite.administrar_tramite'), name='dispatch')
+class EliminarAsignacion(DeleteView):
+    model = Asignar_Vehiculo
+    template_name = 'tramite/eliminar_asignacion.html'
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('tramite:asignar_vehiculos', kwargs = {
+            'pk': self.kwargs['fk']})
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(EliminarAsignacion, self).get_context_data(*args, **kwargs)
+        #Mando la llave fk para el boton de cancelar
+        context['llave'] = self.kwargs['fk'];
+        return context
 
 class TramiteProceso(UpdateView):
     model = Tramite
@@ -250,6 +267,7 @@ def search_vehiculo_placa(request):
     else:
         return HttpResponse("Permitido solo con metodo Ajax")
 
+@method_decorator(permission_required('tramite.administrar_tramite'), name='dispatch')
 class ordenDeposito(View):
     def encabezado_pie(self, pdf, document):
         pdf.saveState()
@@ -441,6 +459,7 @@ class ordenDeposito(View):
         tramite.save()
         return response
 
+@method_decorator(permission_required('tramite.administrar_tramite'), name='dispatch')
 class ListarTarjetas(ListView):
     model = Asignar_Vehiculo
     template_name = 'tramite/listar_tarjetas.html'
@@ -453,6 +472,7 @@ class ListarTarjetas(ListView):
         return context
 
 import datetime
+@method_decorator(permission_required('tramite.administrar_tramite'), name='dispatch')
 class Tarjetas(View):
     def encabezado_pie(self, pdf, document):
         pdf.saveState()

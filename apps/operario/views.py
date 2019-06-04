@@ -9,6 +9,10 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.http import HttpResponseRedirect 
 
+# imports recorators
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
+
 # Import your forms here.
 from apps.tecnico.form import OperarioNuevoForm, VehiculoNForm, RutaForm
 from apps.operario.form import VehiculoForm, OperadorForm, OpRegisterForm, VehiRegisterForm
@@ -42,6 +46,7 @@ class Listar_Operadores(ListView):
         queryset_operado_in_inf_tecnico = querysets.filter(vigente=True, es_nuevo=True, id__in=operador_in_doc_legales)
         return queryset_operado_in_inf_tecnico
 
+@method_decorator(permission_required('tecnico.administrar_operador'), name='dispatch')
 class Registrar_Operador(UpdateView):
     model = Operador_Nuevo
     template_name = 'operario/registrar_operador.html'
@@ -55,7 +60,8 @@ class Registrar_Operador(UpdateView):
         self.object.es_nuevo = False
         self.object.save()
         return HttpResponseRedirect(reverse_lazy('operario:operador_listar'))
-
+ 
+@method_decorator(permission_required('tecnico.administrar_operador'), name='dispatch')
 class Listar_Detalle_Operadores(ListView):
     model = Operador_Nuevo
     template_name = 'operario/operador_list.html'
@@ -74,6 +80,7 @@ class Listar_Detalle_Operadores(ListView):
         context['operador_n'] = operadores
         return context
 
+@method_decorator(permission_required('tecnico.administrar_operador'), name='dispatch')
 class Actualizar_Operador(UpdateView):
     model = Operador_Nuevo
     template_name = 'operario/operador_actualizar.html'
@@ -87,11 +94,13 @@ class Actualizar_Operador(UpdateView):
     #     self.object.save()
     #     return HttpResponseRedirect(reverse_lazy('operario:listar_operadores_nuevos'))
 
+@method_decorator(permission_required('tecnico.administrar_operador'), name='dispatch')
 class Eliminar_Operador(DeleteView):
     model = Operador_Nuevo
     template_name = 'operario/operador_eliminar.html'
     success_url = reverse_lazy('operario:operador_listar')
 
+@method_decorator(permission_required('tecnico.administrar_operador'), name='dispatch')
 class Detalle_Operadores(DetailView):
     model = Operador_Nuevo
     template_name = 'operario/detalle_operadores.html'
@@ -106,6 +115,7 @@ class Detalle_Operadores(DetailView):
         context['rutas'] = rutas
         return context
 
+@method_decorator(permission_required('tecnico.administrar_operador'), name='dispatch')
 class Registrar_Vehiculo(UpdateView):
     model = Vehiculo_Nuevo
     form_class = VehiRegisterForm
@@ -141,6 +151,7 @@ class CrearRuta(CreateView):
             'pk': self.kwargs['pk']
         }))
 
+@method_decorator(permission_required('tecnico.administrar_operador'), name='dispatch')
 class EliminarRuta(DeleteView):
     model = Ruta
     template_name = 'operario/ruta_eliminar.html'
@@ -154,6 +165,7 @@ class EliminarRuta(DeleteView):
         context['llave'] = self.kwargs['fk'];
         return context
 
+@method_decorator(permission_required('tecnico.administrar_operador'), name='dispatch')
 class Actualizar_Vehiculo(UpdateView):
     model = Vehiculo_Nuevo
     form_class = VehiculoForm
@@ -175,7 +187,8 @@ class Actualizar_Vehiculo(UpdateView):
         #Mando la llave fk para el boton de cancelar
         context['llave'] = self.kwargs['fk'];
         return context
-    
+
+@method_decorator(permission_required('tecnico.administrar_operador'), name='dispatch')    
 class Eliminar_Vehiculo(DeleteView):
     model = Vehiculo_Nuevo
     template_name = 'operario/vehiculo_eliminar.html'

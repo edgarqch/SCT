@@ -12,6 +12,11 @@ from datetime import datetime
 import json
 from xhtml2pdf import pisa
 
+# imports recorators
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
+
+
 # Import your forms here.
 from apps.tecnico.form import OperarioNuevoForm, OperarioRenovarForm , VehiculoNForm, VehiculoForm, VehiculoRenovForm, NotaForm, FotoVehiculoForm, InformeForm, DocsLegalForm, DocsForm
 
@@ -37,6 +42,7 @@ from reportlab.lib.pagesizes import letter
 
 # Create your views here.
 #views for Nota
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class NotaCreate(CreateView):
     model = Nota
     template_name = 'tecnico/nota_form.html'
@@ -50,6 +56,7 @@ class NotaCreate(CreateView):
             'pk': self.object.operador_n.id
         }))
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch')
 class NotaEdit(UpdateView):
     model = Nota
     template_name = 'tecnico/nota_form.html'
@@ -64,6 +71,7 @@ class NotaEdit(UpdateView):
         return HttpResponseRedirect(reverse_lazy('tecnico:operario_nuevo_listar'))
 
 # Views for verify Operador nuevo
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class OperarioNuevoCreate(CreateView):
     model = Operador_Nuevo
     template_name = 'tecnico/operario_nuevo_form.html'
@@ -85,6 +93,7 @@ class OperarioNuevoCreate(CreateView):
     #                 "CC'ing yourself."
     #             )
     
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class ListarOperarioN(ListView):
     model = Operador_Nuevo
     template_name = 'tecnico/operario_nuevo_listar.html'
@@ -114,6 +123,7 @@ class ListarOperarioN(ListView):
 
         return context
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class VerificarOperarioN(ListView):
     model = Operador_Nuevo
     template_name = 'tecnico/operario_nuevo_verificar.html'
@@ -123,6 +133,7 @@ class VerificarOperarioN(ListView):
         queryset = super(VerificarOperarioN, self).get_queryset()
         return queryset.filter(vigente=True)
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class OperarioNuevoDetail(DetailView):
     model = Operador_Nuevo
  
@@ -156,6 +167,7 @@ class OperarioNuevoDetail(DetailView):
         context['prueba'] = prueba
         return context
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class VerificarOperario(DetailView):
     model = Operador_Nuevo
     template_name = 'tecnico/operario_verificar.html'
@@ -180,6 +192,7 @@ class VerificarOperario(DetailView):
         return context
 
 #Views for vehiculo
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class CrearVehiculoN(CreateView):
     model = Vehiculo_Nuevo
     template_name = 'tecnico/vehiculo_nuevo_form.html'
@@ -211,6 +224,7 @@ class CrearVehiculoN(CreateView):
         context['llave'] = pk
         return context
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class EditarVehiculoN(UpdateView):
     model = Vehiculo_Nuevo
     template_name = 'tecnico/vehiculo_nuevo_form.html'
@@ -234,6 +248,7 @@ class EditarVehiculoN(UpdateView):
         context['llave'] = self.kwargs['fk'];
         return context
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class EliminarVehivuloN(DeleteView):
     model = Vehiculo_Nuevo
     template_name = 'tecnico/vehiculo_nuevo_eliminar.html'
@@ -246,6 +261,7 @@ class EliminarVehivuloN(DeleteView):
         context['llave'] = self.kwargs['fk'];
         return context
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class VerificarVehiculo(DetailView):
     model = Vehiculo_Nuevo
     template_name = 'tecnico/vehiculo_verificar.html'
@@ -289,6 +305,7 @@ class DeleteFoto(DeleteView):
         return context
 
 # class base views for Reports 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class CreateInforme(CreateView):
     model = Informe
     template_name = 'tecnico/informe_form.html'
@@ -1057,6 +1074,7 @@ class informeTecnico(View):
         buffer.close()
         return response
 
+@method_decorator(permission_required('tecnico.administrar_doc_legal'), name='dispatch') 
 class EmitirDocumentos(ListView):
     model = Operador_Nuevo
     template_name = 'tecnico/emitir_document.html'
@@ -1717,6 +1735,7 @@ def generar_res_administrativa(request,pk):
     return response
 
 # Renovacion de tarjetas
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class ListarOperadorR(ListView):
     model = Operador_Nuevo
     template_name = 'tecnico/operador_renovacion_listar.html'
@@ -1779,6 +1798,7 @@ class SelectOperadores(ListView):
         return context
 
 # Esta clase es para seleccionar al operador que necesita hacer la renovacion de tarjetas
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class RenovarTarjetas(UpdateView):
     model = Operador_Nuevo
     template_name = ''
@@ -1790,6 +1810,7 @@ class RenovarTarjetas(UpdateView):
         operador.save()
         return HttpResponseRedirect(reverse_lazy('tecnico:operador_renovavion_listar'))
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class NotaRenovacion(CreateView):
     model = Nota
     template_name = 'tecnico/nota_renovacion.html'
@@ -1804,6 +1825,7 @@ class NotaRenovacion(CreateView):
         # }))
         return HttpResponseRedirect(reverse_lazy('tecnico:operador_renovavion_listar'))
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class NotaEditRenovacion(UpdateView):
     model = Nota
     template_name = 'tecnico/nota_renovacion.html'
@@ -1818,6 +1840,7 @@ class NotaEditRenovacion(UpdateView):
         return HttpResponseRedirect(reverse_lazy('tecnico:operador_renovavion_listar'))
 
 # Esta clase permite asignar vehiculos que decean renovar las tarjetas
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class AsignarVehiculosRenovacion(DetailView):
     model = Operador_Nuevo
     template_name = 'tecnico/asignar_renovacion_vehiculos.html'
@@ -1872,6 +1895,7 @@ class QuitarVehiculoRenovacion(UpdateView):
             'pk': operador.id
         }))
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class DetalleOperadorRenovacion(DetailView):
     model = Operador_Nuevo
     # template_name = 'tecnico/operario_verificar.html'
@@ -1884,6 +1908,7 @@ class DetalleOperadorRenovacion(DetailView):
         context['vehiculosOp'] = vehiculosRenovacion
         return context
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class VerificarVehiculoRenovacion(DetailView):
     model = Vehiculo_Nuevo
     template_name = 'tecnico/vehiculo_renovando_verificar.html'
@@ -1902,6 +1927,7 @@ class VerificarVehiculoRenovacion(DetailView):
         context['checklistvehiculos'] = Checklist_Vehiculo.objects.filter(vehiculo_nuevo= self.object, vigente=True)
         return context
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class CreateInformeRenovacion(CreateView):
     model = Informe
     template_name = 'tecnico/informe_form_renovando.html'
@@ -2628,6 +2654,7 @@ class informeTecnico_renovacion(View):
         return response
 
 # Aumetar registro de vehiculos en una renovacion
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class CreateVehiculoN(CreateView):
     model = Vehiculo_Nuevo
     template_name = 'tecnico/crear_vehiculo_nuevo.html'
@@ -2659,6 +2686,7 @@ class CreateVehiculoN(CreateView):
         context['llave'] = pk
         return context
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class EditVehiculoN(UpdateView):
     model = Vehiculo_Nuevo
     template_name = 'tecnico/vehiculo_n_form.html'
@@ -2682,6 +2710,7 @@ class EditVehiculoN(UpdateView):
         context['llave'] = self.kwargs['fk'];
         return context
 
+@method_decorator(permission_required('tecnico.verificar'), name='dispatch') 
 class DeleteVehivuloN(DeleteView):
     model = Vehiculo_Nuevo
     template_name = 'tecnico/vehiculo_n_eliminar.html'

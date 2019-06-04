@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 from apps.tramite.home import index
 from apps.tramite.views import CrearTramite, search_operador_nombre,\
 ListarTramite, AsignarVehiculos, AsignarVehiculo, search_vehiculo_placa,\
-TramiteProceso, ordenDeposito, ListarTarjetas, Tarjetas, TramiteFinalizar
+TramiteProceso, ordenDeposito, ListarTarjetas, Tarjetas, TramiteFinalizar,\
+EliminarAsignacion
 # tramite_view, tramite_list_ingresados, seguimiento_view, tramite_search, tramite_encontrar
 
 
@@ -16,6 +17,7 @@ urlpatterns = [
     url(r'^listar/$', login_required(ListarTramite.as_view()), name='listar_tramite'),
     url(r'^asignarvehiculos/(?P<pk>\d+)/$', login_required(AsignarVehiculos.as_view()), name='asignar_vehiculos'),
     url(r'^asignarvehiculo/(?P<pk>\d+)/$', login_required(AsignarVehiculo.as_view()), name='asignar_vehiculo'),
+    url(r'^asignacion/eliminar/(?P<pk>\d+)/(?P<fk>\d+)/$', login_required(EliminarAsignacion.as_view()), name='eliminar_asignacion'),
     url(r'^tramiteproceso/(?P<pk>\d+)/$', login_required(TramiteProceso.as_view()), name='tramite_proceso'),
     url(r'^search_vehiculo_placa/$', search_vehiculo_placa, name = 'search_vehiculo_placa'),
     url(r'^ordendeposito/(?P<pk>\d+)/$', login_required(ordenDeposito.as_view()), name='orden_deposito'),

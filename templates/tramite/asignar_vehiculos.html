@@ -80,16 +80,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% if vehiculos %}
-                                        {% for vehiculo in vehiculos %}
+                                    {% if vehiculos_asignados %}
+                                        {% for asignado in vehiculos_asignados %}
                                         <tr>
-                                            <td>{{ vehiculo.placa }}</td>
-                                            <td>{{ vehiculo.propietario }}</td>
-                                            <td>{{ vehiculo.tipo_vehiculo }}</td>
-                                            <td>{{ vehiculo.marca }}</td>
-                                            <td>{{ vehiculo.modelo }}</td>
+                                            <td>{{ asignado.vehiculo.placa }}</td>
+                                            <td>{{ asignado.vehiculo.propietario }}</td>
+                                            <td>{{ asignado.vehiculo.tipo_vehiculo }}</td>
+                                            <td>{{ asignado.vehiculo.marca }}</td>
+                                            <td>{{ asignado.vehiculo.modelo }}</td>
                                             <td>
-                                                <a class="btn btn-danger btn-xs " data-toggle="tooltip" title="Eliminar Asignación" href="{# url 'operario:eliminar_ruta' pk=ruta.id fk=object.id #}"><i class="fa fa-trash"></i></a>
+                                                <a class="btn btn-danger btn-xs " data-toggle="tooltip" title="Eliminar Asignación" href="{% url 'tramite:eliminar_asignacion' pk=asignado.id fk=object.id %}"><i class="fa fa-trash"></i></a>
                                             </td>
                                         </tr>
                                         {% endfor %}

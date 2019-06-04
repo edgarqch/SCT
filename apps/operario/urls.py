@@ -10,7 +10,7 @@ Actualizar_Operador, Eliminar_Operador, ReportAnualOperador
 
 urlpatterns = [
     # url(r'^editar/(?P<pk>\d+)$', RepresentanteUpdate.as_view(), name='operario_editar'),
-    url(r'^listar/operadores/$', login_required(Listar_Operadores.as_view()), name='listar_operadores_nuevos'),
+    # url(r'^listar/operadores/$', login_required(Listar_Operadores.as_view()), name='listar_operadores_nuevos'),
     url(r'^registrar/operador/(?P<pk>\d+)/$', login_required(Registrar_Operador.as_view()), name='registar_operador'),
     url(r'^listar/$', login_required(Listar_Detalle_Operadores.as_view()), name='operador_listar'),
     url(r'^detalle/(?P<pk>\d+)/$', login_required(Detalle_Operadores.as_view()), name='operadores_detalle'),
