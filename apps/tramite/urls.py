@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from django.conf.urls import url, include
 from django.contrib.auth.decorators import login_required
 
-from apps.tramite.home import index
+from apps.tramite.home import Index
 from apps.tramite.views import CrearTramite, search_operador_nombre,\
 ListarTramite, AsignarVehiculos, AsignarVehiculo, search_vehiculo_placa,\
 TramiteProceso, ordenDeposito, ListarTarjetas, Tarjetas, TramiteFinalizar,\
@@ -11,7 +11,7 @@ EliminarAsignacion
 
 
 urlpatterns = [
-    url(r'^$', login_required(index.as_view()), name='index'),
+    url(r'^$', login_required(Index.as_view()), name='index'),
     url(r'^registrar/$', login_required(CrearTramite.as_view()), name='registrar_tramite'),
     url(r'^search_operador_nombre/$', search_operador_nombre, name = 'search_operador_nombre'),
     url(r'^listar/$', login_required(ListarTramite.as_view()), name='listar_tramite'),

@@ -20,8 +20,12 @@ from django.conf.urls.static import static
 # from django.urls import path
 from django.contrib.auth.views import login, logout_then_login
 
+from django.contrib.auth.decorators import login_required
+from apps.tramite.home import Index
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^$', (Index.as_view()), name='home'),
     url(r'^tramite/', include('apps.tramite.urls', namespace="tramite")),
     url(r'^vehiculo/', include('apps.vehiculo.urls', namespace="vehiculo")),
     url(r'^operador/', include('apps.operario.urls', namespace="operario")),
@@ -29,6 +33,6 @@ urlpatterns = [
     url(r'^usuario/', include('apps.usuario.urls', namespace="usuario")),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     # url(r'^accounts/login/', login,{'template_name':'index.html'}, name='login'),
-    url(r'^', login,{'template_name':'index.html'}, name='login'),
+    url(r'^accounts/login/$', login,{'template_name':'index.html'}, name='login'),
     url(r'^logout/', logout_then_login, name='logout'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)

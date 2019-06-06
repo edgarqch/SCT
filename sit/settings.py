@@ -26,7 +26,7 @@ SECRET_KEY = 'qsjmvd5r3@c1^(*@vfdvay87jexv0427(dffbjn#dog7km#w0u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.103','192.168.1.108','localhost']
+ALLOWED_HOSTS = ['192.168.1.102','192.168.1.108','localhost']
 
 # Application definition
 
@@ -146,7 +146,7 @@ CKEDITOR_CONFIGS = {
 
 IMAGENES_ROOT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static/archivos')
 #variable login
-LOGIN_URL = '/'
+# LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = reverse_lazy('tramite:index')
 LOGOUT_REDIRECT_URL = reverse_lazy('login')
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

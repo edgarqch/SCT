@@ -2,17 +2,24 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+# imports recorators
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required
+
 # imports views generics 
 from django.views.generic import TemplateView, ListView, CreateView, DetailView, UpdateView, View
 
 from apps.tecnico.models import Operador_Nuevo, Vehiculo_Nuevo, Ruta, Docs_Legal, Checklist_Vehiculo
 from apps.tramite.models import Tramite, Asignar_Vehiculo
 from datetime import datetime, date, timedelta
-class index(TemplateView):
+
+@method_decorator(login_required, name='dispatch')
+class Index(TemplateView):
     template_name = 'tramite/index.html'
 
     def get_context_data(self, *args, **kwargs):
-        context = super(index, self).get_context_data(*args, **kwargs)
+        context = super(Index, self).get_context_data(*args, **kwargs)
         
         vehiculos = Vehiculo_Nuevo.objects.filter(es_nuevo=False)
         # print('fffffffffffff'+ str(vehiculos))
