@@ -234,10 +234,10 @@ def search_vehiculo_placa(request):
     if request.is_ajax():     
         #Algoritmo para sacar a todos los vehiculos del operador
         id_vehis = []
-        vehis = Vehiculo_Nuevo.objects.filter(operador=request.GET['operador'])
+        vehis = Vehiculo_Nuevo.objects.filter(operador=request.GET['operador'], es_nuevo=False)
         for v in vehis:
             id_vehis.append(v.id)
-        # print('aaaaaaaaaaaaaa '+str(id_vehis))
+        print('aaaaaaaaaaaaaa '+str(id_vehis))
 
         #Algoritmo para sacar el vehiculo que ya esta registrado y que no este caducado
         registrados = []
@@ -249,7 +249,7 @@ def search_vehiculo_placa(request):
 
         # vehiculosRenovacion = Vehiculo_Nuevo.objects.filter(Q(operador = self.object, renovando=True) | Q(operador = self.object, renovando=False, es_nuevo=True))
         # vehiculos = Vehiculo_Nuevo.objects.filter(operador=request.GET['operador'] , placa__icontains = request.GET['name']).values('id', 'propietario', 'placa')[:10]
-        vehiculos = Vehiculo_Nuevo.objects.filter(operador=request.GET['operador'] , placa__icontains = request.GET['name']).exclude(id__in=registrados).values('id', 'propietario', 'placa')[:10]
+        vehiculos = Vehiculo_Nuevo.objects.filter(operador=request.GET['operador'], es_nuevo=False , placa__icontains = request.GET['name']).exclude(id__in=registrados).values('id', 'propietario', 'placa')[:10]
         if len(vehiculos) == 0:
             return HttpResponse(
                 json.dumps(

@@ -9,7 +9,7 @@
         <h1 style="text-align:center">Vehículos Infractores</h1>
             <div class="x_content">
                 <p>
-                    <a class="btn btn-app" href="{% url 'vehiculo:crear_infraccion' %}"><i class="fa fa-edit"></i>Registrar Infracción</a>
+                    <a class="btn btn-app" style="color: white; background:rgb(25, 204, 159)" title="Registrar Infracción" data-toggle="tooltip" href="{% url 'vehiculo:crear_infraccion' %}"><i class="fa fa-edit"></i>Registrar Infracción</a>
                 </p>
                 <div class="">
                     <div class="">
@@ -34,38 +34,40 @@
                                 <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
                                   <div class="row">
                                     <div class="col-sm-12">
-                                      <table class="table table-striped table-bordered prueba dt-responsive display nowrap jambo_table" cellpadding="0" width="100%">
-                                        <thead>
-                                          <tr class="headings" >
-                                            <th>Vehículo</th>
-                                            <th>Licencia del conductor</th>
-                                            <th>Lugar</th>
-                                            <th>Tipo</th>
-                                            <th>Fecha</th>
-                                            <th>Observación</th>
-                                            <th>Infracción Cancelada</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% if infractores_vigentes %}
-                                              {% for infractor in infractores_vigentes %}
-                                              <tr>
-                                                  <td>{{ infractor.vehiculo.placa }}</td>
-                                                  <td>{{ infractor.licencia }}</td>
-                                                  <td>{{ infractor.lugar }}</td>
-                                                  <td>{{ infractor.tipo }}</td>
-                                                  <td>{{ infractor.fecha }}</td>
-                                                  <td>{{ infractor.observacion }}</td>
-                                                  <td>
-                                                      <a class="btn btn-success" href="{% url 'vehiculo:infraccion_cancelada' pk=infractor.id %}">Cancelado</a>
-                                                  </td>
-                                              </tr>
-                                              {% endfor %}
-                                            {% else %}
-                                              <h1>No hay Infractores</h1>
-                                            {% endif %}
-                                        </tbody>
-                                      </table>
+                                      <div class="scrollable" style="height: 200px; overflow: scroll">  
+                                        <table class="table table-striped table-bordered prueba dt-responsive display nowrap jambo_table" cellpadding="0" width="100%">
+                                          <thead>
+                                            <tr class="headings" >
+                                              <th>Vehículo</th>
+                                              <th>Licencia del conductor</th>
+                                              <th>Lugar</th>
+                                              <th>Tipo</th>
+                                              <th>Fecha</th>
+                                              <th>Observación</th>
+                                              <th>Infracción Cancelada</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                              {% if infractores_vigentes %}
+                                                {% for infractor in infractores_vigentes %}
+                                                <tr>
+                                                    <td>{{ infractor.vehiculo.placa }}</td>
+                                                    <td>{{ infractor.licencia }}</td>
+                                                    <td>{{ infractor.lugar }}</td>
+                                                    <td>{{ infractor.tipo }}</td>
+                                                    <td>{{ infractor.fecha }}</td>
+                                                    <td>{{ infractor.observacion }}</td>
+                                                    <td>
+                                                        <a class="btn btn-success" href="{% url 'vehiculo:infraccion_cancelada' pk=infractor.id %}">Cancelado</a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                              {% else %}
+                                                <h1>No hay Infractores</h1>
+                                              {% endif %}
+                                          </tbody>
+                                        </table>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>

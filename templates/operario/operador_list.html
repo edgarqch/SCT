@@ -5,12 +5,14 @@
 {% block content %}
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="title_left" >
+            <h3>Operadores</h3>
+        </div>
         <div class="x_panel">
-          <h1 style="display: inline-block" >OPERADORES</h1>
+          <h4>Registro de Operadores</h4>
           <div class="col-md-2"  style="float:right; padding-top:10px ">
             <div class="btn-group">
               <a target="_blank" data-toggle="tooltip" title="Imprimir" href="{% url 'operario:reporte_anual_operador' %}" class="btn btn-sm btn-primary"> <i class="fa fa-print"></i> Lista Operadores </a>
-              <!-- <a href="" class="btn btn-sm btn-primary"> <i class="fa fa-print"></i> Reporte Mensual </a> -->
             </div>
           </div>
             <div class="x_content">
@@ -30,12 +32,6 @@
                                 <span class='badge bg-green' >{{operador_n.count}}</span>
                               </a>
                             </li>
-                            <!-- <li role="presentation" class="">
-                              <a href="#tab_content3" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">
-                                <label class="form-label">Informes</label>
-                                <span class='badge bg-blue' >{{operador_inf.count}}</span>
-                              </a>
-                            </li> -->
                           </ul>
                           <div id="myTabContent" class="tab-content">
                             <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
@@ -46,9 +42,9 @@
                                       <table class="table table-striped table-bordered prueba dt-responsive display nowrap jambo_table" cellpadding="0" width="100%">
                                         <thead>
                                           <tr class="headings" >
-                                            <th  style="width: 30%;">Acciones</th>
-                                            <th  style="width: 30%;">Nombre</th>
-                                            <th  style="width: 30%;">Razón Social</th>
+                                            <th  style="width: 20%;">Acciones</th>
+                                            <th  style="width: 45%;">Nombre</th>
+                                            <th  style="width: 25%;">Razón Social</th>
                                           </tr>
                                         </thead>
                                         <tbody>
