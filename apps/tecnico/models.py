@@ -123,13 +123,31 @@ class Operador_Nuevo(models.Model):
         return False
     
     def tiene_inf_legal(self):
-        if Docs_Legal.objects.filter(operador=self, tipo='INFORME_LEGAL', vigente=True).exists():
-            return True
+        # if Docs_Legal.objects.filter(operador=self, tipo='INFORME_LEGAL', vigente=True).exists():
+        #     return True
+        # return False
+
+        if Docs_Legal.objects.filter(operador=self, tipo='INFORME_LEGAL').exists(): 
+            if len(Docs_Legal.objects.filter(operador=self, tipo='INFORME_LEGAL')) == 1:
+                return True
+            elif Docs_Legal.objects.filter(operador=self, tipo='INFORME_LEGAL', vigente=True).exists():
+                return True
+            else:
+                return False
         return False
     
     def tiene_res_administrativa(self):
-        if Docs_Legal.objects.filter(operador=self, tipo='RESOLUCION_ADMINISTRATIVA', vigente=True).exists():
-            return True
+        # if Docs_Legal.objects.filter(operador=self, tipo='RESOLUCION_ADMINISTRATIVA', vigente=True).exists():
+        #     return True
+        # return False
+
+        if Docs_Legal.objects.filter(operador=self, tipo='RESOLUCION_ADMINISTRATIVA').exists():
+            if len(Docs_Legal.objects.filter(operador=self, tipo='RESOLUCION_ADMINISTRATIVA')) == 1:
+                return True
+            elif Docs_Legal.objects.filter(operador=self, tipo='RESOLUCION_ADMINISTRATIVA', vigente=True).exists():
+                return True
+            else:
+                return False
         return False
 
     def cincodiasplazo(self):

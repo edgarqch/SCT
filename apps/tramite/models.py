@@ -21,7 +21,7 @@ class Tramite(models.Model):
 
     tiene_orden = models.BooleanField(default=False)
     finalizar = models.BooleanField(default=False)
-    vigente = models.BooleanField(default=True)
+    vigente = models.BooleanField(default=True) # Para saber cual fue el ultimo tramite que realizó el operador
 
     asignar_v = models.ManyToManyField(Vehiculo_Nuevo, through = 'Asignar_Vehiculo', related_name = 'tramite')
     class Meta:

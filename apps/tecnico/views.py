@@ -1087,7 +1087,7 @@ class EmitirDocumentos(ListView):
         for informe in informes:
             operador_in_informe_tecnico.append(informe.operador.id)
         print('ñññññññññññññññññ'+ str(operador_in_informe_tecnico))
-        queryset_operado_in_inf_tecnico = querysets.filter(vigente=True, en_tramite=True, id__in=operador_in_informe_tecnico)
+        queryset_operado_in_inf_tecnico = querysets.filter(vigente=True, en_tramite=True, id__in=operador_in_informe_tecnico).order_by('id')
         return queryset_operado_in_inf_tecnico
 
 class crearDocLeg(CreateView):

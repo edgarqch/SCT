@@ -4,8 +4,10 @@
 
 {% block content %}
 <div class="right_col" role="main">
+    <a class="btn btn-primary" href="/operador/listar/"> <i class="fa fa-backward"></i> Volver</a>
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
+
             <div class="x_panel">  
                 <div class="x_title">
                     <h2>DETALLE DEL OPERADOR "{{ object.nombre|upper }}"</small></h2>
@@ -73,7 +75,7 @@
                         <div class="scrollable" style="height: 200px; overflow: scroll">    
                             <table id="datatable" style="margin-top:1em" class="table table-striped table-bordered col-md-5 col-sm-6 col-xs-12">
                                 <thead>
-                                    <tr> 
+                                    <tr style='background-color: rgba(63,83,103,1); color:white;'> 
                                         <th>Acción</th>
                                         <th>Ruta</th>
                                         <th>Hora y/o Frecuencia</th>
@@ -126,7 +128,7 @@
                         <div class="table-responsive">
                         <table id="datatable" class="table table-striped table-bordered">
                             <thead>
-                                <tr>
+                                <tr style='background-color: rgba(63,83,103,1); color:white;'>
                                     <th>Registrar</th>
                                     <!-- <th>Fotografias</th> -->
                                     <th>Propietario</th>
@@ -192,7 +194,7 @@
                     <div class="table-responsive">
                     <table id="datatable" class="table table-striped table-bordered">
                         <thead>
-                            <tr>
+                            <tr style='background-color: rgba(63,83,103,1); color:white;'>
                                 <th>Acciones</th>
                                 <th>Fotografias</th>
                                 <th>Propietario</th>
@@ -243,7 +245,9 @@
                             </tr>
                             {% endfor %}
                             {% else %}
-                            <h3>El operador {{ object.nombre|upper }} no tiene vehiculos registrados</h3>
+                            <tr>
+                                <td colspan="11">El operador {{ object.nombre|upper }} no tiene vehiculos registrados</td>
+                            </tr>
                             {% endif %}
                         </tbody>
                     </table>
