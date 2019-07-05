@@ -1157,7 +1157,7 @@ class createDocLegal(UpdateView):
         if operador.es_nuevo:
             vehiculos = Vehiculo_Nuevo.objects.filter(operador=operador.id)
         else:
-            vehiculos = Vehiculo_Nuevo.objects.filter(operador=operador.id, renovando=True)
+            vehiculos = Vehiculo_Nuevo.objects.filter(Q(operador=operador.id, renovando=True) | Q(operador=operador.id, es_nuevo=True))
         informe_tecnico = Informe.objects.get(operador=operador.id, tipo='INFORME_TECNICO', vigente=True)
         
         tipo = self.kwargs['tip']
@@ -1750,8 +1750,11 @@ class ListarOperadorR(ListView):
         # Algoritmo para determinar si el operador esta listo para ser verificado.
         list_id = []
         for op in operador_n:
-            if Vehiculo_Nuevo.objects.filter(operador=op.id, renovando=True).exists() and Nota.objects.filter(operador_n=op.id, fenecio=False).exists():
-                list_id.append(op.id)
+            # if Vehiculo_Nuevo.objects.filter(Q(operador=op.id, renovando=True) | Q(operador=op.id, renovando=False)).exists() and Nota.objects.filter(operador_n=op.id, fenecio=False).exists():
+            if Nota.objects.filter(operador_n=op.id, fenecio=False).exists():
+                nota = Nota.objects.get(operador_n=op.id, fenecio=False)
+                if Vehiculo_Nuevo.objects.filter(Q(operador=op.id, renovando=True) | Q(operador=op.id, renovando=False)).count() == nota.cantidad_tarjetas:
+                    list_id.append(op.id)
         operador_v = Operador_Nuevo.objects.filter(id__in=list_id)
         context['operador_v'] = operador_v
         

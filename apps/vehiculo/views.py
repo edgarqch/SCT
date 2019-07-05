@@ -48,8 +48,9 @@ class detalleVehiculos(DetailView):
                 sms = 'Tramite no encontrado'
                 tramite=None
             if tramite:
-                vehiculo_asignado = Asignar_Vehiculo.objects.get(vehiculo=vehiculo.id, tramite_id=tramite.id)
-                print ('------------------------'+str(vehiculo_asignado.vehiculo_id))
+                # vehiculo_asignado = Asignar_Vehiculo.objects.filter(vehiculo=vehiculo.id, tramite_id=tramite.id)
+                vehiculo_asignado = Asignar_Vehiculo.objects.get(vehiculo_id=vehiculo.id, tramite_id=tramite.id)
+
                 context['detalle'] = vehiculo_asignado
         return context
 

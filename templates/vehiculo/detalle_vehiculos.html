@@ -29,47 +29,47 @@
                 </div>
                 <div class="x_content">
                     <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
-                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">OPERADOR: </label><label class="control-label" for="">{{ operador|upper }}</label>
+                        <b class="col-md-3 col-sm-6 col-xs-12" >OPERADOR: </b>{{ operador|upper }}
                     </div>
                     <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
-                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">IDENTIFICADOR: </label><label class="control-label" for="">{{ object.id|upper }}</label>
+                        <b class="col-md-3 col-sm-6 col-xs-12" >IDENTIFICADOR: </b>{{ object.id|upper }}
                     </div>
                     <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
-                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">PROPIETARIO: </label><label class="control-label" for="">{{ object.propietario|upper }}</label>
+                        <b class="col-md-3 col-sm-6 col-xs-12" >PROPIETARIO: </b>{{ object.propietario|upper }}
                     </div>
                     <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
-                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">PLACA: </label><label class="control-label" for="">{{ object.placa|upper }}</label>
+                        <b class="col-md-3 col-sm-6 col-xs-12" >PLACA: </b>{{ object.placa|upper }}
                     </div>
                     <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
-                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">MARCA: </label><label class="control-label" for="">{{ object.marca|upper }}</label>
+                        <b class="col-md-3 col-sm-6 col-xs-12" >MARCA: </b>{{ object.marca|upper }}
                     </div>
                     <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
-                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">MODELO: </label><label class="control-label" for="">{{ object.modelo|upper }}</label>
+                        <b class="col-md-3 col-sm-6 col-xs-12" >MODELO: </b>{{ object.modelo|upper }}
                     </div>
                     <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
-                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">CHASIS: </label><label class="control-label" for="">{{ object.chasis|upper }}</label>
+                        <b class="col-md-3 col-sm-6 col-xs-12" >CHASIS: </b>{{ object.chasis|upper }}
                     </div>
                     <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
-                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">COLOR: </label><label class="control-label" for="">{{ object.color|upper }}</label>
+                        <b class="col-md-3 col-sm-6 col-xs-12" >COLOR: </b>{{ object.color|upper }}
                     </div>
                     <div class="form-group form-horizontal col-md-6 col-sm-12 col-xs-12">
-                        <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">CAPACIDAD: </label><label class="control-label" for="">{{ object.capacidad|upper }}</label>
+                        <b class="col-md-3 col-sm-6 col-xs-12" >CAPACIDAD: </b>{{ object.capacidad|upper }}
                     </div>
                     <div class="clearfix"></div>
-                    <div class="actionBar"><h2 style="text-align:left">Información de la Tarjeta:</h2></div>
+                    <div class="actionBar"><h2 style="text-align:left">Información de la Tarjeta Vigente:</h2></div>
                     {% if detalle %}
                         <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">VALIDO POR: </label><label class="control-label" for="">{{ detalle.validez }} año</label>
+                            <b class="col-md-2 col-sm-6 col-xs-12" style="text-align:left">VALIDO POR: </b>{{ detalle.validez|upper }} AÑO
                         </div>
                         <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">DEL: </label><label class="control-label" for="">{{ detalle.valida_del|upper }}</label>
+                            <b class="col-md-2 col-sm-6 col-xs-12" style="text-align:left">DEL: </b>{{ detalle.valida_del|upper }}
                         </div>
                         <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label col-md-3 col-sm-6 col-xs-12" style="text-align:left">AL: </label><label class="control-label" for="">{{ detalle.valida_al|upper }}</label>
+                            <b class="col-md-2 col-sm-6 col-xs-12" style="text-align:left">AL: </b>{{ detalle.valida_al|upper }}
                         </div>
                     {% else %}
                         <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
-                            <h2>El vehículo aún no cuenta con tarjeta</h2>
+                            <h2>El vehículo aún no tiene tarjeta</h2>
                         </div>
                     {% endif %}
                     <div class="clearfix"></div>
@@ -83,7 +83,7 @@
                                   <div class="image view view-first">
                                     <img style="width: 100%; display: block;" src="/static/archivos/{{ foto.foto }}" alt="image" />
                                     <div class="mask">
-                                      <p>{{ object.placa|upper }} </p>
+                                      <p style="font-size: 1.7rem; ">{{ object.placa|upper }} </p>
                                       <div class="tools tools-bottom">
                                         <a href="#"><i class="fa fa-automobile"></i></a>
                                         <a href="#"><i class="fa fa-camera-retro"></i></a>

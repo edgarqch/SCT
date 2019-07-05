@@ -312,7 +312,7 @@ class ordenDeposito(View):
             data.append(fila)
             fila = []
             fila.append(Paragraph(str('Empresa:'), styles['orden']))
-            fila.append(Paragraph(str(operador.nombre), styles['orden1']))
+            fila.append(Paragraph(operador.nombre, styles['orden1']))
             data.append(fila)
             fila = []
             fila.append(Paragraph(str('Placa:'), styles['orden']))
@@ -548,16 +548,19 @@ class Tarjetas(View):
 
         data = []
         fila = []
-        fila.append(Paragraph('OPERADOR:'+ str(operador.id), styles['tramite_bold']))
-        fila.append(Paragraph(str(operador.nombre.upper()), styles['tramite_bold1']))
+        fila.append(Paragraph('OPERADOR:', styles['tramite_bold']))
+        fila.append(Paragraph(operador.nombre.upper(), styles['tramite_bold1']))
         data.append(fila)
         fila = []
         fila.append(Paragraph('PROPIETARIO:', styles['tramite_bold']))
         fila.append(Paragraph('{}'.format(vehiculo.propietario), styles['orden1']))
         fila.append(Paragraph('', styles['orden']))
         fila.append(Paragraph('', styles['orden']))
-        mensaje = 'PLACA DEL VEHICULO: {}'.format(vehiculo.placa)+'\n'
+        mensaje = 'OPERADOR: {}'.format(operador.nombre)+'\n'
+        mensaje+= 'PLACA DEL VEHICULO: {}'.format(vehiculo.placa)+'\n'
         mensaje+= 'PROPIETARIO: {}'.format(vehiculo.propietario)+'\n'
+        mensaje+= 'MARCA: {}'.format(vehiculo.marca)+'\n'
+        mensaje+= 'VALIDEZ: DEL {} AL {}'.format(asignado.valida_del, asignado.valida_al)+'\n'
 
         qr = qrcode.QRCode(
             version = 1,
