@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'apps.tecnico',
     'apps.usuario',
     'ckeditor',
-    'ckeditor_uploader'
+    'ckeditor_uploader',
+    'preventconcurrentlogins',
 ]
 
 MIDDLEWARE = [
@@ -70,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'preventconcurrentlogins.middleware.PreventConcurrentLoginsMiddleware',
 ]
 
 ROOT_URLCONF = 'sit.urls'
