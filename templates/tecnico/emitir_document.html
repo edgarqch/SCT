@@ -33,9 +33,9 @@
                     <table class="table table-striped table-bordered prueba dt-responsive display nowrap jambo_table" cellpadding="0" width="100%">
                         <thead >
                           <tr class="headings">
-                                <th style="width: 35%;">ACCIONES</th>
-                                <th style="width: 45%;">NOMBRE DE OPERADOR</th>
-                                <th style="width: 20%;">RAZON SOCIAL</th>
+                                <th style="width: 25%;">ACCIONES</th>
+                                <th style="width: 25%;">NOMBRE DE OPERADOR</th>
+                                <th style="width: 25%;">RAZÓN SOCIAL</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -46,12 +46,12 @@
                                 {% if operador.tiene_inf_legal %}
                                 <a target="_blank" data-toggle="tooltip" title="Imprimir Informe Legal" class="btn btn-default" href="{% url 'tecnico:generar_informe_legal' pk=operador.id %}"><i class="fa fa-print"></i></a>
                                 {% else %}
-                                <a class="btn btn-default" href="{% url 'tecnico:documento_legal' pk=operador.id tip=1 %}"><small>Generar Informe Legal</small></a>
+                                <a class="btn btn-default" href="{% url 'tecnico:documento_legal' pk=operador.id tip=1 %}"><small>Inf. Legal</small></a>
                                 {% endif %}
                                 {% if operador.tiene_res_administrativa %}
                                     <a target="_blank" data-toggle="tooltip" title="Imprimir Resolució Administrativa" class="btn btn-primary" href="{% url 'tecnico:generar_resolucion_administrativa' pk=operador.id %}"><i class="fa fa-print"></i></a>
                                 {% else %}
-                                    <a class="btn btn-primary" href="{% url 'tecnico:documento_legal' pk=operador.id tip=2 %}"><small>Generar Resolución Administrativa</small></a>
+                                    <a class="btn btn-primary" href="{% url 'tecnico:documento_legal' pk=operador.id tip=2 %}"><small>Res. Administrativa</small></a>
                                 {% endif %}
                             </td>
                             <td>{{ operador.nombre }}</td>

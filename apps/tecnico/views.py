@@ -351,10 +351,10 @@ class informeObs(View):
         pdf.drawImage(logo_gober, 100, 680, 60, 60,preserveAspectRatio=True)
         pdf.drawImage(logo_transporte, 450, 690, 80, 50)
         #Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         #Dibujamos una cadena en la ubicación X,Y especificada
         pdf.drawString(190, 720, u"Gobierno Autónomo Departamental de Potosí")
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         pdf.drawString(220, 700, u"Dirección Jurídica Departamental")
         pdf.setFont("Times-Roman", 8.5)
         pdf.drawString(440, 680, u"UNIDAD DE TRANSPORTE")
@@ -538,10 +538,10 @@ class informeDevol(View):
         pdf.drawImage(logo_gober, 100, 680, 60, 60,preserveAspectRatio=True)
         pdf.drawImage(logo_transporte, 450, 690, 80, 50)
         #Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         #Dibujamos una cadena en la ubicación X,Y especificada
         pdf.drawString(190, 720, u"Gobierno Autónomo Departamental de Potosí")
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         pdf.drawString(220, 700, u"Dirección Jurídica Departamental")
         pdf.setFont("Times-Roman", 8.5)
         pdf.drawString(440, 680, u"UNIDAD DE TRANSPORTE")
@@ -677,6 +677,7 @@ class informeDevol(View):
         buffer.close()
         return response
 
+from django.utils.encoding import smart_str, smart_unicode
 class informeTecnico(View):
     def encabezado_pie(self, pdf, document):
         pdf.saveState()
@@ -686,10 +687,10 @@ class informeTecnico(View):
         pdf.drawImage(logo_gober, 100, 680, 60, 60,preserveAspectRatio=True)
         pdf.drawImage(logo_transporte, 450, 690, 80, 50)
         #Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         #Dibujamos una cadena en la ubicación X,Y especificada
         pdf.drawString(190, 720, u"Gobierno Autónomo Departamental de Potosí")
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         pdf.drawString(220, 700, u"Dirección Jurídica Departamental")
         pdf.setFont("Times-Roman", 8.5)
         pdf.drawString(440, 680, u"UNIDAD DE TRANSPORTE")
@@ -709,7 +710,7 @@ class informeTecnico(View):
     def informe_tecnico(self, floables, spacer, styles, operador):
         styles.add(ParagraphStyle(name = "informe_tecnico",  alignment=TA_CENTER, fontSize=13, fontName="Times-Bold"))
         informe = Informe.objects.get(operador=operador.id, tipo='INFORME_TECNICO')
-        text = 'INFORME TECNICO'
+        text = 'INFORME TÉCNICO'
         para = Paragraph(text, styles["informe_tecnico"])
         floables.append(para)
         text = 'URRT Nº {}/{}'.format(informe.cite, informe.fecha.year)
@@ -723,31 +724,45 @@ class informeTecnico(View):
         styles.add(ParagraphStyle(name = "dirigido_f",  alignment=TA_LEFT, bulletIndent=20, fontSize=10, fontName="Times-Roman"))
         styles.add(ParagraphStyle(name = "dirigido_bold",  alignment=TA_LEFT, fontSize=10, fontName="Times-Bold"))
         floables.append(spacer)
-        text = '<bullet>A:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</bullet>Dr. Wilson Condori López'
-        print(text)
-        para = Paragraph(text, styles["dirigido_a"] )
-        floables.append(para)
-        text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>RESPONSABLE UNIDAD DE REGISTRO Y REGULACION DE TRANSPORTE'
-        para = Paragraph(text, styles["dirigido_bold"] )
-        floables.append(para)
-        floables.append(spacer)
-        text = '<bullet>De:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</bullet>Lic. Lourdes Arce Quispe'
-        para = Paragraph(text, styles["dirigido_d"] )
-        floables.append(para)
-        text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>TECNICO II UNIDAD DE REGISTRO Y REGULACION DE TRANSPORTE'
-        para = Paragraph(text, styles["dirigido_bold"] )
-        floables.append(para)
-        floables.append(spacer)
+
+        data = []
+        fila = []
+        fila.append(Paragraph('<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A:</p>', styles["dirigido_a"]))
+        fila.append(Paragraph('Dr. Wilson Condori López', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        fila.append(Paragraph('<strong>RESPONSABLE UNIDAD DE REGISTRO Y REGULACIÓN DE TRANSPORTE</strong>', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DE:</p>', styles["dirigido_a"]))
+        fila.append(Paragraph('Lic. Lourdes Arce Quispe', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        fila.append(Paragraph('<strong>TÉCNICO II UNIDAD DE REGISTRO Y REGULACIÓN DE TRANSPORTE</strong>', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REF.:</p>', styles["dirigido_a"]))
         if operador.razon_social_id == 1:
-            text = '<bullet>Ref.:&nbsp;&nbsp;&nbsp;&nbsp;</bullet><strong>SOLICITUD DE TARJETAS DE OPERACION A FAVOR DEL</strong>'
+            text = '<strong>SOLICITUD DE TARJETAS DE OPERACIÓN A FAVOR DEL {}</strong>'.format(operador.nombre.upper())
         else:
-            text = '<bullet>Ref.:&nbsp;&nbsp;&nbsp;&nbsp;</bullet><strong>SOLICITUD DE TARJETAS DE OPERACION A FAVOR DE LA</strong>'
-        para = Paragraph(text, styles["dirigido_r"] )
-        floables.append(para)
-        text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>{}'.format(operador.nombre.upper())
-        para = Paragraph(text, styles["dirigido_bold"] )
-        floables.append(para)
-        floables.append(spacer)
+            text = '<strong>SOLICITUD DE TARJETAS DE OPERACIÓN A FAVOR DE LA {}</strong>'.format(operador.nombre.upper())
+        # text.encode('utf-16')
+        fila.append(Paragraph(smart_str(text), styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        data.append(fila)
 
         informe = Informe.objects.get(operador=operador.id, tipo='INFORME_TECNICO')
         # Convertir la fecha a literal
@@ -800,14 +815,98 @@ class informeTecnico(View):
 
         anio = str(fecha.year)
 
-        text = '<bullet>Fecha:&nbsp;&nbsp;</bullet>Potosí, {} de {} de {}'.format(dia, mes, anio)
+        fila = []
+        fila.append(Paragraph('<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FECHA:</p>', styles["dirigido_a"]))
+        fila.append(Paragraph('Potosí, {} de {} de {}'.format(dia, mes, anio), styles["dirigido_a"]))
+        data.append(fila)
 
-        print('zzzzzzzzzzzzzz '+ str(mes))
-        print('zzzzzzzzzzzzzz '+ str(fecha))
+        tabla = Table(data = data, colWidths=[70,370], rowHeights=[15,15,30,15,15,50,15,50,5] )
+        floables.append(tabla)
 
+        text = '_______________________________________________________________________________________'
         para = Paragraph(text, styles["dirigido_a"] )
         floables.append(para)
 
+        # text = '<bullet>A:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</bullet>Dr. Wilson Condori López'
+        # print(text)
+        # para = Paragraph(text, styles["dirigido_a"] )
+        # floables.append(para)
+        # text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>RESPONSABLE UNIDAD DE REGISTRO Y REGULACIÓN DE TRANSPORTE'
+        # para = Paragraph(text, styles["dirigido_bold"] )
+        # floables.append(para)
+        # floables.append(spacer)
+        # text = '<bullet>De:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</bullet>Lic. Lourdes Arce Quispe'
+        # para = Paragraph(text, styles["dirigido_d"] )
+        # floables.append(para)
+        # text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>TÉCNICO II UNIDAD DE REGISTRO Y REGULACIÓN DE TRANSPORTE'
+        # para = Paragraph(text, styles["dirigido_bold"] )
+        # floables.append(para)
+        # floables.append(spacer)
+        # floables.append(spacer)
+        # if operador.razon_social_id == 1:
+        #     text = '<bullet>Ref.:&nbsp;&nbsp;&nbsp;&nbsp;</bullet><strong>SOLICITUD DE TARJETAS DE OPERACIÓN A FAVOR DEL</strong>'
+        # else:
+        #     text = '<bullet>Ref.:&nbsp;&nbsp;&nbsp;&nbsp;</bullet><strong>SOLICITUD DE TARJETAS DE OPERACIÓN A FAVOR DE LA</strong>'
+        # para = Paragraph(text, styles["dirigido_r"] )
+        # floables.append(para)
+        # text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>{}'.format(operador.nombre.upper())
+        # para = Paragraph(text, styles["dirigido_bold"] )
+        # floables.append(para)
+        # floables.append(spacer)
+        # floables.append(spacer)
+
+        # informe = Informe.objects.get(operador=operador.id, tipo='INFORME_TECNICO')
+        # # Convertir la fecha a literal
+        # fecha = informe.fecha
+        # dia = str(fecha.day)
+        # if dia == '1':
+        #     dia = '01'
+        # elif dia == '2':
+        #     dia = '02'
+        # elif dia == '3':
+        #     dia = '03'
+        # elif dia == '4':
+        #     dia = '04'
+        # elif dia == '5':
+        #     dia = '05'
+        # elif dia == '6':
+        #     dia = '06'
+        # elif dia == '7':
+        #     dia = '07'
+        # elif dia == '8':
+        #     dia = '08'
+        # elif dia == '9':
+        #     dia = '09'
+        # mes = str(fecha.month)
+        # if mes == '1':
+        #     mes = 'enero'
+        # elif mes == '2':
+        #     mes = 'febrero'
+        # elif mes == '3':
+        #     mes = 'marzo'
+        # elif mes == '4':
+        #     mes = 'abril'
+        # elif mes == '5':
+        #     mes = 'mayo'
+        # elif mes == '6':
+        #     mes = 'junio'
+        # elif mes == '7':
+        #     mes = 'julio'
+        # elif mes == '8':
+        #     mes = 'agosto'
+        # elif mes == '9':
+        #     mes = 'septiembre'
+        # elif mes == '10':
+        #     mes = 'octubre'
+        # elif mes == '11':
+        #     mes = 'noviembre'
+        # elif mes == '12':
+        #     mes = 'diciembre'
+        # anio = str(fecha.year)
+        # text = '<bullet>Fecha:</bullet>Potosí, {} de {} de {}'.format(dia, mes, anio)
+        # para = Paragraph(text, styles["dirigido_a"] )
+        # floables.append(para)
+        # floables.append(spacer)
     def antecedentes(self, floables, spacer, styles, operador):
         styles.add(ParagraphStyle(name = "antec",  alignment=TA_JUSTIFY, fontSize=10, fontName="Times-Roman"))
         styles.add(ParagraphStyle(name = "antec_bold",  alignment=TA_JUSTIFY, fontSize=10, fontName="Times-Bold"))
@@ -1168,20 +1267,20 @@ class createDocLegal(UpdateView):
         <table align="center" style="border-collapse: collapse; border: 1px solid">
             <thead>
                 <tr>
-                    <th style="vertical-align: bottom; height:20px; width: 20px; text-align: center; padding: 0.5em; border-color:black;">No.</th>
-                    <th style="vertical-align: bottom; height:20px; width: 180px; text-align: center; padding: 0.5em; border-color:black;">NOMBRE Y APELLIDO</th>
-                    <th style="vertical-align: bottom; height:20px; width: 80px; text-align: center; padding: 0.5em; border-color:black;">No. DE PLACA</th>
-                    <th style="vertical-align: bottom; height:20px; width: 100px; text-align: center; padding: 0.5em; border-color:black;">TIPO DE VEHICULO</th>
+                    <th style="vertical-align: bottom; height:80px; width: 20px; text-align: center; padding: 0.5em; border-color:black;">No.</th>
+                    <th style="vertical-align: bottom; height:80px; width: 180px; text-align: center; padding: 0.5em; border-color:black;">NOMBRE Y APELLIDO</th>
+                    <th style="vertical-align: bottom; height:80px; width: 80px; text-align: center; padding: 0.5em; border-color:black;">No. DE PLACA</th>
+                    <th style="vertical-align: bottom; height:80px; width: 100px; text-align: center; padding: 0.5em; border-color:black;">TIPO DE VEHICULO</th>
                 </tr>
             </thead>
             <tbody>'''
         contador = 1
         for vehiculo in vehiculos:
             table += '''<tr>
-                            <td style="vertical-align: bottom; height:20px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
-                            <td style="vertical-align: bottom; height:20px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
-                            <td style="vertical-align: bottom; height:20px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
-                            <td style="vertical-align: bottom; height:20px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
+                            <td style="vertical-align: bottom; height:80px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
+                            <td style="vertical-align: bottom; height:80px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
+                            <td style="vertical-align: bottom; height:80px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
+                            <td style="vertical-align: bottom; height:80px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
                         </tr>'''.format(contador, vehiculo.propietario, vehiculo.placa, vehiculo.tipo_vehiculo)
             contador += 1
         table += '''</tbody></table>'''
@@ -1629,6 +1728,9 @@ def generar_inf_legal(request,pk):
         <html>
             <head>
             <style>
+            table {
+                border:0.5px solid;
+            }
             td {
                 height: 50px;
                 
@@ -1976,10 +2078,10 @@ class informeObsRenovando(View):
         pdf.drawImage(logo_gober, 100, 680, 60, 60,preserveAspectRatio=True)
         pdf.drawImage(logo_transporte, 450, 690, 80, 50)
         #Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         #Dibujamos una cadena en la ubicación X,Y especificada
         pdf.drawString(190, 720, u"Gobierno Autónomo Departamental de Potosí")
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         pdf.drawString(220, 700, u"Dirección Jurídica Departamental")
         pdf.setFont("Times-Roman", 8.5)
         pdf.drawString(440, 680, u"UNIDAD DE TRANSPORTE")
@@ -2156,10 +2258,10 @@ class informeDevol_renovacion(View):
         pdf.drawImage(logo_gober, 100, 680, 60, 60,preserveAspectRatio=True)
         pdf.drawImage(logo_transporte, 450, 690, 80, 50)
         #Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         #Dibujamos una cadena en la ubicación X,Y especificada
         pdf.drawString(190, 720, u"Gobierno Autónomo Departamental de Potosí")
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         pdf.drawString(220, 700, u"Dirección Jurídica Departamental")
         pdf.setFont("Times-Roman", 8.5)
         pdf.drawString(440, 680, u"UNIDAD DE TRANSPORTE")
@@ -2308,10 +2410,10 @@ class informeTecnico_renovacion(View):
         pdf.drawImage(logo_gober, 100, 680, 60, 60,preserveAspectRatio=True)
         pdf.drawImage(logo_transporte, 450, 690, 80, 50)
         #Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         #Dibujamos una cadena en la ubicación X,Y especificada
         pdf.drawString(190, 720, u"Gobierno Autónomo Departamental de Potosí")
-        pdf.setFont("Times-Roman", 12)
+        pdf.setFont("Times-BoldItalic", 12)
         pdf.drawString(220, 700, u"Dirección Jurídica Departamental")
         pdf.setFont("Times-Roman", 8.5)
         pdf.drawString(440, 680, u"UNIDAD DE TRANSPORTE")
@@ -2345,64 +2447,170 @@ class informeTecnico_renovacion(View):
         styles.add(ParagraphStyle(name = "dirigido_f",  alignment=TA_LEFT, bulletIndent=20, fontSize=10, fontName="Times-Roman"))
         styles.add(ParagraphStyle(name = "dirigido_bold",  alignment=TA_LEFT, fontSize=10, fontName="Times-Bold"))
         styles.add(ParagraphStyle(name = "dirigido_bold1",  alignment=TA_LEFT, fontSize=8, fontName="Times-Bold"))
-        floables.append(spacer)
-        text = '<bullet>A:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</bullet>Dr. Wilson Condori López'
-        print(text)
-        para = Paragraph(text, styles["dirigido_a"] )
-        floables.append(para)
-        text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>RESPONSABLE UNIDAD DE REGISTRO Y REGULACION DE TRANSPORTE'
-        para = Paragraph(text, styles["dirigido_bold"] )
-        floables.append(para)
-        floables.append(spacer)
-        text = '<bullet>De:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</bullet>Lic. Lourdes Arce Quispe'
-        para = Paragraph(text, styles["dirigido_d"] )
-        floables.append(para)
-        text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>TECNICO II UNIDAD DE REGISTRO Y REGULACION DE TRANSPORTE'
-        para = Paragraph(text, styles["dirigido_bold"] )
-        floables.append(para)
-        floables.append(spacer)
-        if operador.razon_social_id == 1:
-            text = '<bullet>Ref.:&nbsp;&nbsp;&nbsp;&nbsp;</bullet><strong>SOLICITUD DE TARJETAS DE OPERACION A FAVOR DEL</strong>'
-        else:
-            text = '<bullet>Ref.:&nbsp;&nbsp;&nbsp;&nbsp;</bullet><strong>SOLICITUD DE TARJETAS DE OPERACION A FAVOR DE LA</strong>'
-        para = Paragraph(text, styles["dirigido_r"] )
-        floables.append(para)
-        text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>{}'.format(operador.nombre.upper())
-        para = Paragraph(text, styles["dirigido_bold1"] )
-        floables.append(para)
-        floables.append(spacer)
-        informe = Informe.objects.get(operador=operador.id, tipo='INFORME_TECNICO', vigente=True)
-        mes=informe.fecha.month
+        
 
-        if mes == 1:
-            mes = "enero"
-        elif mes == 2:
-            mes = "febrero"
-        elif mes == 3:
-            mes = "marzo"
-        elif mes == 4:
-            mes = "abril"
-        elif mes == 5:
-            mes = "mayo"
-        elif mes == 6:
-            mes = "junio"
-        elif mes == 7:
-            mes = "julio"
-        elif mes == 8:
-            mes = "agosto"
-        elif mes == 9:
-            mes = "septiembre"
-        elif mes == 10:
-            mes = "octubre"
-        elif mes == 11:
-            mes = "noviembre"
-        elif mes == 12:
-            mes = "diciembre"
-        text = '<bullet>Fecha:&nbsp;&nbsp;</bullet>Potosí, {} de {} de {}'.format(informe.fecha.day, mes, informe.fecha.year)
-        para = Paragraph(text, styles["dirigido_a"] )
-        floables.append(para)
+
         floables.append(spacer)
-        floables.append(spacer)
+
+        data = []
+        fila = []
+        fila.append(Paragraph('<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A:</p>', styles["dirigido_a"]))
+        fila.append(Paragraph('Dr. Wilson Condori López', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        fila.append(Paragraph('<strong>RESPONSABLE UNIDAD DE REGISTRO Y REGULACIÓN DE TRANSPORTE</strong>', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DE:</p>', styles["dirigido_a"]))
+        fila.append(Paragraph('Lic. Lourdes Arce Quispe', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        fila.append(Paragraph('<strong>TÉCNICO II UNIDAD DE REGISTRO Y REGULACIÓN DE TRANSPORTE</strong>', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REF.:</p>', styles["dirigido_a"]))
+        if operador.razon_social_id == 1:
+            text = '<strong>SOLICITUD DE TARJETAS DE OPERACIÓN A FAVOR DEL {}</strong>'.format(operador.nombre.upper())
+        else:
+            text = '<strong>SOLICITUD DE TARJETAS DE OPERACIÓN A FAVOR DE LA {}</strong>'.format(operador.nombre.upper())
+        # text.encode('utf-16')
+        fila.append(Paragraph(smart_str(text), styles["dirigido_a"]))
+        data.append(fila)
+        fila = []
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        fila.append(Paragraph('', styles["dirigido_a"]))
+        data.append(fila)
+
+        informe = Informe.objects.get(operador=operador.id, tipo='INFORME_TECNICO', vigente=True)
+        # Convertir la fecha a literal
+        fecha = informe.fecha
+
+        dia = str(fecha.day)
+        if dia == '1':
+            dia = '01'
+        elif dia == '2':
+            dia = '02'
+        elif dia == '3':
+            dia = '03'
+        elif dia == '4':
+            dia = '04'
+        elif dia == '5':
+            dia = '05'
+        elif dia == '6':
+            dia = '06'
+        elif dia == '7':
+            dia = '07'
+        elif dia == '8':
+            dia = '08'
+        elif dia == '9':
+            dia = '09'
+        mes = str(fecha.month)
+        if mes == '1':
+            mes = 'enero'
+        elif mes == '2':
+            mes = 'febrero'
+        elif mes == '3':
+            mes = 'marzo'
+        elif mes == '4':
+            mes = 'abril'
+        elif mes == '5':
+            mes = 'mayo'
+        elif mes == '6':
+            mes = 'junio'
+        elif mes == '7':
+            mes = 'julio'
+        elif mes == '8':
+            mes = 'agosto'
+        elif mes == '9':
+            mes = 'septiembre'
+        elif mes == '10':
+            mes = 'octubre'
+        elif mes == '11':
+            mes = 'noviembre'
+        elif mes == '12':
+            mes = 'diciembre'
+
+        anio = str(fecha.year)
+
+        fila = []
+        fila.append(Paragraph('<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FECHA:</p>', styles["dirigido_a"]))
+        fila.append(Paragraph('Potosí, {} de {} de {}'.format(dia, mes, anio), styles["dirigido_a"]))
+        data.append(fila)
+
+        tabla = Table(data = data, style = [('VALIGN',(0,6),(0,6),'TOP'),], colWidths=[70,370], rowHeights=[15,15,30,15,15,30,30,30,5] )
+        # tabla = Table(data = data, style = [('BOX',(0,0),(-1,-1),0.5,colors.grey),])
+        floables.append(tabla)
+
+
+
+        # floables.append(spacer)
+        # text = '<bullet>A:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</bullet>Dr. Wilson Condori López'
+        # print(text)
+        # para = Paragraph(text, styles["dirigido_a"] )
+        # floables.append(para)
+        # text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>RESPONSABLE UNIDAD DE REGISTRO Y REGULACION DE TRANSPORTE'
+        # para = Paragraph(text, styles["dirigido_bold"] )
+        # floables.append(para)
+        # floables.append(spacer)
+        # text = '<bullet>De:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</bullet>Lic. Lourdes Arce Quispe'
+        # para = Paragraph(text, styles["dirigido_d"] )
+        # floables.append(para)
+        # text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>TECNICO II UNIDAD DE REGISTRO Y REGULACION DE TRANSPORTE'
+        # para = Paragraph(text, styles["dirigido_bold"] )
+        # floables.append(para)
+        # floables.append(spacer)
+        # if operador.razon_social_id == 1:
+        #     text = '<bullet>Ref.:&nbsp;&nbsp;&nbsp;&nbsp;</bullet><strong>SOLICITUD DE TARJETAS DE OPERACION A FAVOR DEL</strong>'
+        # else:
+        #     text = '<bullet>Ref.:&nbsp;&nbsp;&nbsp;&nbsp;</bullet><strong>SOLICITUD DE TARJETAS DE OPERACION A FAVOR DE LA</strong>'
+        # para = Paragraph(text, styles["dirigido_r"] )
+        # floables.append(para)
+        # text = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>{}'.format(operador.nombre.upper())
+        # para = Paragraph(text, styles["dirigido_bold1"] )
+        # floables.append(para)
+        # floables.append(spacer)
+        # informe = Informe.objects.get(operador=operador.id, tipo='INFORME_TECNICO', vigente=True)
+        # mes=informe.fecha.month
+
+        # if mes == 1:
+        #     mes = "enero"
+        # elif mes == 2:
+        #     mes = "febrero"
+        # elif mes == 3:
+        #     mes = "marzo"
+        # elif mes == 4:
+        #     mes = "abril"
+        # elif mes == 5:
+        #     mes = "mayo"
+        # elif mes == 6:
+        #     mes = "junio"
+        # elif mes == 7:
+        #     mes = "julio"
+        # elif mes == 8:
+        #     mes = "agosto"
+        # elif mes == 9:
+        #     mes = "septiembre"
+        # elif mes == 10:
+        #     mes = "octubre"
+        # elif mes == 11:
+        #     mes = "noviembre"
+        # elif mes == 12:
+        #     mes = "diciembre"
+        # text = '<bullet>Fecha:&nbsp;&nbsp;</bullet>Potosí, {} de {} de {}'.format(informe.fecha.day, mes, informe.fecha.year)
+        # para = Paragraph(text, styles["dirigido_a"] )
+        # floables.append(para)
+        # floables.append(spacer)
+        # floables.append(spacer)
         text = '_______________________________________________________________________________________'
         para = Paragraph(text, styles["dirigido_a"] )
         floables.append(para)
