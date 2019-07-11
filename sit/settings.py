@@ -61,9 +61,10 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'preventconcurrentlogins',
+    'axes',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -72,7 +73,20 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'preventconcurrentlogins.middleware.PreventConcurrentLoginsMiddleware',
+    'axes.middleware.FailedLoginMiddleware',
 ]
+# Opciones disponibles para personalizar un poco los django-ejes . Estos deben ser definidos en su archivo settings.py .
+import datetime as dt
+delta = dt.timedelta(minutes=1)
+
+AXES_LOGIN_FAILURE_LIMIT = 3 #El numero de intentos de inicio de sesion permitidos antes de que se cree un registro para los inicios de sesion fallidos.
+AXES_LOCK_OUT_AT_FAILURE = True #Despues de que se exceda el numero de intentos de inicio de sesion permitidos, deberiamos bloquear esta IP (y el agente de usuario opcional)?
+AXES_USE_USER_AGENT = True #Si es verdadero , bloquee / inicie sesion basandose en una direccion IP Y un agente de usuario. Esto significa que las solicitudes de diferentes agentes de usuario, pero de la misma IP se tratan de manera diferente.
+AXES_COOLOFF_TIME = delta #Si se establece, define un periodo de inactividad despues del cual se olvidaran los intentos de inicio de sesion fallidos. Se puede establecer en un objeto timedelta de python o en un entero. Si es un entero, se interpretara como un numero de horas.
+AXES_LOGGER = 'axes.watch_login' #Si se establece, especifica un mecanismo de registro para que lo utilicen los ejes.
+AXES_LOCKOUT_URL = '/logout/' #Si esta configurado, especifica una URL para redirigir en el bloqueo. Si se establecen AXES_LOCKOUT_TEMPLATE y AXES_LOCKOUT_URL, se utilizara la plantilla.
+AXES_LOCKOUT_TEMPLATE = '403.html' #Si esta configurado, especifica una plantilla para renderizar cuando un usuario esta bloqueado. La plantilla recibe cooloff_time y failure_limit como variables de contexto.
+AXES_VERBOSE = True #Si es True , veras un poco mas de registro para los Ejes.
 
 ROOT_URLCONF = 'sit.urls'
 

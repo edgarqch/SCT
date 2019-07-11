@@ -22,6 +22,7 @@ from django.contrib.auth.views import login, logout_then_login
 
 from django.contrib.auth.decorators import login_required
 from apps.tramite.home import Index
+from axes.decorators import watch_login
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -33,6 +34,6 @@ urlpatterns = [
     url(r'^usuario/', include('apps.usuario.urls', namespace="usuario")),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     # url(r'^accounts/login/', login,{'template_name':'index.html'}, name='login'),
-    url(r'^accounts/login/$', login,{'template_name':'index.html'}, name='login'),
-    url(r'^logout/', logout_then_login, name='logout'),
+    url(r'^accounts/login/$', watch_login(login),{'template_name':'index.html'}, name='login'),
+    url(r'^logout/', watch_login(logout_then_login), name='logout'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
