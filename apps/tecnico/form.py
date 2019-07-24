@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from django import forms
 from django.forms import ModelForm
 from apps.tecnico.models import Operador_Nuevo, Vehiculo_Nuevo, Nota,\
-Fotos_Vehiculo, Informe, Docs_Legal, Ruta
+Fotos_Vehiculo, Informe, Docs_Legal, Ruta, Marca
 from django.contrib.admin import widgets
 from apps.tecnico.models import Vehiculo_Nuevo
 import time
@@ -177,7 +177,7 @@ class VehiculoNForm(forms.ModelForm):
                  ('CAMION', ('CAMION')),
                  ('TRACTO CAMION', ('TRACTO CAMION')),
                  ), attrs={'class':'form-control'}),
-            'marca': forms.TextInput(attrs={'class':'form-control'}),
+            'marca': forms.Select(attrs={'class':'form-control'}),
             'modelo': forms.TextInput(attrs={'type':'number' ,'class':'form-control', 'pattern':'^[0-9]+', 'min':'1960'}),
             'chasis': forms.TextInput(attrs={'class':'form-control'}),
             'capacidad': forms.TextInput(attrs={'class':'form-control'}),
@@ -254,7 +254,7 @@ class VehiculoRenovForm(forms.ModelForm):
                  ('CAMION', ('CAMION')),
                  ('TRACTO CAMION', ('TRACTO CAMION')),
                  ), attrs={'class':'form-control'}),
-            'marca': forms.TextInput(attrs={'class':'form-control'}),
+            'marca': forms.Select(attrs={'class':'form-control'}),
             'modelo': forms.TextInput(attrs={'type':'number' ,'class':'form-control', 'pattern':'^[0-9]+', 'min':'1960'}),
             'chasis': forms.TextInput(attrs={'class':'form-control'}),
             'capacidad': forms.TextInput(attrs={'class':'form-control'}),
@@ -522,3 +522,18 @@ class RutaForm(forms.ModelForm):
              'ruta': forms.TextInput(attrs={'class':'form-control', 'onkeyup':'javascript:this.value=this.value.toUpperCase();'}),
              'hora': forms.TextInput(attrs={'class':'form-control', 'onkeyup':'javascript:this.value=this.value.toUpperCase();'}),
         }
+
+class MarcaForm(forms.ModelForm):
+
+    class Meta:
+        model = Marca
+        fields = [
+            'marca',
+        ]
+        labels = {
+            'marca': 'Marca',
+        }
+        widgets = {
+             'marca': forms.TextInput(attrs={'class':'form-control', 'onkeyup':'javascript:this.value=this.value.toUpperCase();'}),
+        }
+        

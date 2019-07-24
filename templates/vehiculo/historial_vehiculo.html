@@ -1,0 +1,71 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Lisat Operador Verificar {% endblock title %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>HISTORIAL DE TARJETAS {{object_list.veviculo}}</small></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="scrollable" style="height: 500px; overflow: scroll">  
+                <table class="table table-striped table-bordered">
+                    <thead style="background:rgb(67, 74, 131); color:white">
+                        <tr>
+                            <th>TRÁMITE</th>
+                            <th>VEHÍCULO</th>
+                            <th>VALIDEZ EN AÑOS</th>
+                            <th>GESTIÓN</th>
+                            <th>MONTO</th>
+                            <th>VALIDO DEL</th>
+                            <th>VALIDO AL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if object_list %}
+                        {% for historial in object_list %}
+                        <tr>
+                            <td><p>{{historial.tramite.solicitante.nombre}}</p><p><strong>FECHA DE INGRESO TRÁMITE:</strong> {{historial.tramite.fecha_ingreso}}</p></td>
+                            <td>{{historial.vehiculo}}</td>
+                            <td>{{historial.validez}}</td>
+                            <td>{{historial.gestion}}</td>
+                            <td>{{historial.monto}}</td>
+                            <td>{{historial.valida_del}}</td>
+                            <td>{{historial.valida_al}}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <h1>No hay registros de Operarios</h1>
+                        {% endif %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/js/project.js"></script>
+  <!-- validator -->
+  <script src="/static/vendors/validator/validator.js"></script>
+{% endblock %}

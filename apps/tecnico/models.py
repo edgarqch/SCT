@@ -163,14 +163,16 @@ class Checklist_Operario(models.Model):
     operador_nuevo = models.ForeignKey(Operador_Nuevo, null=True, blank=True, on_delete=models.CASCADE, related_name = 'checklist_operario')
     observacion = models.TextField(null= True, blank= True)
     cumple = models.BooleanField(default=True)
-
+    
+    def __unicode__(self):
+        return '{} / {} / {} / {}'.format(self.operador_nuevo, self.requisitos, self.observacion, self.cumple)
 # modelos para registrar un vehiculo nuevo o de renovacion
 class Requisitos_Vehi(models.Model):
     descripcion = models.TextField(null= True, blank= True)
     
     def __unicode__(self):
         # return '{}'.format(self.descripcion)
-        return str(self.descripcion)
+        return '{}'.format(self.descripcion)
 
 class Tipo_Vehiculo(models.Model):
     nombre = models.CharField(max_length=50, null=True, blank=True)
@@ -187,13 +189,22 @@ class requisitos_vehiculo_tipo(models.Model):
         managed = False
         db_table = 'tecnico_tipo_vehiculo_requisitos_v'
 
+    def __unicode__(self):
+        return '{} / {} '.format(self.tipo_vehiculo, self.requisitos_vehi)
+
+class Marca(models.Model):
+    marca = models.CharField(max_length= 30, null= True, blank= True)
+    
+    def __unicode__(self):
+        return '{}'.format(self.marca)
+
 class Vehiculo_Nuevo(models.Model):
     operador = models.ForeignKey(Operador_Nuevo, null=True, blank=True, on_delete=models.CASCADE, related_name='vehiculo')
     tipo = models.ForeignKey(Tipo_Vehiculo, null=True, blank=True, on_delete=models.CASCADE)
     propietario = models.CharField(max_length= 75, null= True, blank= True)
     placa = models.CharField(max_length= 10, null= True, blank= True)
     tipo_vehiculo = models.CharField(max_length= 75, null= True, blank= True)
-    marca = models.CharField(max_length= 75, null= True, blank= True)
+    marca = models.ForeignKey(Marca, null=True, blank=True, on_delete=models.CASCADE, related_name='vehiculo')
     modelo = models.IntegerField(null= True, blank= True)
     chasis = models.CharField(max_length= 75, null= True, blank= True)
     capacidad = models.CharField(max_length= 75, null= True, blank= True)
@@ -228,9 +239,15 @@ class Checklist_Vehiculo(models.Model):
     # Variables de control del checklist
     vigente = models.BooleanField(default=True) # variable para saber si el check pertenece a una verificacion actual
 
+    def __unicode__(self):
+        return '{} / {} / {} / {}'.format(self.vehiculo_nuevo, self.requisitos, self.observacion, self.cumple)
+
 class Fotos_Vehiculo(models.Model):
     vehiculo = models.ForeignKey(Vehiculo_Nuevo, null=True, blank=True, on_delete=models.CASCADE, related_name='fotos')
     foto = models.FileField(upload_to = 'fotos-vehiculos', null=True, blank=True)
+    
+    def __unicode__(self):
+        return '{}'.format(self.foto)
 # Modelo de notas
 class Nota(models.Model):
     operador_n =  models.ForeignKey(Operador_Nuevo, null=True, blank=True, on_delete=models.CASCADE)
@@ -244,10 +261,15 @@ class Nota(models.Model):
     devuelto = models.BooleanField(default=False) # indica si se otorgo la devolucion por falta de requisitos
     # Variables de control
     fenecio = models.BooleanField(default=False) # control para saber si la nota de un operador ya feneció, ejm. si se quiere hacer renovacion se necesita que la nota anterior ya fenezca.
+
+    def __unicode__(self):
+        return '{} / {} / {} / {}'.format(self.operador_n, self.cite, self.fecha, self.cite)
+
 # modelo Informes observados devolucion info técnico
 class Informe(models.Model):
     operador =  models.ForeignKey(Operador_Nuevo, null=True, blank=True, on_delete=models.CASCADE)
     cite = models.CharField(max_length= 10, null= True, blank= True)
+    numero_inf = models.IntegerField(null= True, blank= True)
     fecha = models.DateField(null=True, blank=True)
     tipo = models.CharField(max_length= 20, null= True, blank= True)
     ans_tecnico = models.TextField(null= True, blank=True)
@@ -255,6 +277,9 @@ class Informe(models.Model):
     anterior = models.ForeignKey("Informe", null=True, blank=True, on_delete=models.CASCADE)
     #variables de control
     vigente = models.BooleanField(default=True)
+    
+    def __unicode__(self):
+        return '{} / {} / {} / {}'.format(self.operador, self.cite, self.fecha, self.tipo)
 
 class Docs_Legal(models.Model):
     operador =  models.ForeignKey(Operador_Nuevo, null=True, blank=True, on_delete=models.CASCADE)
@@ -270,10 +295,16 @@ class Docs_Legal(models.Model):
             ('administrar_doc_legal', 'Puede administrar documentos legales'),
         )
 
+    def __unicode__(self):
+        return '{} / {} / {} / {}'.format(self.operador, self.tipo, self.cite, self.fecha)
+
 class Ruta(models.Model):
     operador =  models.ForeignKey(Operador_Nuevo, null=True, blank=True, on_delete=models.CASCADE)
     ruta = models.CharField(max_length= 100, null= True, blank= True)
     hora = models.CharField(max_length= 100, null= True, blank= True)
+
+    def __unicode__(self):
+        return '{} / {} / {}'.format(self.operador, self.ruta, self.hora)
 
 class Infraccion(models.Model):
     vehiculo = models.ForeignKey(Vehiculo_Nuevo, null=True, blank=True, on_delete=models.CASCADE)
@@ -284,3 +315,6 @@ class Infraccion(models.Model):
     fecha = models.DateField(null=True, blank=True)
 
     cancelado = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return '{} / {}'.format(self.vehiculo, self.fecha)

@@ -18,12 +18,13 @@ from django.contrib.auth.decorators import permission_required
 
 
 # Import your forms here.
-from apps.tecnico.form import OperarioNuevoForm, OperarioRenovarForm , VehiculoNForm, VehiculoForm, VehiculoRenovForm, NotaForm, FotoVehiculoForm, InformeForm, DocsLegalForm, DocsForm
+from apps.tecnico.form import OperarioNuevoForm, OperarioRenovarForm , VehiculoNForm, VehiculoForm,\
+VehiculoRenovForm, NotaForm, FotoVehiculoForm, InformeForm, DocsLegalForm, DocsForm, MarcaForm
 
 # Import your models here.
 from apps.tecnico.models import Operador_Nuevo, Vehiculo_Nuevo, Tipo_Vehiculo, Checklist_Operario,\
 requisitos_vehiculo_tipo, Requisitos_Vehi, Checklist_Vehiculo, Nota, Fotos_Vehiculo, Informe, Docs_Legal,\
-Ruta
+Ruta, Marca
 from apps.operario.models import Requisitos_RS, requisitos_razon_social, Razon_Social
 
 # Import for PDF documents ReportLab
@@ -271,7 +272,7 @@ class VerificarVehiculo(DetailView):
         lista = []
         for a in requisitos_tipo:
             lista.append(a.requisitos_vehi.id)
-        print ('/***********' + str(lista))
+        # print ('/***********' + str(lista))
         requisitos_v = Requisitos_Vehi.objects.filter(id__in = lista)
         if not Checklist_Vehiculo.objects.filter(vehiculo_nuevo=self.object).exists():    
             for b in requisitos_v:
@@ -355,7 +356,7 @@ class informeObs(View):
         #Dibujamos una cadena en la ubicación X,Y especificada
         pdf.drawString(190, 720, u"Gobierno Autónomo Departamental de Potosí")
         pdf.setFont("Times-BoldItalic", 12)
-        pdf.drawString(220, 700, u"Dirección Jurídica Departamental")
+        pdf.drawString(220, 700, u"Secretaría Jurídica Departamental")
         pdf.setFont("Times-Roman", 8.5)
         pdf.drawString(440, 680, u"UNIDAD DE TRANSPORTE")
         logo_dakar = settings.MEDIA_ROOT+'/informes/logo_dakar.jpg'
@@ -365,7 +366,7 @@ class informeObs(View):
         pdf.drawImage(logo_banderas, 180, 12, 250, 15, mask='auto')
         pdf.roundRect(450, 10, 100, 40, 5, stroke = 1)
         pdf.setFont("Times-Roman", 6)
-        pdf.drawString(476, 40, u"Dirección Jurídica")
+        pdf.drawString(476, 40, u"Secretaría Jurídica")
         pdf.drawString(460, 33, u"Plaza de Armas 10 de Noviembre")
         pdf.drawString(476, 26, u"Teléfono 62 29292")
         pdf.drawString(483, 19, u"Fax 6227477")
@@ -374,7 +375,7 @@ class informeObs(View):
     def informe_obs(self, floables, spacer, styles, operador):
         styles.add(ParagraphStyle(name = "informe_obs",  alignment=TA_RIGHT, fontSize=10, fontName="Times-Roman"))
         informe = Informe.objects.get(operador=operador.id, tipo='OBSERVACION')
-        text = 'Potosí, {}'.format(informe.fecha)
+        text = 'Potosí, {}/{}/{}'.format(informe.fecha.day, informe.fecha.month, informe.fecha.year)
         para = Paragraph(text, styles["informe_obs"] )
         floables.append(para)
         text = 'Cite ADM/URRT/DJD Nº {}/{}'.format(informe.cite, informe.fecha.year)
@@ -384,14 +385,14 @@ class informeObs(View):
     def dirigido(self, floables, spacer, styles, operador):
         styles.add(ParagraphStyle(name = "dirigido",  alignment=TA_JUSTIFY, fontSize=10, fontName="Times-Roman"))
         floables.append(spacer)
-        text = 'señor:'
+        text = 'Señor:'
         para = Paragraph(text, styles["dirigido"] )
         floables.append(para)
         nota = Nota.objects.get(operador_n=operador.id)
         text = '{}.'.format(nota.representante_ente)
         para = Paragraph(text, styles["dirigido"] )
         floables.append(para)
-        text = '{} DEL(LA) {}.'.format(nota.cargo_repr.upper(), nota.nombre_ente.upper())
+        text = '{} DE(LA) {}.'.format(nota.cargo_repr.upper(), nota.nombre_ente.upper())
         para = Paragraph(text, styles["dirigido"] )
         floables.append(para)
     
@@ -401,7 +402,10 @@ class informeObs(View):
         text = 'Presente.-'
         para = Paragraph(text, styles["ref"] )
         floables.append(para)
-        text = 'Ref.: DOCUMENTOS OBSERVADOS DEL {}'.format(operador.nombre.upper())
+        if (operador.razon_social.id ==1):
+            text = 'Ref.: DOCUMENTOS OBSERVADOS DEL {}'.format(operador.nombre.upper())
+        else:
+            text = 'Ref.: DOCUMENTOS OBSERVADOS DE LA {}'.format(operador.nombre.upper())
         para = Paragraph(text, styles["ref"] )
         floables.append(para)
 
@@ -413,12 +417,14 @@ class informeObs(View):
         para = Paragraph(text, styles["inicio"] )
         floables.append(para)
         floables.append(spacer)
-        text = '''La Unidad de Registro y Regulación de Transporte dependiente de la Dirección Jurídica del Gobierno Autónomo Departamental de Potosí, ha recibido lo siguiente: la nota del {} con Cite Nº {}/{} del {} afiliados a la {}, donde se solicita tramite de Tarjetas de Operación por lo que se tiene las siguientes observaciones:
+        text = '''La Unidad de Registro y Regulación de Transporte dependiente de la Secretaría Jurídica del Gobierno Autónomo Departamental de Potosí, ha recibido lo siguiente: la nota del {}/{}/{} con Cite Nº {}/{} del {} afiliados a la {}, donde se solicita tramite de Tarjetas de Operación por lo que se tiene las siguientes observaciones:
         '''.format(
-            nota.fecha,
+            nota.fecha.day,
+            nota.fecha.month,
+            nota.fecha.year,
             nota.cite,
             nota.fecha.year,
-            operador.nombre,
+            operador.nombre.title(),
             nota.nombre_ente
         )
         para = Paragraph(text, styles["inicio"] )
@@ -427,8 +433,6 @@ class informeObs(View):
     def obs_operador(self, floables, spacer, styles, operador):
         styles.add(ParagraphStyle(name = "obs_op",  alignment=TA_JUSTIFY, fontSize=10, fontName="Times-Roman",bulletFontSize = 1,bulletOffsetY = -1.5, leftIndent = 35.8, bulletText="*"),alias='ul')
         checklist_op = Checklist_Operario.objects.filter(operador_nuevo=operador.id, cumple=False)
-        print('jjjjjjjjjjjj'+str(checklist_op))
-        floables.append(spacer)
         for i in checklist_op:
             text = '{}.'.format(i.observacion)
             para = Paragraph(text, styles["obs_op"] )
@@ -444,7 +448,6 @@ class informeObs(View):
         floables.append(para)
         floables.append(spacer)
         vehiculos_obs = Vehiculo_Nuevo.objects.filter(id__in=vehi_obs_ids)
-        print('.--.-.-.-.-------'+ str(vehiculos_obs))
         
         encabezado_tabla=['No.', 'Nombre y apellido', 'Placa', 'Observaciones']
         data = [encabezado_tabla]
@@ -453,15 +456,18 @@ class informeObs(View):
             observaciones = Checklist_Vehiculo.objects.filter(vehiculo_nuevo=vehiculo.id, cumple=False)
             fila = []
             fila.append(Paragraph(str(num), styles["obs_vehi"]))
-            fila.append(Paragraph(vehiculo.propietario, styles["obs_vehi"]))
+            fila.append(Paragraph(vehiculo.propietario.title(), styles["obs_vehi"]))
             fila.append(Paragraph(vehiculo.placa, styles["obs_vehi"]))
             textobs2 = ''
-            for observacion in observaciones:
-                textobs2 += str(observacion.observacion) + ', '
+            ob = observaciones.count()
+            for obs in range(ob):
+                if (ob-1 == obs):
+                    textobs2 += str(observaciones[obs].observacion.capitalize())
+                else:
+                    textobs2 += str(observaciones[obs].observacion.capitalize()) + ', '
             fila.append(Paragraph(textobs2, styles["obs_vehi"]))
             data.append(fila)
             num += 1
-        print('++++++++****'+ str(data))
 
         tabla = Table(data = data, style = [('GRID',(0,0),(-1,-1),0.5,colors.grey),], colWidths=[22,150,60,210] )
         floables.append(tabla)
@@ -469,7 +475,10 @@ class informeObs(View):
     def fin_carta(self, floables, spacer, styles, operador):
         styles.add(ParagraphStyle(name = "fin",  alignment=TA_JUSTIFY, fontSize=10, fontName="Times-Roman"))
         floables.append(spacer)
-        text = '''Es en este sentido que el {}, no cumplen los requisitos exigidos por la Unidad de Transporte segun el Reglameto de Transporte Interprovincial e Intermunicipal de carga y/o pasajeros del Departamento de Potosí para trámite de tarjetas de operaciones teniendo un lapso de cinco días hábiles desde la recepción de la presente para subsanar, caso contrario se efectuará la devolución de la documentación.'''.format(operador.nombre)
+        if (operador.razon_social.id == 1):
+            text = '''Es en este sentido que el {}, no cumplen los requisitos exigidos por la Unidad de Transporte segun el Reglameto de Transporte Interprovincial e Intermunicipal de carga y/o pasajeros del Departamento de Potosí para trámite de tarjetas de operaciones teniendo un lapso de cinco días hábiles desde la recepción de la presente para subsanar, caso contrario se efectuará la devolución de la documentación.'''.format(operador.nombre)
+        else:
+            text = '''Es en este sentido que la {}, no cumplen los requisitos exigidos por la Unidad de Transporte segun el Reglameto de Transporte Interprovincial e Intermunicipal de carga y/o pasajeros del Departamento de Potosí para trámite de tarjetas de operaciones teniendo un lapso de cinco días hábiles desde la recepción de la presente para subsanar, caso contrario se efectuará la devolución de la documentación.'''.format(operador.nombre)
 
         para = Paragraph(text, styles["fin"] )
         floables.append(para)
@@ -481,10 +490,10 @@ class informeObs(View):
         floables.append(spacer)
         floables.append(spacer)
         floables.append(spacer)
-        text = '''Lic. Lourdes Arce Quispe'''
+        text = '''Abg. Ángela Berrios Lizarazu'''
         para = Paragraph(text, styles["firma"] )
         floables.append(para)
-        text = '''TECNICO II UNIDAD DE REGISTRO Y REGULACION DE TRANSPORTE'''
+        text = '''TECNICO II UNIDAD DE REGISTRO Y REGULACIÓN DE TRANSPORTE'''
         para = Paragraph(text, styles["firma"] )
         floables.append(para)
 
@@ -512,7 +521,6 @@ class informeObs(View):
             # if Checklist_Vehiculo.objects.filter(vehiculo_nuevo__in=vehiculo, cumple= False).exists():
             if Checklist_Vehiculo.objects.filter(vehiculo_nuevo=vehiculo.id, cumple=False).exists():
                 vehi_obs_ids.append(vehiculo.id)
-        print('222222222222'+str(vehi_obs_ids))
 
         self.informe_obs(flowables, spacer, styles, operador)
         self.dirigido(flowables, spacer, styles, operador)
@@ -542,7 +550,7 @@ class informeDevol(View):
         #Dibujamos una cadena en la ubicación X,Y especificada
         pdf.drawString(190, 720, u"Gobierno Autónomo Departamental de Potosí")
         pdf.setFont("Times-BoldItalic", 12)
-        pdf.drawString(220, 700, u"Dirección Jurídica Departamental")
+        pdf.drawString(220, 700, u"Secretaría Jurídica Departamental")
         pdf.setFont("Times-Roman", 8.5)
         pdf.drawString(440, 680, u"UNIDAD DE TRANSPORTE")
         logo_dakar = settings.MEDIA_ROOT+'/informes/logo_dakar.jpg'
@@ -552,7 +560,7 @@ class informeDevol(View):
         pdf.drawImage(logo_banderas, 180, 12, 250, 15, mask='auto')
         pdf.roundRect(450, 10, 100, 40, 5, stroke = 1)
         pdf.setFont("Times-Roman", 6)
-        pdf.drawString(476, 40, u"Dirección Jurídica")
+        pdf.drawString(476, 40, u"Secretaría Jurídica")
         pdf.drawString(460, 33, u"Plaza de Armas 10 de Noviembre")
         pdf.drawString(476, 26, u"Teléfono 62 29292")
         pdf.drawString(483, 19, u"Fax 6227477")
@@ -561,7 +569,7 @@ class informeDevol(View):
     def informe_devol(self, floables, spacer, styles, operador):
         styles.add(ParagraphStyle(name = "informe_devol",  alignment=TA_RIGHT, fontSize=10, fontName="Times-Roman"))
         informe = Informe.objects.get(operador=operador.id, tipo='DEVOLUCION')
-        text = 'Potosí, {}'.format(informe.fecha)
+        text = 'Potosí, {}/{}/{}'.format(informe.fecha.day, informe.fecha.month, informe.fecha.year,)
         para = Paragraph(text, styles["informe_devol"] )
         floables.append(para)
         text = 'Cite ADM/URRT/DJD Nº {}/{}'.format(informe.cite, informe.fecha.year)
@@ -571,7 +579,7 @@ class informeDevol(View):
     def dirigido(self, floables, spacer, styles, operador):
         styles.add(ParagraphStyle(name = "dirigido",  alignment=TA_JUSTIFY, fontSize=10, fontName="Times-Roman"))
         floables.append(spacer)
-        text = 'señor:'
+        text = 'Señor:'
         para = Paragraph(text, styles["dirigido"] )
         floables.append(para)
         nota = Nota.objects.get(operador_n=operador.id)
@@ -588,7 +596,10 @@ class informeDevol(View):
         text = 'Presente.-'
         para = Paragraph(text, styles["ref"] )
         floables.append(para)
-        text = 'Ref.: DEVOLUCION DE DOCUMENTACION DEL(LA) {}'.format(operador.nombre.upper())
+        if (operador.razon_social.id ==1):
+            text = 'Ref.: DEVOLUCION DE DOCUMENTACION DEL {}'.format(operador.nombre.upper())
+        else:
+            text = 'Ref.: DEVOLUCION DE DOCUMENTACION DE LA {}'.format(operador.nombre.upper())
         para = Paragraph(text, styles["ref"] )
         floables.append(para)
 
@@ -600,9 +611,11 @@ class informeDevol(View):
         para = Paragraph(text, styles["inicio"] )
         floables.append(para)
         floables.append(spacer)
-        text = '''La Unidad de Registro y Regulación de Transporte dependiente de la Dirección Jurídica del Gobierno Autónomo Departamental de Potosí, ha recibido lo siguiente: la nota del {} con Cite Nº {}/{} del {} afiliados a la {}, donde se solicita tramite de Tarjetas de Operación para un total de {} vehículos:
+        text = '''La Unidad de Registro y Regulación de Transporte dependiente de la Secretaría Jurídica del Gobierno Autónomo Departamental de Potosí, ha recibido lo siguiente: la nota del {}/{}/{} con Cite Nº {}/{} del {} afiliados a la {}, donde se solicita tramite de Tarjetas de Operación para un total de {} vehículos:
         '''.format(
-            nota.fecha,
+            nota.fecha.day,
+            nota.fecha.month,
+            nota.fecha.year,
             nota.cite,
             nota.fecha.year,
             operador.nombre,
@@ -616,8 +629,10 @@ class informeDevol(View):
         styles.add(ParagraphStyle(name = "fin",  alignment=TA_JUSTIFY, fontSize=10, fontName="Times-Roman"))
         informe_obs = Informe.objects.get(operador=operador.id, tipo='OBSERVACION')
         floables.append(spacer)
-        text = '''Es en este sentido que en fecha {} con Cite ADM/URRT/DJD N° {}/{} se efectuó la observación al {} quienes no subsanaron estas observaciones Hasta la fecha..'''.format(
-            informe_obs.fecha,
+        text = '''Es en este sentido que en fecha {}/{}/{} con Cite ADM/URRT/DJD N° {}/{} se efectuó la observación al {} quienes no subsanaron estas observaciones Hasta la fecha..'''.format(
+            informe_obs.fecha.day,
+            informe_obs.fecha.month,
+            informe_obs.fecha.year,
             informe_obs.cite,
             informe_obs.fecha.year,
             operador.nombre,
@@ -628,7 +643,7 @@ class informeDevol(View):
         para = Paragraph(text, styles["fin"] )
         floables.append(para)
         floables.append(spacer)
-        text = '''Sin otro particulaer motivo, me despido con las consideraciones más distinguidas'''
+        text = '''Sin otro particular motivo, me despido con las consideraciones más distinguidas'''
         para = Paragraph(text, styles["fin"] )
         floables.append(para)
 
@@ -639,7 +654,7 @@ class informeDevol(View):
         floables.append(spacer)
         floables.append(spacer)
         floables.append(spacer)
-        text = '''Lic. Lourdes Arce Quispe'''
+        text = '''Abg. Ángela Berrios Lizarazu'''
         para = Paragraph(text, styles["firma"] )
         floables.append(para)
         text = '''TECNICO II UNIDAD DE REGISTRO Y REGULACION DE TRANSPORTE'''
@@ -691,7 +706,7 @@ class informeTecnico(View):
         #Dibujamos una cadena en la ubicación X,Y especificada
         pdf.drawString(190, 720, u"Gobierno Autónomo Departamental de Potosí")
         pdf.setFont("Times-BoldItalic", 12)
-        pdf.drawString(220, 700, u"Dirección Jurídica Departamental")
+        pdf.drawString(220, 700, u"Secretaría Jurídica Departamental")
         pdf.setFont("Times-Roman", 8.5)
         pdf.drawString(440, 680, u"UNIDAD DE TRANSPORTE")
         logo_dakar = settings.MEDIA_ROOT+'/informes/logo_dakar.jpg'
@@ -701,7 +716,7 @@ class informeTecnico(View):
         pdf.drawImage(logo_banderas, 180, 12, 250, 15, mask='auto')
         pdf.roundRect(450, 10, 100, 40, 5, stroke = 1)
         pdf.setFont("Times-Roman", 6)
-        pdf.drawString(476, 40, u"Dirección Jurídica")
+        pdf.drawString(476, 40, u"Secretaría Jurídica")
         pdf.drawString(460, 33, u"Plaza de Armas 10 de Noviembre")
         pdf.drawString(476, 26, u"Teléfono 62 29292")
         pdf.drawString(483, 19, u"Fax 6227477")
@@ -740,7 +755,7 @@ class informeTecnico(View):
         data.append(fila)
         fila = []
         fila.append(Paragraph('<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DE:</p>', styles["dirigido_a"]))
-        fila.append(Paragraph('Lic. Lourdes Arce Quispe', styles["dirigido_a"]))
+        fila.append(Paragraph('Abg. Ángela Berrios Lizarazu', styles["dirigido_a"]))
         data.append(fila)
         fila = []
         fila.append(Paragraph('', styles["dirigido_a"]))
@@ -907,6 +922,7 @@ class informeTecnico(View):
         # para = Paragraph(text, styles["dirigido_a"] )
         # floables.append(para)
         # floables.append(spacer)
+
     def antecedentes(self, floables, spacer, styles, operador):
         styles.add(ParagraphStyle(name = "antec",  alignment=TA_JUSTIFY, fontSize=10, fontName="Times-Roman"))
         styles.add(ParagraphStyle(name = "antec_bold",  alignment=TA_JUSTIFY, fontSize=10, fontName="Times-Bold"))
@@ -922,14 +938,14 @@ class informeTecnico(View):
             if operador.razon_social_id == 1:
                 text = 'La {}, en representación del {} mediante Nota con Cite N° {}/{} solicita Tarjetas de Operación, presentando la documentación correspondiente y exigida por la Unidad de Transporte según el Reglamento de Transporte Interprovincial e Intermunicipal de carga y/o pasajeros del Departamento de Potosí:'.format(
                     nota.nombre_ente, 
-                    operador.nombre.upper(),
+                    operador.nombre.title(),
                     nota.cite,
                     nota.fecha.year,
                     )
             else:
                 text = 'La {}, en representación de la {} mediante Nota con Cite N° {}/{} solicita Tarjetas de Operación, presentando la documentación correspondiente y exigida por la Unidad de Transporte según el Reglamento de Transporte Interprovincial e Intermunicipal de carga y/o pasajeros del Departamento de Potosí:'.format(
                     nota.nombre_ente, 
-                    operador.nombre.upper(),
+                    operador.nombre.title(),
                     nota.cite,
                     nota.fecha.year,
                    )
@@ -937,16 +953,16 @@ class informeTecnico(View):
             floables.append(para)
         else:
             if operador.razon_social_id == 1:
-                text = 'El {} en representación del(a) {} mediante Cite N° {}/{} solicita la renovación de Tarjetas de Operación para su parque automotor, presentando la documentacion correspondiente y exigida por la Unidad de Transporte según el Reglamento de Transporte Interprovincial eIntermunicipal de carga y/o pasajeros del Departamento de Potosí:'.format(
+                text = 'El {} en representación de(la) {} mediante Cite N° {}/{} solicita la renovación de Tarjetas de Operación para su parque automotor, presentando la documentacion correspondiente y exigida por la Unidad de Transporte según el Reglamento de Transporte Interprovincial eIntermunicipal de carga y/o pasajeros del Departamento de Potosí:'.format(
                     nota.nombre_ente,
-                    operador.nombre,
+                    operador.nombre.title(),
                     nota.cite,
                     nota.fecha.year,
                     )
             else:
-                text = 'La {} en representación del(a) {} mediante Cite N° {}/{} solicita la renovación de Tarjetas de Operación para su parque automotor, presentando la documentacion correspondiente y exigida por la Unidad de Transporte según el Reglamento de Transporte Interprovincial eIntermunicipal de carga y/o pasajeros del Departamento de Potosí:'.format(
+                text = 'La {} en representación de(la) {} mediante Cite N° {}/{} solicita la renovación de Tarjetas de Operación para su parque automotor, presentando la documentacion correspondiente y exigida por la Unidad de Transporte según el Reglamento de Transporte Interprovincial eIntermunicipal de carga y/o pasajeros del Departamento de Potosí:'.format(
                     nota.nombre_ente,
-                    operador.nombre,
+                    operador.nombre.title(),
                     nota.cite,
                     nota.fecha.year,
                     )
@@ -955,15 +971,15 @@ class informeTecnico(View):
         floables.append(spacer)
         if operador.es_nuevo == True:
             rs = Razon_Social.objects.get(nombre = operador.razon_social)
-            print('-c-c-c-c-c-c-c'+str(rs))
+            # print('-c-c-c-c-c-c-c'+str(rs))
             queryset_requisitos = requisitos_razon_social.objects.filter(razon_social = rs).order_by('id')
-            print('-c-c-c-c-c-c-c'+str(queryset_requisitos))
+            # print('-c-c-c-c-c-c-c'+str(queryset_requisitos))
             lista = []
             for a in queryset_requisitos:
                 lista.append(a.requisitos_rs.id)
-                print ('//////////------' + str(lista))
+                # print ('//////////------' + str(lista))
             requisitos = Requisitos_RS.objects.filter(id__in=lista)
-            print ('//////////------' + str(requisitos))
+            # print ('//////////------' + str(requisitos))
             if requisitos:
                 text = 'OBSERVACIONES AL OPERADOR'
                 para = Paragraph(text, styles["center"])
@@ -978,7 +994,7 @@ class informeTecnico(View):
             
             floables.append(spacer)
             requisitos_vehiculos = Requisitos_Vehi.objects.exclude(id=7)
-            print ('//////////------' + str(requisitos_vehiculos))
+            # print ('//////////------' + str(requisitos_vehiculos))
             for requisito in requisitos_vehiculos:
                 text = '{}'.format(requisito.descripcion)
                 para = Paragraph(text, styles["antc_bullet_1"])
@@ -993,7 +1009,7 @@ class informeTecnico(View):
         styles.add(ParagraphStyle(name = "analisis_center",  alignment=TA_CENTER, fontSize=10, fontName="Times-Roman"))
         styles.add(ParagraphStyle(name = "analisis_bullet",  alignment=TA_JUSTIFY, fontSize=10, fontName="Times-Roman", bulletText="*"))
         floables.append(spacer)
-        text = 'II ANÁLISIS TECNICO.'
+        text = 'II ANÁLISIS TÉCNICO.'
         para = Paragraph(text, styles["analisis_bold"] )
         floables.append(para)
         floables.append(spacer)
@@ -1004,12 +1020,12 @@ class informeTecnico(View):
         nota = Nota.objects.get(operador_n=operador.id)
         if operador.razon_social_id == 1:
             text = '1.- La solicitud presentada por el {} ha sido presentada por su Ente Matriz - {}.'.format(
-                operador.nombre,
+                operador.nombre.title(),
                 nota.nombre_ente,
            )
         else:
             text = '1.- La solicitud presentada por la {} ha sido presentada por su Ente Matriz - {}.'.format(
-                operador.nombre,
+                operador.nombre.title(),
                 nota.nombre_ente,
             )
         para = Paragraph(text, styles["analisis"] )
@@ -1071,9 +1087,9 @@ class informeTecnico(View):
             floables.append(tabla)
 
         if operador.razon_social_id == 1:
-            text = '3.- El {} solicita Tarjetas de Operación Interprovincial para el siguiente parque automotor:'.format(operador.nombre)
+            text = '3.- El {} solicita Tarjetas de Operación Interprovincial para el siguiente parque automotor:'.format(operador.nombre.title())
         else:
-            text = '3.- La {} solicita Tarjetas de Operación Interprovincial para el siguiente parque automotor:'.format(operador.nombre)
+            text = '3.- La {} solicita Tarjetas de Operación Interprovincial para el siguiente parque automotor:'.format(operador.nombre.title())
         para = Paragraph(text, styles["analisis_bullet"] )
         floables.append(para)
         floables.append(spacer)
@@ -1082,7 +1098,7 @@ class informeTecnico(View):
         floables.append(para)
         floables.append(spacer)
         vehiculos = Vehiculo_Nuevo.objects.filter(operador=operador.id)
-        encabezado_tabla=['No.', 'Nombre y apellido', 'Placa']
+        encabezado_tabla=['No.', 'Nombre y apellido', 'Placa', 'Tipo']
         data = [encabezado_tabla]
         num = 1
         for vehiculo in vehiculos:
@@ -1090,11 +1106,12 @@ class informeTecnico(View):
             fila.append(Paragraph(str(num), styles["analisis"]))
             fila.append(Paragraph(vehiculo.propietario, styles["analisis"]))
             fila.append(Paragraph(vehiculo.placa, styles["analisis"]))
+            fila.append(Paragraph(vehiculo.tipo_vehiculo, styles["analisis"]))
             data.append(fila)
             num += 1
-        print('++++++++****'+ str(data))
+        # print('++++++++****'+ str(data))
 
-        tabla = Table(data = data, style = [('GRID',(0,0),(-1,-1),0.5,colors.grey),], colWidths=[22,150,60,210] )
+        tabla = Table(data = data, style = [('GRID',(0,0),(-1,-1),0.5,colors.black),('BACKGROUND',(0,0),(3,0),colors.grey),('TEXTCOLOR',(0,0),(3,0),colors.white)], colWidths=[22,150,60,100] )
         floables.append(tabla)
         floables.append(spacer)
 
@@ -1110,7 +1127,7 @@ class informeTecnico(View):
         para = Paragraph(text, styles["analisis_bullet"])
         floables.append(para)
         floables.append(spacer)
-        text = 'MUESTRARIO FOTOGRAFICO'
+        text = 'MUESTRARIO FOTOGRÁFICO'
         para = Paragraph(text, styles["analisis_center_bold"])
         floables.append(para)
         floables.append(spacer)
@@ -1181,11 +1198,11 @@ class EmitirDocumentos(ListView):
     def get_queryset(self):
         querysets = super(EmitirDocumentos, self).get_queryset()
         informes = Informe.objects.filter(tipo='INFORME_TECNICO', vigente=True)
-        print('ñññññññññññññññññ'+ str(informes))
+        #print('ñññññññññññññññññ'+ str(informes))
         operador_in_informe_tecnico = []
         for informe in informes:
             operador_in_informe_tecnico.append(informe.operador.id)
-        print('ñññññññññññññññññ'+ str(operador_in_informe_tecnico))
+        #print('ñññññññññññññññññ'+ str(operador_in_informe_tecnico))
         queryset_operado_in_inf_tecnico = querysets.filter(vigente=True, en_tramite=True, id__in=operador_in_informe_tecnico).order_by('id')
         return queryset_operado_in_inf_tecnico
 
@@ -1264,28 +1281,28 @@ class createDocLegal(UpdateView):
         # print(a)
 
         table = '''
-        <table align="center" style="border-collapse: collapse; border: 1px solid">
+        <table align="center" id="table_rs"">
             <thead>
                 <tr>
-                    <th style="vertical-align: bottom; height:80px; width: 20px; text-align: center; padding: 0.5em; border-color:black;">No.</th>
-                    <th style="vertical-align: bottom; height:80px; width: 180px; text-align: center; padding: 0.5em; border-color:black;">NOMBRE Y APELLIDO</th>
-                    <th style="vertical-align: bottom; height:80px; width: 80px; text-align: center; padding: 0.5em; border-color:black;">No. DE PLACA</th>
-                    <th style="vertical-align: bottom; height:80px; width: 100px; text-align: center; padding: 0.5em; border-color:black;">TIPO DE VEHICULO</th>
+                    <th style="width: 20px; text-align: center;">No.</th>
+                    <th style="width: 180px; text-align: center;">NOMBRE Y APELLIDO</th>
+                    <th style="width: 80px; text-align: center;">No. DE PLACA</th>
+                    <th style="width: 100px; text-align: center;">TIPO DE VEHICULO</th>
                 </tr>
             </thead>
             <tbody>'''
         contador = 1
         for vehiculo in vehiculos:
             table += '''<tr>
-                            <td style="vertical-align: bottom; height:80px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
-                            <td style="vertical-align: bottom; height:80px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
-                            <td style="vertical-align: bottom; height:80px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
-                            <td style="vertical-align: bottom; height:80px; text-align: center; padding: 0.5em; border-color:black;">{}</td>
+                            <td style="text-align: center;">{}</td>
+                            <td style="text-align: center;">{}</td>
+                            <td style="text-align: center;">{}</td>
+                            <td style="text-align: center;">{}</td>
                         </tr>'''.format(contador, vehiculo.propietario, vehiculo.placa, vehiculo.tipo_vehiculo)
             contador += 1
         table += '''</tbody></table>'''
         #Variables los informes
-        operador_nombre = operador.nombre
+        operador_nombre = operador.nombre.title()
         pre='de la'
         pre1='a la'
         pre2='la'
@@ -1299,9 +1316,11 @@ class createDocLegal(UpdateView):
         nota_cite = nota.cite
         nota_ruta = nota.ruta_solicitada
         nota_fecha = str(nota.fecha)
-        print('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFfffff')
-        print(type(nota_fecha))
+        # print('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFfffff')
+        # print(type(nota_fecha))
 
+        nota_fecha_day = str(nota.fecha.day)
+        nota_fecha_month = str(nota.fecha.month)
         nota_fecha_year = str(nota.fecha.year)
         informe_tecnico_cite = informe_tecnico.cite
         informe_tecnico_fecha_year = str(informe_tecnico.fecha.year)
@@ -1343,51 +1362,78 @@ class createDocLegal(UpdateView):
                 </span></span></strong></span></span>
             </p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
-            <p style="margin-left:0cm; margin-right:0cm">
-                <span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                    A:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Abg. Juan Carlos Cejas Ugarte
-                </span></span></span></span>
-            </p>
-            <p style="margin-left:0cm; margin-right:0cm">
-                <span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspGOBERNADOR DEL DEPARTAMENTO AUT&Oacute;NOMO DE POTOS&Iacute;.
-                </span></span></strong></span></span>
-            </p>
-            <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
-            <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
-            <p style="margin-left:0cm; margin-right:0cm">
-                <span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                    VIA:&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Abg.Daniel Antonio Apaza Barrera
-                </span></span></span></span>
-            </p>
-            <p style="margin-left:0cm; margin-right:0cm">
-                <span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspDIRECTOR JUR&Iacute;DICO DEPARTAMENTAL
-                </span></span></strong></span></span>
-            </p>
-            <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
-            <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
-            <p style="margin-left:0cm; margin-right:0cm">
-                <span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                    DE:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Abg. Wilson Condori L&oacute;pez
-                </span></span></span></span>
-            </p>
-            <p style="margin-left:0cm; margin-right:0cm">
-                <span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspRESPONSABLE UNIDAD DE REGISTRO Y REGULACION DE TRANSPORTE.
-                </span></span></strong></span></span>
-            </p>
-            <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
-            <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
-            <p style="margin-left:0cm; margin-right:0cm"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                REF:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Informe Legal de la solicitud de Tarjetas de Operaciones a favor '''+pre +''' ''' + operador_nombre +'''.
-                </span></span></span></span>
-            </p>
-            <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p
-            <p style="margin-left:0cm; margin-right:0cm"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                FECHA:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Potos&iacute;, '''+ dia +''' de '''+ mes +''' de '''+ anio +'''
-                </span></span></span></span>
-            </p>
+            <table>
+            <thead>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="vertical-align: top; height:20px; width: 100px;">
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">A:</span></span></span></p>
+                    </td>
+                    <td style="vertical-align: top; height:20px; width: 849px;">
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">Abg. Juan Carlos Cejas Ugarte</span></span></span></span></p>
+                        <p style="margin-left:0cm; margin-right:0cm">
+                            <span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
+                                GOBERNADOR DEL DEPARTAMENTO AUT&Oacute;NOMO DE POTOS&Iacute;.
+                            </span></span></strong></span></span>
+                        </p>
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top; height:20px; width: 100px;">
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">VIA:</span></span></span></p>
+                    </td>
+                    <td style="vertical-align: top; height:20px; width: 849px;">
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">Abg. Daniel Antonio Apaza Barrera</span></span></span></span></p>
+                        <p style="margin-left:0cm; margin-right:0cm">
+                            <span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
+                                DIRECTOR JUR&Iacute;DICO DEPARTAMENTAL.
+                            </span></span></strong></span></span>
+                        </p>
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top; height:20px; width: 100px;">
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">DE:</span></span></span></p>
+                    </td>
+                    <td style="vertical-align: top; height:20px; width: 849px;">
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">Abg. Wilson Condori L&oacutepez;</span></span></span></span></p>
+                        <p style="margin-left:0cm; margin-right:0cm">
+                            <span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
+                                DIRECTOR JUR&Iacute;DICO DEPARTAMENTAL.
+                            </span></span></strong></span></span>
+                        </p>
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top; height:20px; width: 100px;">
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">REF:</span></span></span></p>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">Informe Legal de la solicitud de Tarjetas de Operaciones a favor '''+pre +''' ''' + operador_nombre +'''.</span></span></span></span></p>
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top; height:20px; width: 100px;">
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">FECHA:</span></span></span></p>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">Potos&iacute;, '''+ dia +''' de '''+ mes +''' de '''+ anio +'''.</span></span></span></span></p>
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
+                        <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
+                    </td>
+                </tr>
+            </tbody>            
+            </table>
+
             <div style="margin-bottom:8pt; margin-left:0cm; margin-right:0cm; margin-top:0cm; text-align:center">
             <hr /></div>
             <p style="margin-left:0cm; margin-right:0cm"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
@@ -1395,7 +1441,7 @@ class createDocLegal(UpdateView):
                 </span></span></strong></span></span>
             </p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                En merito a hojas de ruta 2031 de Direcci&oacute;n Jur&iacute;dica y solicitud de Tarjetas de Operaciones realizadas mediante notas cite '''+ nota_cite +'''/'''+ nota_fecha_year +''' presentada en fecha '''+ nota_fecha +''' por la '''+ nota_nombre_ente +''' y habiendo cumplido con los requisitos exigidos por el Reglamento de Transporte Interprovincial e Intermunicipal de carga y/o pasajeros del Departamento de Potos&iacute;, se pone a conocimiento el presente informe para su an&aacute;lisis y consideraci&oacute;n.
+                En merito a hojas de ruta 2031 de la Secretar&iacute;a Jur&iacute;dica y solicitud de Tarjetas de Operaciones realizadas mediante notas cite '''+ nota_cite +'''/'''+ nota_fecha_year +''' presentada en fecha '''+ nota_fecha_day +'''/'''+ nota_fecha_month +'''/'''+ nota_fecha_year +''' por la '''+ nota_nombre_ente +''' y habiendo cumplido con los requisitos exigidos por el Reglamento de Transporte Interprovincial e Intermunicipal de carga y/o pasajeros del Departamento de Potos&iacute;, se pone a conocimiento el presente informe para su an&aacute;lisis y consideraci&oacute;n.
                 </span></span></span></span>
             </p>
             <p style="margin-left:0cm; margin-right:0cm"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
@@ -1403,7 +1449,7 @@ class createDocLegal(UpdateView):
                 </span></span></strong></span></span>
             </p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                El Sr. '''+ nota_representante_ente +''', '''+ nota_cargo_repr +''' de la '''+ nota_nombre_ente +''' solicit&oacute; en representaci&oacute;n '''+pre +''' ''' + operador_nombre +''' Tarjetas de Operaci&oacute;n para prestar el servicio de Transporte de pasajeros a nivel Interprovincial e Interprovincial en fecha '''+ nota_fecha +'''.
+                El Sr. '''+ nota_representante_ente +''', '''+ nota_cargo_repr +''' de la '''+ nota_nombre_ente +''' solicit&oacute; en representaci&oacute;n '''+pre +''' ''' + operador_nombre +''' Tarjetas de Operaci&oacute;n para prestar el servicio de Transporte de pasajeros a nivel Interprovincial e Interprovincial en fecha '''+ nota_fecha_day +'''/'''+ nota_fecha_month +'''/'''+ nota_fecha_year +'''.
                 </span></span></span></span>
             </p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
@@ -1416,7 +1462,7 @@ class createDocLegal(UpdateView):
             </p>
             ''' + table + '''
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                Asimismo en fecha 14 de agosto de 2018 en cumplimiento el Reglamento de Transporte Interprovincial e Interdepartamental para el departamento de Potos&iacute;, se realiz&oacute; la inspecci&oacute;n del parque automotor '''+pre +''' ''' + operador_nombre +''' en el Municipio de Llallagua verificando que los buses porten el logo distintivo que debe poseer casa veh&iacute;culo de transporte de pasajeros de la Asociaci&oacute;n al cual pertenece, mismo que se encuentra plasmado en el informe t&eacute;cnico de URRT N&deg; '''+ informe_tecnico_cite +'''/'''+ informe_tecnico_fecha_year +''' elaborado por la Lic. Lourdes Arce, T&eacute;cnico de la Unidad de Registro y Regulaci&oacute;n de Transporte.
+                Asimismo en fecha 14 de agosto de 2018 en cumplimiento el Reglamento de Transporte Interprovincial e Interdepartamental para el departamento de Potos&iacute;, se realiz&oacute; la inspecci&oacute;n del parque automotor '''+pre +''' ''' + operador_nombre +''' en el Municipio de Llallagua verificando que los buses porten el logo distintivo que debe poseer casa veh&iacute;culo de transporte de pasajeros de la Asociaci&oacute;n al cual pertenece, mismo que se encuentra plasmado en el informe t&eacute;cnico de URRT N&deg; '''+ informe_tecnico_cite +'''/'''+ informe_tecnico_fecha_year +''' elaborado por la Abg. &Aacute;ngela Berrios Lizarazu, T&eacute;cnico de la Unidad de Registro y Regulaci&oacute;n de Transporte.
                 </span></span></span></span>
             </p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
@@ -1432,13 +1478,13 @@ class createDocLegal(UpdateView):
                 </span></span></strong></span></span>
             </p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                De la revisi&oacute;n de la documentaci&oacute;n correspondiente '''+pre +''' ''' + operador_nombre +''' presenta lo siguiente:
+                De la revisi&oacute;n de la documentaci&oacute;n correspondiente '''+pre +''' ''' + operador_nombre.title() +''' presenta lo siguiente:
                 </span></span></span></span>
             </p>
             <ol>
-            	<li style="text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">Resoluci&oacute;n Prefectural N&deg; 278/2004 de fecha 14 de diciembre de 2014 que reconoce la Personer&iacute;a Jur&iacute;dica de la Asociaci&oacute;n de Transporte Libre Flota &quot;Asunci&oacute;n Minera&quot; en fotocopia legalizada por la Unidad de Ventanilla &Uacute;nica del Gobierno Aut&oacute;nomo Departamental.</span></span></span></span></li>
-            	<li style="text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">N&oacute;mina de afiliados de la Asociaci&oacute;n de Transporte Libre &quot;Asunci&oacute;n Minera&quot;.</span></span></span></span></li>
-            	<li style="text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">N&oacute;mina del Directorio de la Asociaci&oacute;n de Transporte Libre Flota &quot;Asunci&oacute;n Minera&quot;.</span></span></span></span></li>
+            	<li style="text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">Resoluci&oacute;n Prefectural N&deg; 278/2004 de fecha 14 de diciembre de 2014 que reconoce la Personer&iacute;a Jur&iacute;dica '''+pre +''' ''' + operador_nombre.title() +''' en fotocopia legalizada por la Unidad de Ventanilla &Uacute;nica del Gobierno Aut&oacute;nomo Departamental.</span></span></span></span></li>
+            	<li style="text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">N&oacute;mina de afiliados '''+pre +''' ''' + operador_nombre.title() +'''.</span></span></span></span></li>
+            	<li style="text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">N&oacute;mina del Directorio '''+pre +''' ''' + operador_nombre.title() +'''.</span></span></span></span></li>
             </ol
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
                 Consiguientemente de la revisi&oacute;n de la documentaci&oacute;n presentada se colige que el impetrante ha dado cumplimiento a los requisitos previstos por el Art. 4&deg; N&uacute;m. del Reglamento de transporte P&uacute;blico Terrestre Interprovincial e Intermunicipal de pasajeros y/o carga para el Departamento de Potos&iacute; lo que hace viable la solicitud de tarjetas de Operaciones.
@@ -1453,7 +1499,7 @@ class createDocLegal(UpdateView):
                 </span></span></span></span>
             </p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                Por su parte el Art. 17 de la Ley General de Transporte bajo el ep&iacute;grafe (LASAUTORIDADES COMPETENTES), Inc. b) expresa:
+                Por su parte el Art. 17 de la Ley General de Transporte bajo el ep&iacute;grafe (LAS AUTORIDADES COMPETENTES), Inc. b) expresa:
                 </span></span></span></span>
             </p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
@@ -1477,7 +1523,7 @@ class createDocLegal(UpdateView):
                 </span></span></strong></span></span>
             </p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
-                Que en el marco de los antecedentes y conforme a las&nbsp;notas cites N&deg; '''+ nota_cite +'''/'''+ nota_fecha_year +''' presentado en fecha '''+ nota_fecha +''' por la '''+ nota_nombre_ente +''' en representaci&oacute;n '''+pre +''' ''' + operador_nombre +''' y en funci&oacute;n al cumplimiento de los requisitos exigidos por el Reglamento de Transporte Interprovincial e Intermunicipal de carga y/o pasajeros del Departamento de Potos&iacute; justifican la emisi&oacute;n de Tarjetas de Operaciones a favor '''+pre +''' ''' + operador_nombre +''' en funci&oacute;n a todos los antecedentes que forman parte de la solicitud.
+                Que en el marco de los antecedentes y conforme a las&nbsp;notas cites N&deg; '''+ nota_cite +'''/'''+ nota_fecha_year +''' presentado en fecha '''+ nota_fecha_day +'''/'''+ nota_fecha_month +'''/'''+ nota_fecha_year +''' por la '''+ nota_nombre_ente +''' en representaci&oacute;n '''+pre +''' ''' + operador_nombre +''' y en funci&oacute;n al cumplimiento de los requisitos exigidos por el Reglamento de Transporte Interprovincial e Intermunicipal de carga y/o pasajeros del Departamento de Potos&iacute; justifican la emisi&oacute;n de Tarjetas de Operaciones a favor '''+pre +''' ''' + operador_nombre +''' en funci&oacute;n a todos los antecedentes que forman parte de la solicitud.
                 </span></span></span></span>
             </p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
@@ -1615,7 +1661,7 @@ class createDocLegal(UpdateView):
                 anio ='dos mil treinta'
             
             html = '''
-            <p style="margin-left:0cm; margin-right:0cm; text-align:center"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">RESOLUCION ADMINISTRATIVA N&deg; '''+ str(res_admin.numero_ra) +'''/'''+ anio_n +''' </span></span></strong></span></span></p>
+            <p style="margin-left:0cm; margin-right:0cm; text-align:center"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">RESOLUCI&Oacute;N ADMINISTRATIVA N&deg; '''+ str(res_admin.numero_ra) +'''/'''+ anio_n +''' </span></span></strong></span></span></p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify">&nbsp;</p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">CONSIDERANDO: </span></span></strong><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;"><span style="color: white;">espa</span>Que la Constituci&oacute;n Pol&iacute;tica de Estado en su Art. 279 deternina: El &oacute;rgano ejecutivo departamental est&aacute; dirigido por la Gobernadora o el Gobernador, en condici&oacute;n de maxima autoridad ejecutiva. </span></span></span></span></p>
             <p style="margin-left:0cm; margin-right:0cm; text-align:justify"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;"><span style="color: white;">+++++++++++++++++++</span>Que, por su parte el Art. 300 N&uacute;m. 9) de la constituci&oacute;n Pol&iacute;tica del Estado, dispone las competencias exclusivas de los Gobiernos Aut&oacute;nomos Departamentales: Transporte interprovincial terrestre, fluvial, ferrocarriles y otros medios de transporte en el departamento.</span></span></span></span></p>
@@ -1673,6 +1719,7 @@ class createDocLegal(UpdateView):
                         
                         <p style="margin-left:0cm; margin-right:0cm; text-align:center"><span style="font-size:11pt"><span style="font-family:Calibri,sans-serif"><span style="font-size:12.0pt"><span style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">N&Oacute;MINA DE PARQUE AUTOMOTOR </span></span></span></span></p>
                         '''+ table +'''
+                        <p>&nbsp;</p>
                     </td>
                 </tr>
                 <tr>
@@ -1728,13 +1775,20 @@ def generar_inf_legal(request,pk):
         <html>
             <head>
             <style>
-            table {
-                border:0.5px solid;
-            }
-            td {
-                height: 50px;
-                
-            }
+                #table_rs{
+                    border: 0.5px solid black;
+                }
+                table {
+                    border-collapse: collapse;
+                }
+                td{
+                    padding-top: 3px;
+                }
+                th{
+                    background: #838687;
+                    color: white;
+                    padding-top:2px;
+                }
 
             @page {
                     size: letter portrait; /* landscape, portrait */
@@ -1789,8 +1843,19 @@ def generar_res_administrativa(request,pk):
     <html>
         <head>
         <style>
+            #table_rs{
+                border: 0.5px solid black;
+            }
             table {
-                border-collapse: collapse
+                border-collapse: collapse;
+            }
+            td{
+                padding-top: 3px;
+            }
+            th{
+                background: #838687;
+                color: white;
+                padding-top:2px;
             }
         @page {
                 size: legal portrait; /* landscape, portrait */
@@ -1824,7 +1889,7 @@ def generar_res_administrativa(request,pk):
             <div class='content_frame'>"""+ str(datos.descripcion) +"""</div> 
             <div id="footer_content">
                 <div style="display:inline-block"><pdf:pagenumber></div> <p style="display:inline-block">&nbsp; &nbsp; &nbsp; &nbsp;RESOLUCIÓN ADMINISTRATIVA N° """+ numero +"""/"""+ anio +"""</p>
-                <p style="margin-top: -55px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;D.J.D./W.C.L.</p>
+                <p style="margin-top: -55px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;S.J.D./W.C.L.</p>
             </div>
         </body>
     </html>
@@ -2956,5 +3021,24 @@ class EliminarFoto(DeleteView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(EliminarFoto, self).get_context_data(*args, **kwargs)
-        context['llave'] = self.kwargs['fk'];
+        context['llave'] = self.kwargs['fk']
         return context
+
+class ListarMarca(ListView):
+    model = Marca
+    template_name = 'tecnico/listar_marcas.html'
+    def get_context_data(self, *args, **kwargs):
+        context = super(ListarMarca, self).get_context_data(*args, **kwargs)
+        context['formulario'] = MarcaForm()
+        return context
+
+class CreateMarca(CreateView):
+    model = Marca
+    template_name = ''
+    form_class = MarcaForm
+    success_url = reverse_lazy('tecnico:listar_marca') 
+
+class DeleteMarca(DeleteView):
+    model = Marca
+    template_name = ''
+    success_url = reverse_lazy('tecnico:listar_marca') 

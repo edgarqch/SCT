@@ -10,7 +10,8 @@ createDocLegal, generar_inf_legal, generar_res_administrativa, ListarOperadorR, 
 SelectOperadores, RenovarTarjetas, NotaRenovacion, NotaEditRenovacion, AsignarVehiculosRenovacion,\
 SeleccionarVehiculoRenovacion, QuitarVehiculoRenovacion, DetalleOperadorRenovacion, VerificarVehiculoRenovacion,\
 CreateInformeRenovacion, informeObsRenovando, informeDevol_renovacion, informeTecnico_renovacion,\
-crearDocLeg, CreateVehiculoN, CrearFoto, EliminarFoto, EditVehiculoN, DeleteVehivuloN
+crearDocLeg, CreateVehiculoN, CrearFoto, EliminarFoto, EditVehiculoN, DeleteVehivuloN, ListarMarca, CreateMarca,\
+DeleteMarca
 
 from apps.tecnico.ajax import test, verifivehiculo
 
@@ -80,5 +81,8 @@ urlpatterns = [
 
     url(r'^foto_vehi/(?P<pk>\d+)/$', login_required(CrearFoto.as_view()), name='foto_vehi'),
     url(r'^foto_delete/(?P<pk>\d+)/(?P<fk>\d+)/$', login_required(EliminarFoto.as_view()), name='eliminar_foto'),
+    url(r'^marca/listar/$', login_required(ListarMarca.as_view()), name='listar_marca'),
+    url(r'^create_marca/$', login_required(CreateMarca.as_view()), name='crear_marca'),
+    url(r'^delete_marca/(?P<pk>\d+)/$', login_required(DeleteMarca.as_view()), name='eliminar_marca'),
 
 ]

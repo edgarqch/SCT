@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="right_col" role="main">
-    <a class="btn btn-primary" href="{% url 'vehiculo:listar_vehiculos' %}"> <i class="fa fa-backward"></i>Volver</a>
+    <a class="btn btn-primary" href="{% url 'vehiculo:listar_vehiculos' %}"> <i class="fa fa-backward"></i> Volver</a>
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">  
@@ -59,19 +59,20 @@
                     <div class="actionBar"><h2 style="text-align:left">Información de la Tarjeta Vigente:</h2></div>
                     {% if detalle %}
                         <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
-                            <b class="col-md-2 col-sm-6 col-xs-12" style="text-align:left">VALIDO POR: </b>{{ detalle.validez|upper }} AÑO
+                            <b class="col-md-2 col-sm-6 col-xs-12" style="text-align:left">VALIDO POR: </b>{{ detalle.validez }} AÑO
                         </div>
                         <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
-                            <b class="col-md-2 col-sm-6 col-xs-12" style="text-align:left">DEL: </b>{{ detalle.valida_del|upper }}
+                            <b class="col-md-2 col-sm-6 col-xs-12" style="text-align:left">DEL: </b>{{ detalle.valida_del }}
                         </div>
                         <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
-                            <b class="col-md-2 col-sm-6 col-xs-12" style="text-align:left">AL: </b>{{ detalle.valida_al|upper }}
+                            <b class="col-md-2 col-sm-6 col-xs-12" style="text-align:left">AL: </b>{{ detalle.valida_al }}
                         </div>
                     {% else %}
                         <div class="form-group form-horizontal col-md-12 col-sm-12 col-xs-12">
                             <h2>El vehículo aún no tiene tarjeta</h2>
                         </div>
                     {% endif %}
+                    <a class="btn btn-primary" href="{% url 'vehiculo:historial_tarjetas' fk=object.id %}">VER HISTORIAL DE TARJETAS</a>
                     <div class="clearfix"></div>
                     <div class="actionBar"><h2 style="text-align:left">Fotografias:</h2></div>
                     {% if fotos %}

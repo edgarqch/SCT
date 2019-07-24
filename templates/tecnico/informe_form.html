@@ -20,7 +20,11 @@
                     <h2 style="text-decoration : underline">DATOS PREVIOS</h2>
                 </div>
                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                    <label class="control-label col-md-2 col-sm-6 col-xs-12">{{form.cite.label}}:</label>
+                    {% if analisis %}
+                      <label class="control-label col-md-2 col-sm-6 col-xs-12" >Número de Informe Técnico</label>
+                    {% else %}
+                      <label class="control-label col-md-2 col-sm-6 col-xs-12" >{{form.cite.label}}:</label>
+                    {% endif %}
                     <div class="col-md-4 col-sm-12 col-xs-12">
                     {{form.cite}}
                     {% if form.cite.errors %}
@@ -39,6 +43,7 @@
                     </div>
                 </div>
                 {% if analisis %}
+                <div id="cambio"></div>
                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                     <label class="control-label col-md-2 col-sm-6 col-xs-12">{{form.ans_tecnico.label}}:</label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
@@ -73,4 +78,22 @@
   <script src="/static/js/project.js"></script>
   <!-- validator -->
   <script src="/static/vendors/validator/validator.js"></script>
+  <script>
+    // if( $('#cambio').length )         // use this if you are using id to check
+    // {
+    //   alert('this record already exists');
+    //   // it exists
+    // }
+    // if (document.getElementById(cambio)) {
+    //   alert('this record already exists');
+    // } else {
+    //   alert('this not exist');
+    //   // do stuff
+    // }
+      // $('#cambio').on("click",function(){
+      //   var id_operador = $(this).attr("op");
+      //   $("#seleccionarOperadorRenovar").attr("action", "/tecnico/renovar/"+id_operador+"/");
+      //   $("#seleccionarOperadorRenovar").submit();
+      // });
+  </script>
 {% endblock %}

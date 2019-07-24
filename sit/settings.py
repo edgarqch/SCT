@@ -115,7 +115,7 @@ WSGI_APPLICATION = 'sit.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sit',
+        'NAME': 'UPSO',
         'USER': 'postgres',
         'PASSWORD': 'edplanificacion',
         'HOST': 'localhost',
@@ -146,7 +146,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-es'
+LANGUAGE_CODE = 'es-bo'
 
 TIME_ZONE = 'UTC'
 

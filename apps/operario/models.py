@@ -24,6 +24,9 @@ class requisitos_razon_social(models.Model):
     requisitos_rs = models.ForeignKey(Requisitos_RS, null=True, blank=True, on_delete=models.CASCADE)
     razon_social = models.ForeignKey(Razon_Social, null=True, blank=True, on_delete=models.CASCADE)
     
+    def __unicode__(self):
+        return '{} / {}'.format(self.razon_social, self.requisitos_rs)
+
     class Meta:
         managed = False
         db_table = 'operario_razon_social_requisitos'

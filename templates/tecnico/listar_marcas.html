@@ -1,0 +1,172 @@
+{% extends "base/base_site.html" %}
+
+{% block title %} Lista Operadores Renovar {% endblock title %}
+
+{% block js %}
+
+{% endblock js %}
+ 
+{% block content %}
+<div class="right_col" role="main">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <h1>Marcas Vehiculares</h1>
+            <br>
+            <div class="table-responsive" style="height: 350px; overflow: scroll">
+                <table class="table table-striped table-bordered dt-responsive display nowrap jambo_table" cellpadding="0" width="100%">
+                    <thead>
+                      <tr class="headings" >
+                        <th  style="width: 35%;">ACCIONES</th>
+                        <th  style="width: 65%;">MARCA</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% if object_list %}
+                        {% for marca in object_list %}
+                        <tr>
+                            <td>
+                                <button class="btn btn-round btn-danger btn-xs eliminar_marca" eliminar="{{ marca.id }}" marca="{{ marca.marca }}" data-toggle="tooltip" title="Eliminar" href=""><i class="fa fa-trash"></i></button>
+                            </td>
+                            <td>{{ marca.marca }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <p>
+                <!-- Button modal -->
+                <a class="btn btn-app" id="add-marca" style="color: white; background:rgb(25, 204, 159)" title="Nueva Marca de Vehículo" data-toggle="tooltip"><i class="fa fa-plus"></i>NUEVA MARCA</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Modal Regitrar Marca -->
+    <div id="modal-marca" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="form-marca" action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Registrar Nueva Marca</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="item form-group col-md-6 col-sm-12 col-xs-12">    
+                            <label class="control-label col-md-4 col-sm-6 col-xs-12">{{formulario.marca.label}}</label>
+                            <div class="col-md-8 col-sm-6 col-xs-12">
+                                {{formulario.marca}}
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar Ventana</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </div>
+                </form>
+            <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <!-- /modals -->
+
+    <!-- Modal Eliminar Marca -->
+    <div id="modal-delete-marca" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="form-delete-marca" action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="myModalLabel">¿Desea eliminar esta Marca de vehículo?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <strong class="marc"></strong>
+                        </div>
+                        <br>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar Ventana</button>
+                            <button type="submit" class="btn btn-danger">Si, Eliminar</button>
+                        </div>
+                    </div>
+                </form>
+            <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <!-- /modals -->
+
+</div>
+{% endblock content %}
+{% block javascripts %}
+{{ block.super }}
+<script src="/static/js/project.js"></script>
+<script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/static/js/responsive.bootstrap.js"></script>
+<script src="/static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<!-- validator -->
+<script src="/static/vendors/validator/validator.js"></script>
+<script type="text/javascript">
+$(function() {
+
+    $('.prueba').DataTable({
+        "scrollY":        "250px",
+        "scrollCollapse": true,
+        "paging":         true,
+        "responsive":     true,
+        "ordering":       true,
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+        }
+    });
+
+    $("#add-marca").on("click", function(){
+        $("#form-marca").attr("action", "/tecnico/create_marca/");
+        $("#modal-marca").modal("show");
+    });
+
+    $(".eliminar_marca").on("click", function(){
+        var id_marca = $(this).attr("eliminar");
+        var marca = $(this).attr("marca");
+        $(".marc").html(marca);
+        $("#form-delete-marca").attr("action", "/tecnico/delete_marca/" + id_marca + "/");
+        $("#modal-delete-marca").modal("show");
+    });
+
+});
+</script>
+<style type="text/css">
+.prueba{
+  height: 150px;
+}
+</style>
+{% endblock %}

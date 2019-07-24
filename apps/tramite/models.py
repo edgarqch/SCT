@@ -29,6 +29,8 @@ class Tramite(models.Model):
             ('administrar_tramite', 'Puede administrar tramites'),
         )
 
+    def __unicode__(self):
+        return '{} / {}'.format(self.solicitante, self.fecha_ingreso)
 
 class Asignar_Vehiculo(models.Model):
     tramite = models.ForeignKey(Tramite, null=True, blank=True, on_delete=models.CASCADE, related_name = 'asignar')
@@ -41,3 +43,6 @@ class Asignar_Vehiculo(models.Model):
     # variables de control
     tiene_tarjeta = models.BooleanField(default=False)  #para saber si la tarjeta fue impresa
     caducado = models.BooleanField(default=False) #para saber si la tarjeta caducó luego del año de validez
+    
+    def __unicode__(self):
+        return '{} / {} / {}'.format(self.tramite, self.vehiculo, self.gestion)

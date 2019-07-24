@@ -54,6 +54,40 @@ class detalleVehiculos(DetailView):
                 context['detalle'] = vehiculo_asignado
         return context
 
+class historialTarjetasVehiculo(ListView):
+    model = Asignar_Vehiculo
+    template_name = 'vehiculo/historial_vehiculo.html'
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(historialTarjetasVehiculo, self).get_queryset()
+        return queryset.filter(vehiculo = self.kwargs['fk'])
+        
+# class historialTarjetasVehiculo(ListView):
+#     model = Asignar_Vehiculo
+#     template_name = 'vehiculo/detalle_vehiculos.html'
+    
+#     def get_context_data(self, *args, **kwargs):
+#         context = super(detalleVehiculos, self).get_context_data(*args, **kwargs)
+#         vehiculo = Vehiculo_Nuevo.objects.get(id = self.kwargs['pk'])
+#         operador = Operador_Nuevo.objects.get(id = vehiculo.operador_id)
+#         context['operador'] = operador
+        
+#         fotos = Fotos_Vehiculo.objects.filter(vehiculo= vehiculo.id)
+#         context['fotos'] = fotos
+
+#         if Tramite.objects.filter(solicitante_id=operador.id, vigente=True).exists():
+#             if Tramite.objects.filter(solicitante_id=operador.id, vigente=True).count()==1:
+#                 tramite = Tramite.objects.get(solicitante_id=operador.id, vigente=True)
+#             else:
+#                 sms = 'Tramite no encontrado'
+#                 tramite=None
+#             if tramite:
+#                 # vehiculo_asignado = Asignar_Vehiculo.objects.filter(vehiculo=vehiculo.id, tramite_id=tramite.id)
+#                 vehiculo_asignado = Asignar_Vehiculo.objects.get(vehiculo_id=vehiculo.id, tramite_id=tramite.id)
+
+#                 context['detalle'] = vehiculo_asignado
+#         return context
+
 class listarInfractores(ListView):
     model = Infraccion
     template_name = 'vehiculo/listar_infractores.html'
