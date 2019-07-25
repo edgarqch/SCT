@@ -6,7 +6,7 @@ from apps.tramite.home import Index
 from apps.tramite.views import CrearTramite, search_operador_nombre,\
 ListarTramite, AsignarVehiculos, AsignarVehiculo, search_vehiculo_placa,\
 TramiteProceso, ordenDeposito, ListarTarjetas, Tarjetas, TramiteFinalizar,\
-EliminarAsignacion
+EliminarAsignacion, ListarSeguimiento, Seguimiento
 # tramite_view, tramite_list_ingresados, seguimiento_view, tramite_search, tramite_encontrar
 
 
@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^tarjetas/(?P<pk>\d+)/$', login_required(ListarTarjetas.as_view()), name='tarjetas'),
     url(r'^imprimir/tarjeta/(?P<pk>\d+)/$', login_required(Tarjetas.as_view()), name='imprimir_tarjeta'),
     url(r'^finalizar/(?P<pk>\d+)/$', login_required(TramiteFinalizar.as_view()), name='tramite_finalizar'),
+    url(r'^listar/seguimiento/$', login_required(ListarSeguimiento.as_view()), name='listar_seguimiento'),
+    url(r'^seguimiento/(?P<pk>\d+)/$', login_required(Seguimiento.as_view()), name='seguimiento'),
 ]
 
 

@@ -1911,7 +1911,7 @@ class ListarOperadorR(ListView):
         context = super(ListarOperadorR, self).get_context_data(*args, **kwargs)
         # Q(vigente= True,es_nuevo= True,en_tramite= True) | Q(es_nuevo= False, en_tramite=True)
         operador_n = Operador_Nuevo.objects.filter(
-            Q(vigente=True, es_nuevo= False, en_tramite= True))
+            Q(vigente=True, es_nuevo= False, en_tramite= True, renovando=True))
         context['operador_n'] = operador_n
         
         # Algoritmo para determinar si el operador esta listo para ser verificado.
@@ -1976,7 +1976,7 @@ class RenovarTarjetas(UpdateView):
     def form_valid(self, form):
         operador = Operador_Nuevo.objects.get(id=self.object.id)
         operador.en_tramite = True
-        # operador.renovando = True
+        operador.renovando = True
         operador.save()
         return HttpResponseRedirect(reverse_lazy('tecnico:operador_renovavion_listar'))
 
@@ -2085,11 +2085,11 @@ class VerificarVehiculoRenovacion(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(VerificarVehiculoRenovacion, self).get_context_data(*args, **kwargs)
         requisitos_tipo = requisitos_vehiculo_tipo.objects.filter(tipo_vehiculo = self.object.tipo).order_by('id')
-        print ('/***********' + str(requisitos_tipo))
+        # print ('/***********' + str(requisitos_tipo))
         lista = []
         for a in requisitos_tipo:
             lista.append(a.requisitos_vehi.id)
-        print ('/***********' + str(lista))
+        # print ('/***********' + str(lista))
         requisitos_v = Requisitos_Vehi.objects.filter(id__in = lista)
         if not Checklist_Vehiculo.objects.filter(vehiculo_nuevo=self.object, vigente=True).exists():    
             for b in requisitos_v:

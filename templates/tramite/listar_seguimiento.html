@@ -8,18 +8,18 @@
  
 {% block content %}
 <div class="right_col" role="main">
-    <a class="btn btn-primary" href="{% url 'tecnico:operador_renovavion_listar' %}"><i class="fa fa-backward"></i> Volver</a>
+    <!-- <a class="btn btn-primary" href="{% url 'tecnico:operador_renovavion_listar' %}"><i class="fa fa-backward"></i> Volver</a> -->
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
-            <h1>Operadores que necesitan renovación de tarjetas</h1>
+            <h1>SEGUIMIENTO A OPERADORES EN TRÁMITE</h1>
             <br>
             <div class="scrollable" style="height: 440px; overflow: scroll">
                 <!-- <table class="table table-striped table-bordered prueba dt-responsive display nowrap jambo_table" cellpadding="0" width="100%" height= "300px"> -->
                 <table id="myTable" class="table table-striped table-bordered prueba dt-responsive display nowrap jambo_table" cellpadding="0" width="100%" height= "300px">
                     <thead>
                     <tr class="headings" >
-                        <th  style="width: 15%;">ACCIONES</th>
-                        <th  style="width: 55%;">NOMBRE     <input type="text" id="myInput" onkeyup="searchOperadorForName()" placeholder=" Buscar por nombre..." title="Type in a name"></th>
+                        <th  style="width: 15%;">SEGUIMIENTO</th>
+                        <th  style="width: 55%;">NOMBRE <input type="text" id="myInput" onkeyup="searchOperadorForName()" placeholder=" Buscar por nombre..." title="Type in a name"></th>
                         <th  style="width: 30%;">RAZON SOCIAL</th>
                     </tr>
                     </thead>
@@ -28,10 +28,8 @@
                         {% for operador in operadores %}
                         <tr>
                             <td>
-                                {% if not operador.renovando %}
-                                <a class="btn btn-success seleccionarOperador" op="{{ operador.id }}" href="#">Seleccionar</a>
-                                {% else %}
-                                <p style="color:orangered" >El operador esta Renovando tarjetas</p>
+                                {% if operador.en_tramite %}
+                                <a class="btn btn-success" href="{% url 'tramite:seguimiento' pk=operador.id %}">Ver estado</a>
                                 {% endif %}
                             </td>
                             <td>{{ operador.nombre }}</td>
@@ -39,7 +37,11 @@
                         </tr>
                         {% endfor %}
                         {% else %}
-                        <h1>No hay registros de Operadores</h1>
+                        <tr>
+                            <td colspan="3">
+                                <h2>No hay registros de Operadores Con trámite en curso</h2>
+                            </td>
+                        </tr>
                         {% endif %}
                     </tbody>
                 </table>
@@ -47,9 +49,6 @@
         </div>
     </div>
 
-    <form action="" method="POST" id="seleccionarOperadorRenovar">
-        {% csrf_token %}
-    </form>
 
 </div>
 {% endblock content %}
@@ -67,13 +66,6 @@
 <!-- validator -->
 <script src="/static/vendors/validator/validator.js"></script>
 <script type="text/javascript">
-
-    $('.seleccionarOperador').on("click",function(){
-        // alert('id_operador');
-        var id_operador = $(this).attr("op");
-        $("#seleccionarOperadorRenovar").attr("action", "/tecnico/renovar/"+id_operador+"/");
-        $("#seleccionarOperadorRenovar").submit();
-    });
 
     function searchOperadorForName() {
         var input, filter, table, tr, td, i, txtValue;
@@ -99,7 +91,6 @@
         }
     }
 
-// });
 </script>
 <style type="text/css">
 #myInput {

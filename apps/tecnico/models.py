@@ -29,7 +29,7 @@ class Operador_Nuevo(models.Model):
     # campos para control del operador
     vigente = models.BooleanField(default=True) # indica si se otorgo la devolucion por falta de requisitos
     es_nuevo = models.BooleanField(default=True)
-    # renovando = models.BooleanField(default=False)
+    renovando = models.BooleanField(default=False)
     en_tramite = models.BooleanField(default=True)
 
     checklist = models.ManyToManyField(Requisitos_RS, through = 'Checklist_Operario', related_name = 'operario')
@@ -212,6 +212,7 @@ class Vehiculo_Nuevo(models.Model):
     # Variables de control
     es_nuevo = models.BooleanField(default=True)
     renovando = models.BooleanField(default=False) #Muestra si el vehiculo esta renovando tarjeta
+    en_tramite = models.BooleanField(default=True)
     dar_baja = models.BooleanField(default=False) # Variable para que el vehiculo pueda dar de baja en un operador, y se registre en otro operador
 
     checklist = models.ManyToManyField(Requisitos_Vehi, through = 'Checklist_Vehiculo', related_name = 'vehiculo')

@@ -45,50 +45,7 @@ from reportlab.lib.colors import Color
 from reportlab.lib.pagesizes import letter, landscape, portrait
 # Create your views here.
 from datetime import datetime, date, timedelta
-# class index(TemplateView):
-#     template_name = 'tramite/index.html'
-    
-#     def get_context_data(self, *args, **kwargs):
-#         context = super(index, self).get_context_data(*args, **kwargs)
-        
-#         vehiculos = Vehiculo_Nuevo.objects.filter(es_nuevo=False)
-#         # print('fffffffffffff'+ str(vehiculos))
-#         context['vehiculos'] = vehiculos
-#         vehiculos_tarjeta = Asignar_Vehiculo.objects.all()
-#         # dias = timedelta(days=366)
-#         hoy = datetime.now().date()
-#         # print (".......-------------"+ str(hoy))
-#         for vehi in vehiculos_tarjeta:
-#             if vehi.valida_del and vehi.valida_al:
-#                 avance_dias = hoy - vehi.valida_del
-#                 tarjeta_del = vehi.valida_del
-#                 tarjeta_del = tarjeta_del + avance_dias
-#                 tarjeta_al = vehi.valida_al
-#                 if tarjeta_del >= tarjeta_al and vehi.caducado == False:
-#                     vehi.caducado = True
-#                     vehi.save()
-#                     print "Tarjeta fenecida"
-#                 # print tarjeta_al
-#                 # print tarjeta_del
 
-#         limite_dias_notificacion = timedelta(days=371) #se esta sumando un anio mas cinco dias
-#         validez_tarjeta = timedelta(days=366) #dias validos
-#         id_tarjetas = []
-#         for vehi in vehiculos_tarjeta:
-#             if vehi.valida_del and vehi.valida_al:
-#                 limite_avance_dias = hoy - vehi.valida_del
-#                 if vehi.caducado == True:
-#                     if limite_avance_dias>=validez_tarjeta and limite_avance_dias<=limite_dias_notificacion:
-#                         id_tarjetas.append(vehi.vehiculo_id)
-
-#         if id_tarjetas:
-#             vehis_con_tarjeta_caducada = Vehiculo_Nuevo.objects.filter(es_nuevo=False, id__in=id_tarjetas)
-#             context['tarjetas_caducadas'] = vehis_con_tarjeta_caducada
-
-#         return context
-    
-# def index(request):
-#     return render(request, 'tramite/index.html')
 @method_decorator(permission_required('tramite.administrar_tramite'), name='dispatch') 
 class CrearTramite(CreateView):
     model = Tramite
@@ -802,10 +759,13 @@ class TramiteFinalizar(UpdateView):
     def form_valid(self, form):
         tramite = Tramite.objects.get(id=self.object.id)
         tramite.estado = 'ENTREGADO'
+        tramite.finalizado = True
         tramite.save()
         operador = Operador_Nuevo.objects.get(id=tramite.solicitante_id)
         operador.en_tramite = False
+        operador.renovando = False
         operador.save()
+        #Poniendo Nota como fenecido para hacer una nueva renovacion a lo posterior
         nota = Nota.objects.get(operador_n= operador.id, fenecio= False)
         nota.fenecio= True
         nota.save()
@@ -834,95 +794,77 @@ class TramiteFinalizar(UpdateView):
         vehiculos_renovando = Vehiculo_Nuevo.objects.filter(operador=operador.id, renovando=True)
         for vehiculo in vehiculos_renovando:
             v = Vehiculo_Nuevo.objects.get(id=vehiculo.id)
-            v. renovando=False
+            v.renovando=False
+            v.save()
+        #Poniendo a los vehiculos, su campo en tramite en Falso para otra posterior renovacion
+        vehiculos_n = Vehiculo_Nuevo.objects.filter(operador=operador.id, en_tramite=True)
+        for vehiculo in vehiculos_n:
+            v = Vehiculo_Nuevo.objects.get(id=vehiculo.id)
+            v.en_tramite=False
             v.save()
 
         return HttpResponseRedirect(reverse_lazy('tramite:listar_tramite'))
 
+class ListarSeguimiento(ListView):
+    model = Operador_Nuevo
+    template_name = 'tramite/listar_seguimiento.html'
+    def get_context_data(self, *args, **kwargs):
+        context = super(ListarSeguimiento, self).get_context_data(*args, **kwargs)        
+        operadores_tramite = Operador_Nuevo.objects.filter(en_tramite=True)
+        context['operadores'] = operadores_tramite
+        return context
 
+class Seguimiento(DetailView):
+    model = Operador_Nuevo
+    template_name = 'tramite/seguimiento.html'
+    def get_context_data(self, *args, **kwargs):
+        context = super(Seguimiento, self).get_context_data(*args, **kwargs)
+        operador = Operador_Nuevo.objects.get(id=self.kwargs['pk'])
+        context['operador'] = operador
+        # seguimiento para tramite ingresado, cuando se registra la nota
+        if Nota.objects.filter(operador_n= operador, fenecio= False).exists():
+            ingresado = Nota.objects.filter(operador_n= operador, fenecio= False)
+            context['ingresado'] = ingresado
+        # seguimiento para tramite en verificacion, cuando todos los vehiculos se verificaron
+        vehiculos = Vehiculo_Nuevo.objects.filter(Q(operador=operador.id, en_tramite=True) | Q(operador=operador.id, renovando=True))
+        cantidad = vehiculos.count()
+        contador = 0
+        for vehiculo in vehiculos:
+            if Checklist_Vehiculo.objects.filter(vehiculo_nuevo=vehiculo, vigente=True).exists():
+                contador = contador + 1
+        if cantidad != 0:
+            if contador == cantidad:
+                context['verificado'] = True
+        # seguimiento para tramite emitir informes, cuando se emite algun informe
+        if Informe.objects.filter(operador= operador, vigente= True).exists():
+            informe = Informe.objects.filter(operador= operador, vigente= True)
+            context['Informe'] = informe
+        # seguimiento para tramite emitir documentos legales, cuando se emite algun documento
+        if Docs_Legal.objects.filter(operador= operador, vigente= True).exists():
+            doc = Docs_Legal.objects.filter(operador= operador, vigente= True)
+            context['doc'] = doc
+        # seguimiento para tramite iniciado, cuando se registra el trámite
+        if Tramite.objects.filter(solicitante= operador, finalizado= False).exists():
+            tramite_inicio = Tramite.objects.filter(solicitante= operador, finalizado= False)
+            context['tramite_inicio'] = tramite_inicio
+        # seguimiento para tramite proceso, cuando el trámite esta en proceso y se emitio la orden de deposito
+        if Tramite.objects.filter(solicitante= operador, finalizado= False, tiene_orden=True).exists():
+            tramite_proceso = Tramite.objects.filter(solicitante= operador, finalizado= False, tiene_orden=True)
+            context['tramite_proceso'] = tramite_proceso
+        # seguimiento para tramite con tarjetas, cuando se imprimen todas las tarjetas del tramite
+        if Tramite.objects.filter(solicitante= operador, finalizar= True, finalizado=False).count() == 1:
+            tramite_inicio = Tramite.objects.get(solicitante= operador, finalizar= True, finalizado=False)
+            cantidad_tarjetas = Asignar_Vehiculo.objects.filter(tramite= tramite_inicio)
+            tarjetas_impresas = Asignar_Vehiculo.objects.filter(Q(tramite= tramite_inicio, tiene_tarjeta=True))
+            cantidad = cantidad_tarjetas.count()
+            impresas = tarjetas_impresas.count()
+            if cantidad != 0:
+                if impresas == cantidad:
+                    context['tarjetas_impresas'] = True
+        # seguimiento para tramite finalizado, cuando el trámite ha finalizado
+        # if Tramite.objects.filter(solicitante= operador, vigente= True, tiene_orden=True).exists():
+        #     tramite_proceso = Tramite.objects.filter(solicitante= operador, vigente= True, tiene_orden=True)
+        #     context['tramite_proceso'] = tramite_proceso
 
+        return context
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def seguimiento_view(request, fk):
-#     tramite = Tramite.objects.get(nro_tramite = fk)
-#     if request.method == 'GET':
-#         form = SeguimientoForm(instance=tramite)
-#     else:
-#         form = SeguimientoForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             tramite.estado = 'PROCESO'
-#             tramite.save()
-#             est_tipo = Seguimiento.objects.get(nro_tramite = fk)
-#             est_tipo.estado_tipo = 'N'
-#             est_tipo.save()
-#         return redirect('tramite:index')
-#     return render(request, 'tramite/asignacion_form.html', {'form':form})
-
-# def tramite_list_ingresados(request):
-#     tramite = Tramite.objects.filter(estado = "INGRESADO")
-#     contexto = {'tramites':tramite}
-#     return render(request, 'tramite/tramite_listar_ingresados.html', contexto)
-
-# class tramite_search(TemplateView):
-#     template_name = 'tramite/Busqueda_tramite.html'
-
-# class tramite_encontrar(ListView):
-#     template_name = 'tramite/Busqueda_tramite.html'
-#     model = Tramite
-
-#     def get(self, request, *args, **kwargs):
-#         n_tramite = request.GET['numtramite']
-#         if Tramite.objects.filter(nro_tramite = n_tramite, estado="PROCESO").exists():
-#             tramite_number = Tramite.objects.get( estado="PROCESO", nro_tramite = n_tramite)
-#             #linea para testear 
-#             print("////////////"+str(tramite_number.nro_tramite))
-
-#             data = serializers.serialize('json', [tramite_number,])
-#             print data
-#             return HttpResponse(data, content_type='aplication/json')
-#         else:
-#             data = ""
-#             return HttpResponse(data)
